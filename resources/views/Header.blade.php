@@ -19,7 +19,7 @@
 
                         <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
                             <div class="site-logo">
-                                <a href="{{ url('/') }}" class="js-logo-clone">P</a>
+                                <a href="{{ url('/') }}" class="js-logo-clone">ScriptSi</a>
                             </div>
                         </div>
 
@@ -41,9 +41,13 @@
                                             @else
                                                 <li>Hello {{Auth::user()->name}}</li>
                                             @endif
+
                                             <li class="dropdown">
+                                            <a href="{{url('/RequestList/'.Auth::user()->userid_tocompany)}}"><i class="medium material-icons" style="width:50px; height:50px; position:absolute; top:1px; right:220px; border-radius:50%">notifications</i></a>
+
                                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" style="position:relative; padding-left:200px;">
-                                                    <img src= "{{ url(Auth::user()->image) }}" style="width:50px; height:50px; position:absolute; top:1px; right:120px; border-radius:50%">
+
+                                                <img src= "{{ url(Auth::user()->image) }}" style="width:50px; height:50px; position:absolute; top:1px; right:160px; border-radius:50%">
                                                     {{ Auth::user()->name }}
                                                 </a>
                                                 <ul class="dropdown-menu" role="menu">
@@ -83,9 +87,11 @@
                                 <li><a href="{{ url('/') }}">Home</a></li>
 
                                 <li class="has-children">
-                                    <a href="#">Manage User</a>
+                                    <a href="#">Manage Master Data</a>
                                     <ul class="dropdown">
-                                        <li><a href="{{url('viewuser')}}">Edit Profile </a></li>
+                                        <li><a href="{{url('positioninput')}}">Position</a></li>
+                                        <li><a href="{{url('MasterDataInput')}}">Master Add New Data</a></li>
+
                                     </ul>
                                 </li>
                                 <li class="has-children">
@@ -96,18 +102,28 @@
                                         <li><a href="{{url('viewdelCategory')}}">Delete</a></li>
                                     </ul>
                                 </li>
-                                <li class="has-children">
-                                    <a href="#">Manage Position</a>
-                                    <ul class="dropdown">
-                                        <li><a href="{{url('positioninput')}}">Insert</a></li>
-                                        
-                                    </ul>
-                                </li>
+                              
                             @endif
                                 {{--//navigasi untuk para member--}}
-                                <li><a href="{{url('view')}}">Shop</a></li>
+                       
                                 <li class="has-children">
-                                    <a href="#">Manage Post</a>
+                                    <a href="#">Company Profile</a>
+                                    <ul class="dropdown">
+                                        <li><a href="{{url('/ProfileCompany')}}">New Company Profile</a></li>
+                                        <li><a href="{{url('/viewListCompany')}}">Company List </a></li>
+                                        </ul>
+                                </li>
+                                    
+
+
+                                <li><a href="{{url('view')}}">Sponsor List</a></li>
+                                <li class="has-children">
+                                    <a href="#">Manage Candidate</a>
+                                    <ul class="dropdown">
+                                        <li><a href="{{url('viewuser')}}">Candidate List</a></li>
+                                    </ul>
+                                <li class="has-children">
+                                    <a href="#">Manage Your Vancies</a>
                                     <ul class="dropdown">
                                         <li><a href="{{url('input')}}">Insert</a></li>
                                         <li><a href="{{url('viewup')}}">Update</a></li>

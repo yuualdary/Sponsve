@@ -35,11 +35,11 @@
                                   
                                     </figure>
                                   
-                                    <h3><b><a href="{{url('detail/'.$i->id)}}">{{$i->title}}</a></b></h3>
+                                    <h3><b><a href="{{url('detail/'.$i->insert_id)}}">{{$i->title}}</a></b></h3>
                                     <p class="mb-0">{{$i->caption}}</p>
                                     <p class="mb-0">{{$i->category}}</p>
                                     <p class="text-primary font-weight-bold">{{$i->location}}</p>
-                                    <p class="text-primary font-weight-bold"><a href="{{url('detail/'.$i->id)}}">Show more....</a></p>
+                                    <p class="text-primary font-weight-bold"><a href="{{url('detail/'.$i->insert_id)}}">Show more....</a></p>
                                 </div>
                             </div>
                         </div>

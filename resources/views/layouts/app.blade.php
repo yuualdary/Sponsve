@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
 
+    <meta name="author" content="Harrison Weir"/>
+    <meta name="subject" content="Cats. Their Varieties, Habits and Management; and for show, the Standard of Excellence and Beauty"/>
+    <meta name="keywords" content="cats,feline"/>
+    <meta name="date" content="2014-12-05"/>
+
 
 
 

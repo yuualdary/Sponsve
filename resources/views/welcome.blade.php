@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     {{--bagian kerangka dari website meliputi header,contetnt,footer ,css,js link--}}
-    <title>Pin </title>
+   
+    <title>ScriptSi </title>
+    <link rel = "icon" href =  
+"https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_200X200.png" 
+        type = "image/x-icon"> 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 

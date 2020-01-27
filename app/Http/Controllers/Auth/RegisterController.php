@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Support\Str;
+
 use App\User;
 use App\Http\Controllers\Controller;
 
@@ -73,6 +75,7 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $request = request();
+        $currName=$data['name'];
 
         $profileImage = $request->file('image');
         //-profile nama belakang dari file tsb
@@ -83,13 +86,24 @@ class RegisterController extends Controller
         $profile_image_url = $upload_path . $profileImageSaveAsName;
         //logic = sukses berati profileImage(image) dipindahkan ke path atau folder yg ditentukan, simpan sbg nama dengan infix -profile
         $success = $profileImage->move($upload_path, $profileImageSaveAsName);
-
+        //get Initial from name
+        $getInitial=Str::substr($currName, 0, 2);
+        $getUpperInitial=strtoupper($getInitial);
+        //
+        //get rand 4 number
+        $fourdigitrandom = mt_rand(1000,9999);
+        //
+        // initial + rand number
+        $getUserCode=$getUpperInitial.$fourdigitrandom; 
+        //
+        
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'gender'=>$data['gender'],
             'image'=>$profile_image_url,
+            'user_code'=>$getUserCode
             
         ]);
 

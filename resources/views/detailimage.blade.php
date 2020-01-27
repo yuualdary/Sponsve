@@ -8,29 +8,45 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Detail Picture</div>
 {{--menampilkan detail dari product dan bisa melihat detail tersebut dan bisa melakukan comment terhadap product tersebut--}}
+@if(session()->has('successAdd'))
+                    <div class="alert success">
+                        <span class="closebtn">&times;</span>  
+                        <b><strong>Success</strong> Send Your Request</>
+                    </div>
+                    @endif
                     <div class="panel-body">
+                    
+                    @foreach($getUsers as $U)
+                 @if($U->id === $U->user_id)
 
+                    <i><b style=" color:#000000"> <img src= "{{url('/' .$U->image)}}" style="width:50px; height:50px; float:left; border-radius:50%; margin-right:25px;"> {{  $U->name }} </b></i>&nbsp;&nbsp;
+                    <br>
+                        <i style="font-size=5px">as {{$U->position}}</i>
+@endif
+@endforeach
                         {{--<label class="col-md-4 control-label">{{$insert->title}}</label>--}}
                         {{--<label class="col-md-4 control-label">{{$insert->caption}}</label>--}}
                         {{--<label class="col-md-4 control-label">{{$insert->price}}</label>--}}
                         {{--<label class="col-md-4 control-label">{{$insert->category}}</label>--}}
                         <h3>{{$insert->title}}</h3>
+                       
+                        <img src="{{url('/'.$insert->photo)}}" style="width:570px; height:300px;">
+                        <br>
                         <h4>{{$insert->caption}}</h4>
-                        <h4>Rp. {{$insert->price}}</h4>
+                        <h4>{{$insert->location}}</h4>
                         <h4>{{$insert->category}}</h4>
-                        <img src="{{url('/'.$insert->photo)}}" style="width:600px; height:400px;">
-
-
                     </div>
 
                     @guest
 {{--pembagian role pada cart jadi admin bisa mendelte cart dan add to cart sedangkan member hanya bisa add saja tidak bisa melakukan delete--}}
                     @else
-                        @if(Auth::user()->id=='1')
-                            <a class="btn btn-primary" href="{{url('doDelete/'.$insert->id)}}" >Delete</a>
-                            <a class="btn btn-primary" href="{{url('adCart/'.$insert->id)}}" >Add to Cart</a>
+                        @if(Auth::user()->userid_tocompany === $U->userid_tocompany)
+                            <a class="btn btn-primary" href="{{url('doDelete/'.$insert->insert_id)}}" >Delete</a>
+                            <a class="btn btn-primary" href="{{url('/toProposal/'.$insert->insert_id)}}" >Make Proposal</a>
+
                         @else
-                            <a class="btn btn-primary" href="{{url('adCart/'.$insert->id)}}" >Add to Cart</a>
+                            <a class="btn btn-primary" href="{{url('RequestSp/'.$insert->insert_id)}}" >Make Request</a>
+                            
 
                         @endif
 
@@ -61,7 +77,7 @@
                                     </div>
                                 </div>
                                 <!-- @foreach($insert as $value) -->
-                                <input  name="item_id" value="{{$insert->id}}" type="hidden">
+                                <input  name="item_id" value="{{$insert->insert_id}}" type="hidden">
                                 <!-- @endforeach -->
                                 <div class="row" style="padding: 0 10px 0 10px;">
                                     <div class="form-group">
@@ -88,8 +104,8 @@
                        
                                 <span> {{ $comment->comment }} </span>
                                 <div style="margin-left:10px;">
-                                    <a style="cursor: pointer;" id="{{ $comment->id }}" name="{{ Auth::user()->name }}" token="{{ csrf_token() }}" class="reply">Reply</a>&nbsp;
-                                    <a style="cursor: pointer;"  class="delete-comment" href="{{url('doDeleteComment/'.$comment->id)}}">Delete</a>
+                                    <a style="cursor: pointer;" id="{{ $comment->insert_id }}" name="{{ Auth::user()->name }}" token="{{ csrf_token() }}" class="reply">Reply</a>&nbsp;
+                                    <a style="cursor: pointer;"  class="delete-comment" href="{{url('doDeleteComment/'.$comment->insert_id)}}">Delete</a>
                                     <div class="reply-form">
 
                                         <!-- Dynamic Reply form -->
@@ -97,7 +113,7 @@
                                     </div>
                              
                                         
-                                        <div class="well">
+                                     <div class="well">
                                        
                                                  <div class="reply-to-reply-form">
                                           @foreach($reply as $rep)
@@ -109,23 +125,25 @@
                                             <br>
                                             <br>
                                             </div>
-                              @endif
-                                       @endforeach 
+                                    @endif
+                                          @endforeach 
                                                  <form id="comment-form" method="post" action="{{ url('/RepComment') }}" >
                                                         {{ csrf_field() }}
                                                         <input type="hidden" name="comment_id" value=" {{$comment->cmntid}}" >
                                                         <input type="hidden" name="user_id" value="{{ Auth::user()->id }}" >
+
                                                         <div class="row" style="padding: 10px;">
                                                             <div class="form-group">
                                                                 <textarea class="form-control" name="reply" placeholder="Write something" style="width:500;height:100%;"></textarea>
                                                             </div>
                                                         </div>
+
                                                         <!-- @foreach($insert as $value) -->
                                                      
                                                         <!-- @endforeach -->
                                                         <div class="row" style="padding: 0 10px 0 10px;">
                                                             <div class="form-group">
-                                                                <input type="submit" class="btn btn-primary btn-lg" style="width: 50px; height: 10px;" name="submit">
+                                                                <input type="submit" class="btn btn-primary btn-lg" style="width: 100% " name="submit">
                                                             </div>
                                                         </div>
                                                  </form>
@@ -145,6 +163,19 @@
             </div>
         </div>
     </div>
+
+    <script>
+var close = document.getElementsByClassName("closebtn");
+var i;
+
+for (i = 0; i < close.length; i++) {
+  close[i].onclick = function(){
+    var div = this.parentElement;
+    div.style.opacity = "0";
+    setTimeout(function(){ div.style.display = "none"; }, 600);
+  }
+}
+</script>
 @endsection
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">

@@ -16,15 +16,25 @@
 
                                 <h2>{{ $user->name }}'s Profile</h2>
                             </div>
-                            <label>Update Profile Image</label>
+                            <label>Update Profile </label>
 
 
 
                             <div class="form-group{{ $errors->has('id') ? ' has-error' : '' }}">
-                                <label for="id" class="col-md-4 control-label">Id Image</label>
+                                <label for="id" class="col-md-4 control-label"></label>
 
                                 <div class="col-md-6">
-                                    <input id="id" type="" class="form-control" readonly="readonly" name="id" value="{{$user->id}}" required autofocus>
+                                    <input id="id" type="hidden" class="form-control" readonly="readonly" name="id" value="{{$user->id}}" required autofocus>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                
+                            <label for="user_code" class="col-md-4 control-label">Code</label>
+
+                                <div class="col-md-6">
+                                    <input id="user_code" type="text" class="form-control" readonly="readonly" name="user_code" value="{{$user->user_code}}" required autofocus>
 
                                 </div>
                             </div>
@@ -56,13 +66,14 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="form-group{{ $errors->has('position') ? ' has-error' : '' }}">
-                            <label for="position" class="col-md-4 control-label">Position</label>
+                            <div class="form-group{{ $errors->has('position_id') ? ' has-error' : '' }}">
+                            <label for="position_id" class="col-md-4 control-label">Position</label>
 
                                 <div class="col-md-6">
 
-                                    <select class="form-control" id="type" name="position">
-                                        <option>-Choose Position-</option>
+                                    <select class="form-control" id="type" name="position_id">
+                                       
+                                       
                                         @foreach($position as $p)
                                         <option value="{{$p->id_position}}">{{$p->position}}</option>
                                         @endforeach
@@ -70,9 +81,6 @@
                                     </select>
                                 </div>
                             </div>
-
-
-
 
                             <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
                                 <label for="password" class="col-md-4 control-label">Password</label>

@@ -23,7 +23,10 @@ class CreateUsersTable extends Migration
 
             $table->string('gender');
             $table->text('image');
-            $table->integer('position_id')->NUllable()->unsigned();
+            $table->integer('position_id')->nullable();
+            $table->integer('userid_tocompany')->nullable();
+            $table->string('user_code');
+            
             $table->rememberToken();
             $table->timestamps();
         });

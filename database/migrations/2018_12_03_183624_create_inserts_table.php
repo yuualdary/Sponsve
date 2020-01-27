@@ -15,7 +15,7 @@ class CreateInsertsTable extends Migration
     {
         //Insert table untuk memasukkan gambar
         Schema::create('inserts', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('insert_id');
             $table->integer('user_id')->unsigned();
             $table->string('title');
             $table->text('caption');

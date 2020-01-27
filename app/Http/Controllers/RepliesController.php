@@ -38,7 +38,7 @@ class RepliesController extends Controller
         if (Auth::check()) {
             Reply::create([
                 'comment_id' => $request->input('comment_id'),
-                'reply' => $request->input('relpy'),
+                'reply' => $request->input('reply'),
                 'user_id' => Auth::user()->id
             ]);
 

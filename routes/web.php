@@ -52,13 +52,14 @@ Route::get('/adCart/{id}','HomeController@adCart');
 Route::get('/cartview','HomeController@cartView');
 //
 
-Route::get('/detail/{id}','cobaController@detail');
+Route::get('/detail/{insert_id}','cobaController@detail');
 
 //Update delete view user melalui admin
 Route::get('/updUser/{id}','HomeController@updUser');
+
 Route::get('/doUserDelete/{id}','HomeController@deleteUser');
 Route::post('/updateUser', 'HomeController@updateUser');
-Route::get('/viewuser','HomeController@viewedituser');
+Route::get('/viewuser','proposalController@viewAllProposal');
 //
 
 //untuk UI
@@ -90,5 +91,34 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 
+//comment Reply
+Route::post('/RepComment','HomeController@RepComment');
+//Submit proposal
+Route::post('/addProposal','proposalController@addProposal');
+Route::get('toProposal/{insert_id}','proposalController@viewProposal');
 
-Route::post('/RepComment','HomeController@RepComment');  
+//MasterData
+
+Route::post('/addData','MasterController@addData');
+Route::get('/MasterDataInput','MasterController@ViewFormMaster');
+
+//proposal
+Route::get('toDetailPropo/{proposal_id}','proposalController@replyProposal');
+Route::post('rejectProposal','proposalController@rejectProposal');
+Route::get('toDetailPropo2/{proposal_id}','proposalController@viewEditProposal');
+Route::get('RequestSp/{insert_id}','ProposalController@RequestSponsor');
+
+//View Company
+
+Route::get('ProfileCompany','CompanyController@viewCompany');
+Route::post('/addCompany','CompanyController@createCompany');
+Route::get('toCompanyDet/{company_id}','CompanyController@viewDetailCompany');
+Route::get('/viewListCompany','CompanyController@viewListOfCompany');
+Route::post('editCompany','CompanyController@EditCompanyData');
+Route::post('addMember','CompanyController@listCompanyMember');
+Route::get('deleteUser/{id}','CompanyController@deleteUser');
+Route::get('setPosition/{id}','CompanyController@setPosition');
+
+//Request
+Route::get('RequestList/{id}','RequestorController@requestList');
+Route::get('toCompanyDet/{company_id}','CompanyController@viewDetailCompany');

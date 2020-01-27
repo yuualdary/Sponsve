@@ -154,10 +154,12 @@ class HomeController extends Controller
     {
         //view detail yang menampilkan data yang sudah di input
         $insert = insert::find($id);
+        
+        
         $comment = DB::table('comment')
                     ->join('insert', 'insert.id','=','comment.item_id')
                     ->join('comment', 'comment.id','=','reply.comment_id')
-                    ->where('comment.item_id','=','insert.id','AND','comment.item_id','=','reply.comment_id')
+                    ->where([['comment.item_id','=','insert.id'],['comment.item_id','=','reply.comment_id'],])
                     ->get();
 
         
@@ -172,12 +174,13 @@ class HomeController extends Controller
         
         return view('userupdate',compact('user'));
     }
-    public function viewedituser()
-    {
-        $user = user::all();
+    // public function viewedituser()
+    // {
+    //     // $user = user::all();
+    //     $getAlldata=DB::table
        
-        return view('viewuser',compact('user'));
-    }
+    //     return view('viewuser',compact('user'));
+    // }
     //
 
 
@@ -244,8 +247,15 @@ class HomeController extends Controller
         // ->join('positions','users.position_id','=','positions.id')
         // ->select('users.*','positions.position')
         // ->get();
+
+        // $position=DB::table('users')
+        //             ->join('positions','positions.id_position','=','users.position_id')
+        //             ->get();
+        $position=DB::table('positions')
+                ->where('positions.id_position','=',Auth::user()->position_id)
+                ->get();
        
-        $position=Position::all();
+        
         return view('profile', array('user' => Auth::user()),compact('position') );
     
 
@@ -291,7 +301,7 @@ class HomeController extends Controller
         }
         
 //        DB::table('users')->where('id', $user_id)->update($request->except('_token'));
-            $user->position_id=$request->position;
+            $user->position_id=$request->position_id;
          
             $user->save();
             return redirect('/');
@@ -448,7 +458,8 @@ class HomeController extends Controller
 
         $reply->save();
         // return response()->json();
-        return back();
+        return \App::make('redirect')->back()->with('flash_success', 'Thank you,!');
+
 
 
 
