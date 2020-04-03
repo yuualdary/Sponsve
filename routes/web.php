@@ -1,4 +1,5 @@
 <?php
+use App\User;
 
 ///*
 //|--------------------------------------------------------------------------
@@ -16,19 +17,21 @@
 //});
 //route::get('/content2','HomeController@content2');
 
-//product
-route::post('insertProduct','HomeController@insertProduct');
+//event
+route::post('eventProduct','HomeController@eventProduct');
 route::get('/input','HomeController@input');
 Route::post('/doUpdate','HomeController@doUpdate');
-Route::get('/upd/{id}','HomeController@upd');
+Route::get('/updateEvent/{event_id}','EventController@updEvent');
 Route::get('/doDelete/{id}','HomeController@deleteProduct');
-Route::get('/view','HomeController@view');
+Route::get('/view', 'EventController@view');
 Route::get('/viewup','HomeController@viewup');
 Route::get('/viewdel','HomeController@viewdel');
+Route::post('/editEvent','EventController@editEvent');
+Route::get('/downloadPropo/{event_id}','EventController@downloadFile');
 
 //category
 route::get('/inputcotegory','HomeController@inputcotegory');
-route::post('insertCategory','HomeController@insertCategory');
+route::post('eventCategory','HomeController@eventCategory');
 Route::get('/viewupCateg','HomeController@viewupCateg');
 Route::get('/viewdelCategory','HomeController@viewdelCategory');
 Route::get('/updcategory/{id}','HomeController@updcategory');
@@ -38,7 +41,9 @@ Route::get('/deleteCategory/{id}','HomeController@deleteCategory');
 
 //comment
 Route::resource('/comments','commentController');
-Route::get('/doDeleteComment/{id}','HomeContoller@deleteComment');
+Route::get('/deleteComment/{cmntid}','commentController@deleteComment');
+Route::get('/deleteReplies/{replies_id}','commentController@deleteReplies');
+
 //s
 
 //replies
@@ -47,12 +52,12 @@ Route::resource('/replies','repliesController');
 //
 
 //cart
-Route::post('/insertToCart','HomeController@insertToCart');
+Route::post('/eventToCart','HomeController@eventToCart');
 Route::get('/adCart/{id}','HomeController@adCart');
 Route::get('/cartview','HomeController@cartView');
 //
 
-Route::get('/detail/{insert_id}','cobaController@detail');
+Route::get('/detail/{event_id}','EventController@detail');
 
 //Update delete view user melalui admin
 Route::get('/updUser/{id}','HomeController@updUser');
@@ -63,8 +68,8 @@ Route::get('/viewuser','proposalController@viewAllProposal');
 //
 
 //untuk UI
-Route::get('/doSearch','cobaController@search');
-route::get('/','cobaController@UI');
+Route::get('/doSearch','EventController@search');
+route::get('/','eventController@UI');
 route::get('/image','HomeController@image');
 route::get('/welcome','HomeController@welcome');
 route::get('/login','HomeController@login');
@@ -79,7 +84,8 @@ Route::get('profile', 'HomeController@profile');
 
 //CRUD untuk Position
 route::get('/positioninput','HomeController@PositionInput');
-route::post('/insertPosition','HomeController@insertPosition');
+route::post('/eventPosition','HomeController@eventPosition');
+route::get('/viewDetailUserProile/{id}','userController@userDetail');
 
 //routes auth
 Auth::routes();
@@ -95,7 +101,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/RepComment','HomeController@RepComment');
 //Submit proposal
 Route::post('/addProposal','proposalController@addProposal');
-Route::get('toProposal/{insert_id}','proposalController@viewProposal');
+Route::get('toProposal/{event_id}/{proposal_id}','proposalController@viewProposal');
 
 //MasterData
 
@@ -103,10 +109,14 @@ Route::post('/addData','MasterController@addData');
 Route::get('/MasterDataInput','MasterController@ViewFormMaster');
 
 //proposal
-Route::get('toDetailPropo/{proposal_id}','proposalController@replyProposal');
-Route::post('rejectProposal','proposalController@rejectProposal');
+// Route::get('toDetailPropo/{proposal_id}','proposalController@replyProposal');
 Route::get('toDetailPropo2/{proposal_id}','proposalController@viewEditProposal');
-Route::get('RequestSp/{insert_id}','ProposalController@RequestSponsor');
+// Route::get('toDetailPropo/{proposal_id}/{event_id}', [
+//     'as' => 'toDetailPropo', 'uses' => 'proposalController@remindHelper']);
+
+Route::post('rejectProposal','proposalController@rejectProposal');
+Route::get('toDetailPropo/{proposal_id}','proposalController@replyProposalview');
+Route::post('RequestSp/','ProposalController@RequestSponsor');
 
 //View Company
 
@@ -118,7 +128,39 @@ Route::post('editCompany','CompanyController@EditCompanyData');
 Route::post('addMember','CompanyController@listCompanyMember');
 Route::get('deleteUser/{id}','CompanyController@deleteUser');
 Route::get('setPosition/{id}','CompanyController@setPosition');
+Route::get('toCompanyFromList/{company_id}','CompanyController@viewDetailCompanyFromListRequest');
 
 //Request
 Route::get('RequestList/{id}','RequestorController@requestList');
 Route::get('toCompanyDet/{company_id}','CompanyController@viewDetailCompany');
+Route::get('approveRequest/{Mapping_Req_Id}','RequestorController@approveRequest');
+Route::get('rejectRequest/{Mapping_Req_Id}','RequestorController@rejectRequest');
+
+//log
+
+Route::get('toLogCompany/{company_id}','logUserController@logUserCompany');
+Route::get('/notif', function() {
+    $user = \App\User::first();
+    $user->notify(new \App\Notifications\Daftar);
+});
+
+
+Route::get('/sendEmail','appEmailController@index');
+
+Route::post('/sendChat','chatController@doSendChat');
+
+// Route::get('/testAjax/{id}','chatController@AjaxCoba');
+Route::get('/viewAllRequest','RequestorController@allRequest');
+
+
+//chat pusher 
+
+Route::get('/chatHome','chatsController@index');
+Route::get('/divmessage','chatsController@test');
+
+// Route::get('messages','chatController@fetchMessages');
+// Route::post('messages', 'chatController@sendMessage');
+
+Route::get('messages', 'ChatsController@fetchMessages');
+Route::post('messages', 'ChatsController@sendMessage');
+Route::post('/getReview','requestorController@sendReview');

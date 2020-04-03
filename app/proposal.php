@@ -8,6 +8,8 @@ class proposal extends Model
 
 
 {
+    public $timestamps = false;
+
     protected $primaryKey = 'proposal_id';
     protected $fillable = array(
         'userid_proposal',
@@ -20,9 +22,9 @@ class proposal extends Model
     
 
 
-    public function insert(){
+    public function event(){
 
-        return $this ->hasMany(insert::class,'ptid_proposal','insert_id');
+        return $this ->hasMany(event::class,'ptid_proposal','event_id');
     }
     public function Master()
     {

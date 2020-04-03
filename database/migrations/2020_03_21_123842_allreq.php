@@ -1,0 +1,43 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class Allreq extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        //
+        
+        Schema::create('allreq', function (Blueprint $table) {
+            $table->increments('allreq_id');
+            $table->integer('allreq_userid');
+            $table->integer('allreq__from_eventid');
+            
+            $table->text('chat_value');
+            $table->text('chat_binary')->nullable();
+            $table->date('chat_created_at')->nullable();
+            $table->integer('chat_created_by')->nullable();
+        });
+
+        }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        //
+
+        Schema::dropIfExists('allreq');
+
+    }
+}

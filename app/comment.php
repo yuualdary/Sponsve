@@ -6,13 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class comment extends Model
 {
+    public $timestamps = false;
+
     //fillable untuk coloumn pada inputan comment
 
     protected $fillable = array(
         'name',
         'comment',
-        'user_id',
-        'item_id'
+        'user_commentid',
+        'item_id',
+        'company_commentid'
     );
 
     public function replies(){
@@ -23,9 +26,9 @@ class comment extends Model
 
         return $this->hasMany(user::class,'user_id','cmntid');
     }
-    public function insert(){
+    public function event(){
 
-        return $this ->hasMany(insert::class,'item_id','cmntid');
+        return $this ->hasMany(event::class,'item_id','cmntid');
     }
     
 }

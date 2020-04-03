@@ -22,7 +22,7 @@
                     </div>
 {{--menampilkan product yang sudah dibuat--}}
                     <div class="row mb-5">
-                        @foreach($insert as $i)
+                        @foreach($event as $i)
                         <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                             <div class="block-4 text-center border">
                                 <div class="block-4-text p-4">
@@ -35,11 +35,11 @@
                                   
                                     </figure>
                                   
-                                    <h3><b><a href="{{url('detail/'.$i->insert_id)}}">{{$i->title}}</a></b></h3>
+                                    <h3><b><a href="{{url('detail/'.$i->event_id)}}">{{$i->title}}</a></b></h3>
                                     <p class="mb-0">{{$i->caption}}</p>
-                                    <p class="mb-0">{{$i->category}}</p>
+                                    <p class="mb-0">{{$i->categoryname}}</p>
                                     <p class="text-primary font-weight-bold">{{$i->location}}</p>
-                                    <p class="text-primary font-weight-bold"><a href="{{url('detail/'.$i->insert_id)}}">Show more....</a></p>
+                                    <p class="text-primary font-weight-bold"><a href="{{url('detail/'.$i->event_id)}}">Show more....</a></p>
                                 </div>
                             </div>
                         </div>

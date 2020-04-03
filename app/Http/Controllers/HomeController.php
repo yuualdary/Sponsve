@@ -7,7 +7,7 @@ use App\categories;
 use App\comment;
 use Illuminate\Http\Request;
 use Validator;
-use App\insert;
+use App\event;
 use App\User;
 use Auth;
 use Illuminate\Support\Facades\DB;
@@ -41,7 +41,7 @@ class HomeController extends Controller
 
     public function UI()
     {
-        return view('/UI');
+        return view('UI');
 
     }
     public function image()
@@ -62,7 +62,7 @@ class HomeController extends Controller
     public function input()
     {
         $category = categories::all();
-        return view('input',compact('category'));
+        return view('input',['category'=>$category]);
     }
     public function viewupdate()
     {
@@ -82,89 +82,123 @@ class HomeController extends Controller
 
     }
 
-    public function insertProduct(Request $request)
+    public function eventProduct(Request $request)
     {
-        //insert product yang ingin dimasukkin
-        $validator = Validator::make($request->all(),
-            [
-                'title' => 'required',
-                'caption' => 'required',
-                'photo' => 'required|mimes:jpeg,bmp,png',
-                'location'=>'required',
-                'category'=>'required'
+        //event product yang ingin dimasukkin
+        // $validator = Validator::make($request->all(),
+        //     [
+        //         'title' => 'required',
+        //         'caption' => 'required',
+        //         'photo' => 'required|mimes:jpeg,bmp,png',
+        //         'location'=>'required',
+        //         'event_date'=>'required',
+        //         'category'=>'required'
 
-            ]);
-        if($validator->fails())
-        {
-            return redirect()->back()->withErrors($validator);
-        }
+        //     ]);
+        // if($validator->fails())
+        // {
+        //     return redirect()->back()->withErrors($validator);
+        // }
 
         if($request->hasFile('photo'))
         {
 
             $profileImage=$request->file('photo');
-            $profileImageSaveAsName=time()."-product.".
+            $profileImageSaveAsName=time()."-event.".
                 $profileImage->getClientOriginalExtension();
 
             $upload_path='aset/';
             $filename=$upload_path . $profileImageSaveAsName;
             $success=$profileImage->move($upload_path,$profileImageSaveAsName);
         }
+        
+        if($request->hasFile('propo'))
+        {
 
-        $insert = new Insert();
-        $insert->user_id = Auth::user()->id;
-        $insert->title = $request->title;
-        $insert->caption = $request->caption;
-        $insert->photo = $filename;
-        $insert->location=$request->location;
-        $insert->category=$request->category;
-        $insert->save();
+            $profileImage=$request->file('propo');
+            $profileImageSaveAsName=time()."-propoevent.".
+                $profileImage->getClientOriginalExtension();
+
+            $upload_path='aset/';
+            $filepropo=$profileImageSaveAsName;
+            $success=$profileImage->move($upload_path,$profileImageSaveAsName);
+        }
+
+        $event = new event();
+        $event->user_id = Auth::user()->id;
+        $event->title = $request->title;
+        $event->caption = $request->caption;
+        $event->photo = $filename;
+        $event->event_date=$request->event_date;
+
+        $event->location=$request->location;
+        $event->category=$request->category;
+        $event->propo = $filepropo;
+
+       
+        $event->save();
         return redirect('/view');
     }
     public function view()
     {
         //view dengan tampilan 8 perhalaman yang menggunakan paginate dan compact yang berfungsi sebagai defined variable agar bisa digunakan pada view
-
-        $ins = insert::paginate(8);
-        $insert=DB::table('inserts')
-        ->join('users','users.id',"=",'inserts.user_id')
-        ->get();
-        return view('shop',compact('insert','ins'));
+        if($user = Auth::user())
+        {
+            $ins = event::paginate(8);
+            $event=DB::table('events')
+                    ->join('users','users.id',"=",'events.user_id')
+                    ->join('categories','categories.category_id','=','events.category')
+                    ->get();
+                    
+            return view('shop',compact('event','ins'));
+            
+        }
+        else
+        {
+        $ins = event::paginate(8);
+        $event=DB::table('events')
+                ->join('users','users.id',"=",'events.user_id')
+                ->join('categories','categories.category_id','=','events.category')
+                ->get();
+                
+        return view('shop',compact('event','ins'));
+        }
+      
     }
     public function viewup()
     {
-        $insert = insert::paginate(8);
-        return view('viewupdate',compact('insert'));
+        $event = event::paginate(8);
+        return view('viewupdate',compact('event'));
     }
     public function viewdel()
     {
-        $insert = insert::paginate(8);
-        return view('viewdelete',compact('insert'));
+        $event = event::paginate(8);
+        return view('viewdelete',compact('event'));
     }
     public function upd($id)
     {
         //update dengan fungsi find yang mana update yang berdasarkan id
 
-        $insert = insert::find($id);
+        $event = event::find($id);
         $category = categories::all();
-        return view('update',compact('insert','category'));
+        return view('update',compact('event','category'));
     }
 
     public function detail($id)
     {
         //view detail yang menampilkan data yang sudah di input
-        $insert = insert::find($id);
+        $event = event::find($id);
         
         
         $comment = DB::table('comment')
-                    ->join('insert', 'insert.id','=','comment.item_id')
+                    ->join('event', 'event.id','=','comment.item_id')
                     ->join('comment', 'comment.id','=','reply.comment_id')
-                    ->where([['comment.item_id','=','insert.id'],['comment.item_id','=','reply.comment_id'],])
+                    ->where([['comment.item_id','=','event.id'],['comment.item_id','=','reply.comment_id'],])
                     ->get();
 
         
-        return view('detailimage',compact('insert'));
-        // return view('detailimage',['insert' => $insert, 'id_item' => $id]);
+        return view('detailimage',compact('event'));
+        // return view('detailimage',['event' => $event, 'id_item' => $id]);
     }
 
     //
@@ -186,7 +220,7 @@ class HomeController extends Controller
 
     public function doUpdate(Request $request)
     {
-        //melakukan update pada product yang sudh diinsert
+        //melakukan update pada product yang sudh dievent
 
         $validator = Validator::make($request->all(),
             [
@@ -210,27 +244,27 @@ class HomeController extends Controller
                 $profileImage->getClientOriginalExtension();
 
             $upload_path='aset/';
-            $filename=$upload_path . $profileImageSaveAsName;
+            $filename=$profileImageSaveAsName;
             $success=$profileImage->move($upload_path,$profileImageSaveAsName);
         }
 
-        $insert = Insert::find($request->id);
-//        dd($insert);
-        $insert->user_id = Auth::user()->id;
-        $insert->title = $request->title;
-        $insert->caption = $request->caption;
-        $insert->photo = $filename;
-        $insert->price=$request->price;
-        $insert->category=$request->category;
+        $event = event::find($request->id);
+//        dd($event);
+        $event->user_id = Auth::user()->id;
+        $event->title = $request->title;
+        $event->caption = $request->caption;
+        $event->photo = $filename;
+        $event->price=$request->price;
+        $event->category=$request->category;
 
-        $insert->save();
+        $event->save();
         return redirect('/view');
     }
 
     public function deleteProduct($id)
     {
         //melakukan delete product
-        Insert::destroy($id);
+        event::destroy($id);
         return redirect('/view');
     }
     public function deleteUser($id)
@@ -355,7 +389,7 @@ class HomeController extends Controller
     {
         return view('inputcotegory');
     }
-    public function insertCategory(Request $request)
+    public function eventCategory(Request $request)
     {
 
         $validator = Validator::make($request->all(),
@@ -375,7 +409,7 @@ class HomeController extends Controller
     //CRUD Category
     public function deleteCategory($id)
     {
-        Insert::destroy($id);
+        event::destroy($id);
         return redirect('/view');
     }
     public function viewdelCategory()
@@ -431,7 +465,7 @@ class HomeController extends Controller
         
         return view('positioninput');
     }
-    public function insertPosition(Request $request)
+    public function eventPosition(Request $request)
     {
 
         $validator = Validator::make($request->all(),
@@ -450,11 +484,15 @@ class HomeController extends Controller
     }
     public function RepComment(request $request)
     {   
-        
+    
+       date_default_timezone_set('Asia/Jakarta');
+        $currtime=date('Y-m-d H:i');
+        $currDate=date('Y-m-d', strtotime($currtime. ' + 7 days'));
         $reply = new reply();
         $reply->comment_id=$request->comment_id;
-        $reply->user_id=auth::user()->id;
+        $reply->user_replyid=auth::user()->id;
         $reply->reply=$request->reply;
+        $reply->rep_created_at=$currtime;
 
         $reply->save();
         // return response()->json();
@@ -471,7 +509,7 @@ class HomeController extends Controller
       
         $reply = DB::table('reply')
                     ->join('comment', 'comment.id','=','reply.comment_id')
-                    ->where('comment.item_id','=','insert.id')
+                    ->where('comment.item_id','=','event.id')
                     ->get();
 
 

@@ -20,8 +20,9 @@ class CreateCartsTable extends Migration
             $table->string('title');
             $table->string('caption');
             $table->text('photo');
-            $table->integer('price');
-            $table->string('category');
+            $table->date('event_date');
+       
+            $table->integer('category');
             $table->timestamps();
         });
     }

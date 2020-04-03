@@ -5,10 +5,10 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Insert Category</div>
+                    <div class="panel-heading">event Category</div>
 
                     <div class="panel-body">
-                        <form action="{{url('insertCategory')}}" method="post" enctype="multipart/form-data">
+                        <form action="{{url('eventCategory')}}" method="post" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 
                                                 {{--melalukan input category--}}

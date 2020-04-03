@@ -7,6 +7,8 @@ use App\position;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\user;
 
 class userController extends Controller
 {
@@ -33,4 +35,17 @@ class userController extends Controller
         return view('profile', array('user' => Auth::user()) );
 
     }
+
+    public function userDetail($id){
+        
+        $userDetail = DB::table('users')
+                    ->join('positions','positions.id_position','=','users.position_id')
+                    ->join('companies','companies.company_id','=','users.userid_tocompany')
+                    ->where([['users.id','=',$id]])
+                    ->get();
+
+        return view('userDetail',['userDetail'=>$userDetail]);
+    }
+
+
 }

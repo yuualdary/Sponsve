@@ -9,6 +9,6 @@ class categories extends Model
     public function Products()
     {
         //penggunaan penghubung antara category dengan id user
-        return $this->hasMany(insert::class,'category_id','id');
+        return $this->hasMany(event::class,'category_id','id');
     }
 }

@@ -19,9 +19,12 @@ class CreateCommentsTable extends Migration
             $table->increments('cmntid');
             $table->string('name');
             $table->text('comment');
-            $table->integer('user_id');
+            $table->integer('user_commentid');
             $table ->integer('item_id');
-            $table->timestamps();
+            $table ->integer('company_commentid');
+            $table->date('comment_created_at')->nullable();
+            $table->date('comment_modified_at')->nullable();
+            $table->integer('comment_modified_by')->nullable();
         });
     }
 

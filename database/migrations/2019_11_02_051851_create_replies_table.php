@@ -16,9 +16,11 @@ class CreateRepliesTable extends Migration
         Schema::create('replies', function (Blueprint $table) {
             $table->increments('replies_id');
             $table->integer('comment_id'); 
-            $table->integer('user_id');
+            $table->integer('user_replyid');
             $table->string('reply');
-            $table->timestamps();
+            $table->date('rep_created_at')->nullable();
+            $table->date('rep_modified_at')->nullable();
+            $table->integer('rep_modified_by')->nullable();
         });
     }
 

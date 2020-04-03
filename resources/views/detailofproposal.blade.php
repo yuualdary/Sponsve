@@ -1,12 +1,13 @@
 @extends('welcome')
 
 @section('content')
+<br>
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     <div class="panel-heading">Proposal From </div>
-{{--melakukan insert pada product--}}
+{{--melakukan event pada product--}}
                     <div class="panel-body">
                         <form action="{{url('/rejectProposal')}}" method="post" enctype="multipart/form-data">
                                 {{ csrf_field() }}

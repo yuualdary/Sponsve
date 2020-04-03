@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Http\Controllers\Auth\nullable;
+use Illuminate\Support\Facades\Input;
 
 
 
@@ -55,6 +56,8 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
+
+
     protected function validator(array $data)
     {
         return Validator::make($data, [
@@ -74,7 +77,14 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+
+        if (User::where('email', '=', Input::get('email'))->exists()) {
+            // user found
+            return back();
+         }else{
+
         $request = request();
+
         $currName=$data['name'];
 
         $profileImage = $request->file('image');
@@ -106,6 +116,7 @@ class RegisterController extends Controller
             'user_code'=>$getUserCode
             
         ]);
+        }
 
 
 

@@ -15,7 +15,7 @@ class MasterController extends Controller
         
         return view('positioninput');
     }
-    public function insertPosition(Request $request)
+    public function eventPosition(Request $request)
     {
 
         $validator = Validator::make($request->all(),
@@ -36,7 +36,7 @@ class MasterController extends Controller
     //CRUD Position
     public function deletePosition($id)
     {
-        Insert::destroy($id);
+        event::destroy($id);
         return redirect('/view');
     }
     public function viewdelPosition()

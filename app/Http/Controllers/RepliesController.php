@@ -39,7 +39,7 @@ class RepliesController extends Controller
             Reply::create([
                 'comment_id' => $request->input('comment_id'),
                 'reply' => $request->input('reply'),
-                'user_id' => Auth::user()->id
+                'user_replyid' => Auth::user()->id
             ]);
 
             return redirect()->route('home')->with('success','Reply added');

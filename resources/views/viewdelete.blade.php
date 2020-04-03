@@ -21,7 +21,7 @@
                     </div>
 
                     <div class="row mb-5">
-                        @foreach($insert as $i)
+                        @foreach($event as $i)
                             <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                                 <div class="block-4 text-center border">
                                     <div class="block-4-text p-4">
@@ -40,7 +40,7 @@
                     </div>
 
                     <p>
-                        {{$insert->appends([request()->query])->links()}}
+                        {{$event->appends([request()->query])->links()}}
                     </p>
 
                     </div>

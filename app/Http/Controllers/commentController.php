@@ -7,7 +7,9 @@ use App\Comment;
 use App\Reply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\insert;
+use App\event;
+use Illuminate\Support\Facades\DB;
+
 
 class commentController extends Controller
 {
@@ -15,15 +17,15 @@ class commentController extends Controller
 
     public function index()
     {
-        {    $insert = insert::find($id);
-            $comment = DB::table('comment')
-                        ->join('insert', 'insert.id','=','comment.item_id')
-                        ->where('comment.item_id','=','insert.id')
+        $event = event::find($id);
+            $comment = DB::table('comments')
+                        ->join('events', 'events.id','=','comments.item_id')
+                        ->where('comments.item_id','=','events.id')
                         ->get();
     
             
-            return view('detailimage',compact('insert'));
-        }
+            return view('detailimage',compact('event'));
+        
     
 
 
@@ -35,15 +37,17 @@ class commentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {     {    $insert = insert::find($id);
+    {   
+        
+        $event = event::find($id);
         $comment = DB::table('comment')
-                    ->join('inserts', 'inserts.img_id','=','comment.item_id')
-                    ->where('comment.item_id','=','insert.img_id')
+                    ->join('events', 'events.img_id','=','comment.item_id')
+                    ->where('comment.item_id','=','event.img_id')
                     ->get();
 
         
-        return view('detailimage',compact('insert'));
-    }
+        return view('detailimage',compact('event'));
+    
 
 
         //
@@ -58,14 +62,17 @@ class commentController extends Controller
     public function store(Request $request)
     {
 
-        $cobaiditem = $request->input('item_id');
-        // dd($cobaiditem);    
+        $cobaiditem = $request->input('company_commentid');
+        
+       
         if (Auth::check()) {
             Comment::create([
                 'name' => Auth::user()->name,
                 'comment' => $request->input('comment'),
-                'user_id' => Auth::user()->id,
+                'user_commentid' => Auth::user()->id,
                 'item_id'=>$request->input('item_id'),
+                'company_commentid'=>$request->input('company_commentid'),
+                
 
 
             ]);
@@ -86,14 +93,15 @@ class commentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Comment $comment)
-    {    $insert = insert::find($id);
+    {   
+        $event = event::find($id);
         $comment = DB::table('comment')
-                    ->join('insert', 'insert.id','=','comment.item_id')
-                    ->where('comment.item_id','=','insert.id')
+                    ->join('event', 'event.id','=','comment.item_id')
+                    ->where('comment.item_id','=','event.id')
                     ->get();
 
         
-        return view('detailimage',compact('insert'));
+        return view('detailimage',compact('event'));
     }
 
     /**
@@ -105,14 +113,14 @@ class commentController extends Controller
     public function edit(Comment $comment)
     {
         //
-        {    $insert = insert::find($id);
+        {    $event = event::find($id);
             $comment = DB::table('comment')
-                        ->join('insert', 'insert.id','=','comment.item_id')
-                        ->where('comment.item_id','=','insert.id')
+                        ->join('event', 'event.id','=','comment.item_id')
+                        ->where('comment.item_id','=','event.id')
                         ->get();
     
             
-            return view('detailimage',compact('insert'));
+            return view('detailimage',compact('event'));
         }
     
     }
@@ -156,5 +164,38 @@ class commentController extends Controller
             }
 
         }
+    }
+
+    public function deleteComment($cmntid)
+    {
+
+       
+        $deleteReplies=DB::table('replies')
+                       ->where([['replies.comment_id','=',$cmntid]])
+                       ->delete();
+
+        $deleteComment=DB::table('comments')
+                        ->where([['comments.cmntid','=',$cmntid]]) 
+                        ->delete();
+        return back()->with('successDelComment','success');
+        
+        
+
+    }
+
+    
+    public function deleteReplies($replies_id)
+    {
+
+       
+        $deleteReplies=DB::table('replies')
+                       ->where([['replies.replies_id','=',$replies_id]])
+                       ->delete();
+
+      
+        return back()->with('successDelReplies','success');
+        
+        
+
     }
 }

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\AddYourEmployeePost;
 use Image;
 use Illuminate\Support\Facades\Input;
+use App\loguser;
 
 class CompanyController extends Controller
 {
@@ -24,6 +25,21 @@ class CompanyController extends Controller
         // {
         //     return redirect()->back()->withErrors($validator);
         // }
+
+
+        
+        $validator = Validator::make($request->all(),
+            [
+                'company_name' => 'required|unique:companies',
+                'website_address' => 'required|unique:companies',
+                
+
+            ]);
+        if($validator->fails())
+        {
+            return redirect()->back()->withErrors($validator);
+        }
+
         if($request->hasFile('company_photo'))
             {
 
@@ -34,6 +50,15 @@ class CompanyController extends Controller
                 $Companyfile=$upload_path . $profileImageSaveAsName;
                 $success=$profileImage->move($upload_path,$profileImageSaveAsName);
             }
+            $adminPos=DB::table('positions')
+            ->where([['position','=','Admin']])
+            ->get();
+
+            foreach($adminPos as $aP){
+
+                 $admin= $aP->id_position;
+            }
+
         //Company Create New
                 $company =new Company();
                 $company->company_name = $request->company_name;
@@ -46,6 +71,7 @@ class CompanyController extends Controller
 
         $currUser= user::find(Auth::user()->id);
         $currUser->userid_tocompany=$company->company_id;
+        $currUser->position_id=$admin;
         $currUser->save();
         //Dipisah karna getclientoriginalextension() tidak bisa menerima data kosong. Next time coba dibuat nullable()
         if($request->hasFile('company_photo'))
@@ -67,11 +93,13 @@ class CompanyController extends Controller
                     ->where([['position','=','Admin']])
                     ->get();
 
+
          foreach($adminPos as $aP){
 
             $admin= $aP->id_position;
         }
         
+       
 
         $compDet= DB::table('companies')
         ->join('users','users.userid_tocompany','=','companies.company_id')
@@ -83,11 +111,12 @@ class CompanyController extends Controller
                  ->where([['companies.company_id','=',$company_id]])
                  ->get();
        
+         
         $owner= DB::table('companies')
-        ->join('users','users.userid_tocompany','=','companies.company_id')
-        ->join('positions','positions.id_position','=','users.position_id')     
-        ->where([['positions.position','=','Admin']])
-        ->get();
+                 ->join('users','users.userid_tocompany','=','companies.company_id')
+                 ->join('positions','positions.id_position','=','users.position_id')     
+                 ->where([['positions.position','=','Admin'],['companies.company_id','=',$company_id]])
+                 ->get();
 
         //
         // to get all user to be selected when add member
@@ -99,13 +128,62 @@ class CompanyController extends Controller
         $getListMember= DB::table('users')
                      ->join('companies','companies.company_id','=','users.userid_tocompany')
                      ->join('positions','positions.id_position','=','users.position_id')
+                     ->where([['users.userid_tocompany','=',$company_id]])
                      ->orderBy('positions.position', 'asc')
                      ->get();
-        
-       
-        return view('DetailOfProfileCompany',['compDet'=>$compDet,'getAlluser'=>$getAlluser,'testVar'=>$company_id,'getListMember'=>$getListMember,'admin'=>$admin,'owner'=>$owner,'getdata'=>$getdata,'reqDet'=>$reqDet]);
+        $checkCurrId= DB::table('users')
+                     ->join('companies','companies.company_id','=','users.userid_tocompany')
+                     ->join('positions','positions.id_position','=','users.position_id')
+                     ->where([['users.userid_tocompany','=',$company_id],['users.id','=',Auth::user()->id]])
+                     ->get();
+        foreach($checkCurrId as $cId)
+        {   
+            $checkCurrIdExistInRecord=$cId->id;
+            
+
+        }
 
         
+      
+            $logUserCompany=DB::table('logusers')
+                            ->join('users','users.id','=','logusers.log_touserid')
+                            ->where([['logusers.log_fromcompanyid','=',$company_id]])
+                            ->orderby('logusers.log_id','asc')
+                            ->get();  
+            
+            $comments = DB::table('comments')
+                        ->join('users', 'users.id','=','comments.user_commentid')
+                        ->where('comments.company_commentid','=',$company_id)                    
+                        ->get();
+
+            $reply = DB::table('replies')
+                        ->join('comments', 'comments.cmntid','=','replies.comment_id')
+                        ->join('users', 'users.id','=','replies.user_replyid')
+                         ->get();
+       
+        return view('DetailOfProfileCompany',['compDet'=>$compDet,'getAlluser'=>$getAlluser,'testVar'=>$company_id,'getListMember'=>$getListMember,'admin'=>$admin,'owner'=>$owner,'getdata'=>$getdata,'reqDet'=>$reqDet,'checkCurrIdExistInRecord'=>$checkCurrIdExistInRecord,'logUserCompany'=>$logUserCompany,'comments'=>$comments,'reply'=>$reply]);
+
+        
+    }
+
+
+    public function viewDetailCompanyFromListRequest($company_id)
+    {
+        
+        $compDet= DB::table('companies')
+                
+                ->where([['companies.company_id','=',$company_id]])
+                ->get();
+
+        
+        $owner= DB::table('companies')
+                ->join('users','users.userid_tocompany','=','companies.company_id')
+                ->join('positions','positions.id_position','=','users.position_id')     
+                ->where([['positions.position','=','Admin'],['companies.company_id','=',$company_id]])
+                ->get();
+
+
+        return view('DetailCompanyFromList',['compDet'=>$compDet,'owner'=>$owner]);
     }
     public function AddYourEmployee()
     {
@@ -129,7 +207,7 @@ class CompanyController extends Controller
         }
         $getListOfCompany= DB::table('companies')
                         ->join('users','users.userid_tocompany','=','companies.company_id')
-                        ->where([['users.position_id','=',$pos],])
+                        ->where([['users.position_id','=',$pos],['users.userid_tocompany','=',Auth::user()->userid_tocompany]])
                         ->get();
         
        
@@ -224,12 +302,28 @@ class CompanyController extends Controller
 
     public function deleteUser(Request $request)
     {
-        
+        date_default_timezone_set('Asia/Jakarta');
+        $currtime=date('Y-m-d H:i');
+
+    
+
         $listUser=user::find($request->id);
+        $getCurrentCompanyID=$request->userid_tocompany;
         
         $listUser->userid_tocompany=null;
       
         $listUser->save();
+        $logMessage=Auth::user()->name." Remove ".$listUser->name." From Company";
+        $logCompany= new loguser();
+        $logCompany->log_message=$logMessage;
+        $logCompany->log_touserid=Auth::user()->id;
+        $logCompany->log_createdby=Auth::user()->id;
+        $logCompany->log_createdon=$currtime;
+        $logCompany->log_fromcompanyid=Auth::user()->userid_tocompany;
+
+       
+
+        $logCompany->save();
 
         return back()->with('successDel','Success delete member .');
 
@@ -238,19 +332,51 @@ class CompanyController extends Controller
 //buat form baru dibawah company detail, dimana mendapatkan current company id dan masukkan id user baru 
     public function listCompanyMember(Request $request)
     {   
+
+        date_default_timezone_set('Asia/Jakarta');
+        $currtime=date('Y-m-d H:i');
+        $staffPos=DB::table('positions')
+        ->where([['position','=','Staff']])
+        ->get();
+
+        foreach($staffPos as $sP){
+        
+            $staff= $sP->id_position;
+        }
         $company=company::find($request->company_id);
         $getCurrentCompanyID=$request->company_id;
         
         $user=user::find($request->id);
+        $user->position_id=$staff;
         $user->userid_tocompany=$getCurrentCompanyID;
         
 
         $user->save();  
+        $logMessage=Auth::user()->name." Added ".$user->name." To Company";
+        $logCompany= new loguser();
+        $logCompany->log_message=$logMessage;
+        $logCompany->log_touserid=Auth::user()->id;
+        $logCompany->log_createdby=Auth::user()->id;
+        $logCompany->log_fromcompanyid=$getCurrentCompanyID;
+        $logCompany->log_createdon=$currtime;
+        $logCompany->save();
+
+        $logCompany2= new loguser();
+        $logMessage2=$user->name." Joined To Company";
+        $logCompany2= new loguser();
+        $logCompany2->log_message=$logMessage2;
+        $logCompany2->log_touserid=$user->id;
+        $logCompany2->log_createdby=Auth::user()->id;
+        $logCompany2->log_fromcompanyid=$getCurrentCompanyID;
+
+        $logCompany2->log_createdon=$currtime;
+        $logCompany2->save();
 
         return back()->with('successAdd','Success edit company .');
         
 
     }
+
 
   
 }

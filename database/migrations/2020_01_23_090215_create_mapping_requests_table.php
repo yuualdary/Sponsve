@@ -13,15 +13,19 @@ class CreateMappingRequestsTable extends Migration
      */
     public function up()
     {
+        
         Schema::create('mapping_requests', function (Blueprint $table) {
             $table->increments('Mapping_Req_Id');
             $table->integer('req_sponsorid');
             $table->integer('req_userid');
             $table->integer('req_status');
             $table->integer('req_fromcompany');
-            
-            
-            $table->timestamps();
+            $table->integer('req_fromevent');
+            $table->date('req_created_at')->nullable();
+            $table->date('req_modified_at')->nullable();
+            $table->integer('req_modified_by')->nullable();
+
+        
         });
     }
 

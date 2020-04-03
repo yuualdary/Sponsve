@@ -5,10 +5,10 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Insert Your Picture</div>
-{{--melakukan insert pada product--}}
+                    <div class="panel-heading">event Your Picture</div>
+{{--melakukan event pada product--}}
                     <div class="panel-body">
-                        <form action="{{url('insertProduct')}}" method="post" enctype="multipart/form-data">
+                        <form action="{{url('eventProduct')}}" method="post" enctype="multipart/form-data">
                                 {{ csrf_field() }}
 
 
@@ -42,7 +42,19 @@
                             </div>
 
 
+                            <div class="form-group{{ $errors->has('event_date') ? ' has-error' : '' }}">
+                                <label for="event_date" class="col-md-4 control-label">Event Date</label>
 
+                                <div class="col-md-6">
+                                    <input id="event_date" type="date" class="form-control" name="event_date" required>
+
+                                    @if ($errors->has('event_date'))
+                                        <span class="help-block">
+                                        <strong>{{ $errors->first('event_date') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
                             <div class="form-group{{ $errors->has('photo') ? ' has-error' : '' }}">
                                 <label for="photo" class="col-md-4 control-label">image</label>
                                <div class="col-md-6">
@@ -55,6 +67,8 @@
                                     @endif
                                 </div>
                            </div>
+
+
 
                             <div class="form-group{{ $errors->has('location') ? ' has-error' : '' }}">
                                 <label for="location" class="col-md-4 control-label">Location</label>
@@ -69,18 +83,34 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="form-group{{ $errors->has('category') ? ' has-error' : '' }}">
+
+                            <div class="form-group{{ $errors->has('propo') ? ' has-error' : '' }}">
+                                <label for="propo" class="col-md-4 control-label">Proposal</label>
+                               <div class="col-md-6">
+                                   <input id="propo" type="file" class="form-control" name="propo" required>
+
+                                   @if ($errors->has('propo'))
+                                        <span class="help-block">
+                                        <strong>{{ $errors->first('propo') }}</strong>
+                                  </span>
+                                    @endif
+                                </div>
+                           </div>
+
+                           
+                            <div class="form-group">
                                 <label for="category" class="col-md-4 control-label">category</label>
 
 
 
                                 <div class="col-md-6">
-                                    <select class="form-control" id="type" name="category">
-                                        <option>--Choose Category--</option>
-                                        @foreach($category as $c)
-                                            <option>{{$c->categoryname}}</option>
-                                        @endforeach
+                                    <select class="form-control" id="category" name="category">
+                                
+                                    @foreach($category as $c)
+                                            <option value="{{$c->category_id}}">{{$c->categoryname}}</option>
+                                            @endforeach
                                     </select>
+                    
                                 </div>
                             </div>
 

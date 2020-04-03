@@ -15,8 +15,8 @@
                        
                                 <span> {{ $comment->comment }} </span>
                                 <div style="margin-left:10px;">
-                                    <a style="cursor: pointer;" id="{{ $comment->insert_id }}" name="{{ Auth::user()->name }}" token="{{ csrf_token() }}" class="reply">Reply</a>&nbsp;
-                                    <a style="cursor: pointer;"  class="delete-comment" href="{{url('doDeleteComment/'.$comment->insert_id)}}">Delete</a>
+                                    <a style="cursor: pointer;" id="{{ $comment->event_id }}" name="{{ Auth::user()->name }}" token="{{ csrf_token() }}" class="reply">Reply</a>&nbsp;
+                                    <a style="cursor: pointer;"  class="delete-comment" href="{{url('doDeleteComment/'.$comment->event_id)}}">Delete</a>
                                     <div class="reply-form">
 
                                         <!-- Dynamic Reply form -->
@@ -47,7 +47,7 @@
                                                                 <textarea class="form-control" name="reply" placeholder="Write something" style="width:500;height:100%;"></textarea>
                                                             </div>
                                                         </div>
-                                                        <!-- @foreach($insert as $value) -->
+                                                        <!-- @foreach($event as $value) -->
                                                      
                                                         <!-- @endforeach -->
                                                         <div class="row" style="padding: 0 10px 0 10px;">

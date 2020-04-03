@@ -5,17 +5,17 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    {{--<div class="panel-heading">Insert Your Picture</div>--}}
+                    {{--<div class="panel-heading">event Your Picture</div>--}}
 {{--untuk memasukkan cart atau item yang sudah dipilih--}}
                     <div class="panel-body">
-                        <form action="{{url('insertToCart')}}" method="post" enctype="multipart/form-data">
+                        <form action="{{url('eventToCart')}}" method="post" enctype="multipart/form-data">
                                 {{ csrf_field() }}
 
                             <div class="form-group{{ $errors->has('id') ? ' has-error' : '' }}">
                                 <label for="id" class="col-md-4 control-label">Id Image</label>
 
                                 <div class="col-md-6">
-                                    <input id="id" type="" class="form-control" name="id" readonly="readonly"  value="{{$insert->id}}" required autofocus>
+                                    <input id="id" type="" class="form-control" name="id" readonly="readonly"  value="{{$event->id}}" required autofocus>
 
                                 </div>
                             </div>
@@ -24,7 +24,7 @@
                                 <label for="title" class="col-md-4 control-label">Title</label>
 
                                 <div class="col-md-6">
-                                    <input id="title" type="text" class="form-control" name="title" readonly="readonly"  value="{{$insert->title}}" required autofocus>
+                                    <input id="title" type="text" class="form-control" name="title" readonly="readonly"  value="{{$event->title}}" required autofocus>
 
                                     @if ($errors->has('title'))
                                         <span class="help-block">
@@ -38,7 +38,7 @@
                                 <label for="caption" class="col-md-4 control-label">Caption</label>
 
                                 <div class="col-md-6">
-                                    <input id="caption" type="textarea" class="form-control" name="caption" readonly="readonly"  value="{{$insert->caption}}" required autofocus>
+                                    <input id="caption" type="textarea" class="form-control" name="caption" readonly="readonly"  value="{{$event->caption}}" required autofocus>
 
                                     @if ($errors->has('caption'))
                                         <span class="help-block">
@@ -53,7 +53,7 @@
                             <div class="form-group{{ $errors->has('photo') ? ' has-error' : '' }}">
                                 <label for="photo" class="col-md-4 control-label">image</label>
                                 <div class="col-md-6">
-                                    <input id="photo" type="text" class="form-control" name="photo" readonly="readonly"  value="{{$insert->photo}}" required autofocus>
+                                    <input id="photo" type="text" class="form-control" name="photo" readonly="readonly"  value="{{$event->photo}}" required autofocus>
 
                                     @if ($errors->has('photo'))
                                         <span class="help-block">
@@ -67,7 +67,7 @@
                                 <label for="price" class="col-md-4 control-label">Price</label>
 
                                 <div class="col-md-6">
-                                    <input id="price" type="text" class="form-control" name="price" readonly="readonly"  value="{{$insert->price}}" required autofocus>
+                                    <input id="price" type="text" class="form-control" name="price" readonly="readonly"  value="{{$event->price}}" required autofocus>
 
                                     @if ($errors->has('price'))
                                         <span class="help-block">
@@ -83,7 +83,7 @@
 
                                 <div class="col-md-6">
                                     <select class="form-control" id="type" name="category">
-                                        <option>{{$insert->category}}</option>
+                                        <option>{{$event->category}}</option>
                                     </select>
                                 </div>
                             </div>

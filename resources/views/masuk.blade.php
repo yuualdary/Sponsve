@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Insert</div>
+                    <div class="panel-heading">event</div>
 
                     <div class="panel-body">
                         <form class="form-horizontal" method="POST" action="{{ route('register') }}">
@@ -73,7 +73,7 @@
                                     <div class="col-md-6">
 
                                         <select class="form-control" id="type" name="category">
-                                            <option>--Categpry--</option>
+                                            <option>--Category--</option>
                                             <option>-Boy-</option>
                                             <option>--Girl--</option>
                                             <option>--Boy and Girl--</option>

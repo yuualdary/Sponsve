@@ -17,11 +17,14 @@ class CreateProposalsTable extends Migration
             $table->increments('proposal_id');
             $table->integer('userid_proposal');
             $table->integer('ptid_proposal');
+            $table->integer('eventid_proposal');
             $table->string('proposal_title');
             $table->text('proposal_description');
             $table->text('proposal_file');
             $table->integer('statusproposal_id');
-            $table->timestamps();
+            $table->date('proposal_created_at')->nullable();
+            $table->date('proposal_modified_at')->nullable();
+            $table->integer('proposal_modified_by')->nullable();
         });
     }
 

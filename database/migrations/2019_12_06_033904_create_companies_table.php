@@ -22,8 +22,11 @@ class CreateCompaniesTable extends Migration
             $table->text('social_media');
             $table->text('company_photo');
             $table->boolean('isapprove_company')->nullable();
+            $table->date('comp_created_at')->nullable();
+            $table->date('comp_modified_at')->nullable();
+            $table->integer('comp_modified_by')->nullable();
            
-            $table->timestamps();
+           
         });
     }
 
