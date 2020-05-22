@@ -8,7 +8,7 @@
                 <div class="panel-heading">Login</div>
                 {{--UI untuk login--}}
 
-                <div class="panel-body">
+                <div class="" style="padding:20px;">
                     <form class="form-horizontal" method="POST" action="{{ route('login') }}">
                         {{ csrf_field() }}
 

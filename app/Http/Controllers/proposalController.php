@@ -14,6 +14,7 @@ use App\master;
 use Illuminate\Support\Facades\Input;
 use Image;
 use Storage;
+use App\loguser; 
 use App\MappingRequest;
 use App\Mail\appEmail;
 use App\sendMakeRequest;
@@ -25,11 +26,12 @@ class proposalController extends Controller
 
 
 
-    public function addProposal(Request $request)
+    public function addContract(Request $request)
     {
 
 
-        
+
+
         $validator = Validator::make($request->all(),
         [
            
@@ -58,20 +60,52 @@ class proposalController extends Controller
         $pfile=$profileImageSaveAsName;
         $success=$profileImage->move($upload_path,$profileImageSaveAsName);
     }
+    $event_id=$request->eventid_proposal;
+    $company_id=$request->ptid_proposal;
+
+    $getAssignData=DB::table('mapping_requests')
+
+                    // ->join('companies','companies.company_id','=','mapping_requests.req_fromcompany')
+                    ->where([['mapping_requests.req_fromevent','=',$event_id],['mapping_requests.req_fromcompany','=',$company_id]])
+                    ->get();
+
+    // dd($getAssignData);
+
+    foreach($getAssignData as $ga)
+    {
+        $Assigned=$ga->req_userid;
+    }
 
 
         $proposal=new proposal();
         
-        $proposal->userid_proposal=$request->userid_proposal;
-        $proposal->ptid_proposal=$request->ptid_proposal;
+        $proposal->userid_proposal=Auth::user()->userid_tocompany;
+        $proposal->ptid_proposal=$company_id;
         $proposal->eventid_proposal=$request->eventid_proposal;
-
+        $proposal->assignid_proposal=$Assigned;
         $proposal->proposal_title=$request->proposal_title;
         $proposal->proposal_description=$request->proposal_description;
         $proposal->proposal_file=$pfile;
         $proposal->statusproposal_id=$request->statusproposal_id;
    
         $proposal->save();
+
+
+        $getProposalid=$proposal->proposal_id;
+        
+        date_default_timezone_set('Asia/Jakarta');
+        $currtime=date('Y-m-d H:i');
+
+        $logMessage=Auth::user()->name." Submit Proposal at ".$currtime;
+        $logCompany= new loguser();
+        $logCompany->log_message=$logMessage;
+        $logCompany->log_touserid=$Assigned;
+        $logCompany->log_createdby=Auth::user()->id;
+        $logCompany->log_fromproposal=$getProposalid;
+
+        $logCompany->log_fromcompanyid=Auth::user()->userid_tocompany;
+        $logCompany->log_createdon=$currtime;
+        $logCompany->save();
     
 
         return back()->with('successMsg','Proposal Success Sended .');
@@ -86,6 +120,22 @@ class proposalController extends Controller
             //             ->where('events.event_id','=',$event_id)
             //             ->get();
 
+            $isProposal=DB::table('proposals')
+                    ->where([['proposals.eventid_proposal','=',$event_id],['proposals.ptid_proposal','=',$company_id]])
+                    ->get();
+        //    dd($isProposal);
+            // if(count($isProposal)== NULL){
+
+            //         $propo = 1;
+                
+            // }
+            // else{
+            //         $propo = 0;
+
+            // }
+
+            
+            
             $getAccept = DB::table('masters')->where([['prefix','=','STATUSREQUEST'],['text1','=','ACCEPT'],])->get();
                       
             foreach ($getAccept as $ga)
@@ -96,20 +146,22 @@ class proposalController extends Controller
             $getPTName= DB::table ('mapping_requests')
                         ->join ('companies','companies.company_id','=','mapping_requests.req_fromcompany')
                         ->join('users','users.id','=','mapping_requests.req_userid')
-                        ->where([['mapping_requests.req_fromcompany','=',$company_id],['mapping_requests.req_status','=',$AccProposal]])
+                        ->where([['mapping_requests.req_fromcompany','=',$company_id],['mapping_requests.req_status','=',$AccProposal],['mapping_requests.req_fromevent','=',$event_id]])
                         ->get();
             
-
+            $getCurrentName = DB::table('companies')
+                            ->where([['companies.company_id','=',$company_id],])
+                            ->get();        
              $status=DB::table('masters')->where([['prefix','=','STATUSPROPOSAL'],['text1','=','SUBMITTED'],])->get();
 
             
-          
 
             // $kirim = "Text kiriman ";
             
             // dd($getPTName);
+            // dd($isProposal);
             
-            return view('ViewAddProposal',['getPTName'=>$getPTName,'status'=>$status,'company_id'=>$company_id,'event_id'=>$event_id]);
+            return view('ViewAddProposal',['isProposal'=>$isProposal,'getPTName'=>$getPTName,'status'=>$status,'company_id'=>$company_id,'event_id'=>$event_id,'getCurrentName'=>$getCurrentName]);
 
 
     }
@@ -179,23 +231,70 @@ class proposalController extends Controller
 
     public function replyProposal($proposal_id)
     {   
-   
-   
-            $status=DB::table('masters')->where([['prefix','=','STATUSPROPOSAL'],['text1','=','REJECTED'],])->get();
-            $status2=DB::table('masters')->where([['prefix','=','STATUSPROPOSAL'],['text1','=','APPROVED'],])->get();
+            $getReject=DB::table('masters')
+                    ->where([['masters.prefix','=','STATUSPROPOSAL'],['masters.text1','=','Rejected']])
+                    ->get();
 
+            $getAccept=DB::table('masters')
+                    ->where([['masters.prefix','=','STATUSPROPOSAL'],['masters.text1','=','Approved']])
+                    ->get();
+            $getSubmit=DB::table('masters')
+                    ->where([['masters.prefix','=','STATUSPROPOSAL'],['masters.text1','=','Submitted']])
+                    ->get();
 
+            foreach($getReject as $gR)
+            {
+                $reject = $gR->Master_id;
+            
+            }
+            
+            foreach($getAccept as $gA)
+            {
+                $approve = $gA->Master_id;
+            
+            }
+              
+            foreach($getSubmit as $gA)
+            {
+                $submit = $gA->Master_id;
+            
+            }
+   
+      
+            $proposal=$proposal_id;
+            
             $getProposalData=DB::table('proposals')
-                    ->join('users','users.id','=','proposals.userid_proposal')
+                    ->join('companies','companies.company_id','=','proposals.userid_proposal')
                     ->join('events','events.event_id','=','proposals.ptid_proposal')
                     ->where('proposals.proposal_id','=',$proposal_id)
                      ->Get();
 
-         dd($getProposalData);
-            return view('detailofproposal',['getProposalData'=>$getProposalData,'status'=>$status,'status2'=>$status2]);
+          $comments = DB::table('comments')
+                     ->join('users', 'users.id','=','comments.user_commentid')  
+                     ->where('comments.proposal_commentid','=',$proposal_id)                    
+                     ->get();
+
+         $reply = DB::table('replies')
+                     ->join('comments', 'comments.cmntid','=','replies.comment_id')
+                     ->join('users', 'users.id','=','replies.user_replyid')
+                      ->get();
+                     
+        
+
+        foreach($getProposalData as $ck){
+
+            $checkStatus= $ck->statusproposal_id;
+            $checkUser=$ck->userid_proposal;
+            $checkId=$ck->proposal_id;
+            $checkAssign=$ck->assignid_proposal;
+        }
+
+
+            return view('detailofproposal',['getProposalData'=>$getProposalData,'submit'=>$submit,'approve'=>$approve,'reject'=>$reject,'comments'=>$comments,'reply'=>$reply,'proposal'=>$proposal,'checkUser'=>$checkUser,'checkStatus'=>$checkStatus,'checkId'=>$checkId,'checkAssign'=>$checkAssign]);
 
 
     }
+
 
     public function viewEditProposal($proposal_id)
     {
@@ -209,17 +308,18 @@ class proposalController extends Controller
                         ->Get();
   
 
-         return view('viewRevision',['viewRevision'=>$viewRevision,'status'=>$status]);
+         return view('viewRevision',['viewRevision'=>$viewRevision]);
 
     
 
     }
+    
 
 
-    public function rejectProposal(Request $request)
+    public function approvalProposal(Request $request)
     {
-        // date_default_timezone_set('Asia/Jakarta');
-        // $currtime=date('Y-m-d H:i');
+        date_default_timezone_set('Asia/Jakarta');
+        $currtime=date('Y-m-d H:i');
         switch ($request->input('action'))
         {   
             case 'Download': 
@@ -253,10 +353,37 @@ class proposalController extends Controller
                             $proposal2->proposal_modified_at=$currtime;
                             $proposal2->proposal_modified_by=Auth::user()->id;
                             $proposal2->save();
-                            return redirect('viewuser');
-    
-            break;
 
+
+                            $getProposalid = $proposal->proposal_id;
+                            $company=DB::table('companies')
+                                    ->where([['companies.company_id','=',Auth::user()->userid_tocompany]])
+                                    ->get();
+        
+        
+                             foreach($company as $cid)
+                             {
+                                 $comname=$cid->company_name;
+                             }
+        
+        
+                             date_default_timezone_set('Asia/Jakarta');
+                             $currtime=date('Y-m-d H:i');
+                     
+                             $logMessage=Auth::user()->name."(".$comname.")"." Has Approve Your Document Contract at".$currtime;
+                             $logCompany= new loguser();
+                             $logCompany->log_message=$logMessage;
+                            //  $logCompany->log_touserid=$Assigned;
+                             $logCompany->log_createdby=Auth::user()->id;
+                             $logCompany->log_fromproposal=$getProposalid;
+                     
+                                //  $logCompany->log_fromcompanyid=Auth::user()->userid_tocompany;
+                             $logCompany->log_createdon=$currtime;
+                             $logCompany->save();
+                             return redirect()->action(
+                                'proposalController@detaiProposalList',['proposal_id'=>$getProposalid])->with('accMsg','acc');                     break;
+    
+          
             case'Reject':
                         
                         $status=DB::table('masters')
@@ -275,9 +402,39 @@ class proposalController extends Controller
                                   $proposal->proposal_modified_at=$currtime;
                                   $proposal->proposal_modified_by=Auth::user()->id;
                                   $proposal->save();
-                                  return redirect('viewuser');
 
-             break;
+                                  $getProposalid = $proposal->proposal_id;
+                                  $company=DB::table('companies')
+                                          ->where([['companies.company_id','=',Auth::user()->userid_tocompany]])
+                                          ->get();
+                                    // dd($getProposalid);
+              
+                                   foreach($company as $cid)
+                                   {
+                                       $comname=$cid->company_name;
+                                   }
+              
+              
+                                   date_default_timezone_set('Asia/Jakarta');
+                                   $currtime=date('Y-m-d H:i');
+                           
+                                   $logMessage=Auth::user()->name."(".$comname.")"." Has Rejected Your Document Contract at ".$currtime;
+                                   $logCompany= new loguser();
+                                   $logCompany->log_message=$logMessage;
+                                //    $logCompany->log_touserid=Auth::user()->id;
+                                   $logCompany->log_createdby=Auth::user()->id;
+                                   $logCompany->log_fromproposal=$getProposalid;
+                           
+                                //    $logCompany->log_fromcompanyid=Auth::user()->userid_tocompany;
+                                   $logCompany->log_createdon=$currtime;
+                                   $logCompany->save();
+                                   return redirect()->action(
+                                    'proposalController@detaiProposalList',['proposal_id'=>$getProposalid])->with('rejMsg','R'); 
+                                    
+                                    
+                                    
+                                    break;
+
 
             case 'Revision':
                                  
@@ -309,17 +466,100 @@ class proposalController extends Controller
                                     $status=DB::table('masters')
                                              ->where([['prefix','=','STATUSPROPOSAL'],['text1','=','REVISION'],])
                                              ->get();
-                                        
 
+
+                                             foreach($status as $st1)
+                                             {
+                     
+                                                 $id_submit = $st1->Master_id;
+                                
+                                             }
                                     $proposal=proposal::find($request->proposal_id);
-                                    $proposal->statusproposal_id=$request->statusproposal_id;
-                                    $proposal->proposal_file=$pfile;
+                                    $proposal->statusproposal_id=$id_submit;
+                                    // $proposal->proposal_file=$pfile;
                                     $proposal->proposal_modified_at=$currtime;
                                     $proposal->proposal_modified_by=Auth::user()->id;
 
                                     $proposal->save();
                                     return redirect('viewuser');
              break;
+
+
+             case 'Submitted':
+                                 
+               $validator = Validator::make($request->all(),
+                     [
+                     
+                     
+                         'proposal_file' => 'required'
+
+
+                     ]);
+                 if($validator->fails())
+                 {
+                     return redirect()->back()->withErrors($validator);
+                 }
+
+
+                 if($request->hasFile('proposal_file'))
+                 {
+             
+                     $profileImage=$request->file('proposal_file');
+                     $profileImageSaveAsName=time()."-proposal.".
+                     $profileImage->getClientOriginalExtension();
+             
+                     $upload_path='aset/';
+                     $pfile=$upload_path . $profileImageSaveAsName;
+                     $success=$profileImage->move($upload_path,$profileImageSaveAsName);
+                }
+                     $status=DB::table('masters')
+                              ->where([['prefix','=','STATUSPROPOSAL'],['text1','=','SUBMITTED'],])
+                              ->get();
+
+
+                              foreach($status as $st1)
+                              {
+      
+                                  $id_submit = $st1->Master_id;
+                 
+                              }
+                     $proposal=proposal::find($request->proposal_id);
+                     $proposal->statusproposal_id=$id_submit;
+                     $proposal->proposal_file=$pfile;
+                     $proposal->proposal_title=$request->proposal_title;
+                     $proposal->proposal_description=$request->proposal_description;
+                     $proposal->proposal_modified_at=$currtime;
+                     $proposal->proposal_modified_by=Auth::user()->id;
+
+                     $proposal->save();
+
+                    $getProposalid = $proposal->proposal_id;
+                    $company=DB::table('companies')
+                            ->where([['companies.company_id','=',Auth::user()->userid_tocompany]])
+                            ->get();
+
+
+                     foreach($company as $cid)
+                     {
+                         $comname=$cid->company_name;
+                     }
+
+
+                     date_default_timezone_set('Asia/Jakarta');
+                     $currtime=date('Y-m-d H:i');
+             
+                     $logMessage=Auth::user()->name."(".$comname.")"." Has Make Revision for Your Document Contract at ".$currtime;
+                     $logCompany= new loguser();
+                     $logCompany->log_message=$logMessage;
+                    //  $logCompany->log_touserid=$Assigned;
+                     $logCompany->log_createdby=Auth::user()->id;
+                     $logCompany->log_fromproposal=$getProposalid;
+             
+                    //  $logCompany->log_fromcompanyid=Auth::user()->userid_tocompany;
+                     $logCompany->log_createdon=$currtime;
+                     $logCompany->save();
+                     return redirect()->action(
+                        'proposalController@detaiProposalList',['proposal_id'=>$getProposalid])->with('revMsg','rev');             break;
 
 
         }
@@ -338,6 +578,7 @@ class proposalController extends Controller
              $getCurrId=event::find($request->event_id);
             
              $getCurrent = $getCurrId->event_id;
+    
 
             
              // foreach($getCurrId as $get)
@@ -366,7 +607,7 @@ class proposalController extends Controller
 
 
              foreach($statusSubmit as $s) 
-             {
+             { 
                      $Submit = $s->Master_id;
                 
              }   
@@ -399,15 +640,15 @@ class proposalController extends Controller
             if(count($ifCurrReject)==NULL)
             {
               
-                // $cannotUpload= $currtime;       
-                $addDays=date('Y-m-d', strtotime($cannotUpload. ' + 2 days'));
-
+                $cannotUpload=$currtime;
 
             }
             else{
             
             foreach($ifCurrReject as $r)
             {
+                // $cannotUpload=date('Y-m-d', strtotime($currtime. ' + 2 days'));
+
                     $cannotUpload= $r->req_modified_at;       
             }
         }
@@ -496,6 +737,183 @@ class proposalController extends Controller
 
             }
         }
+
+
+
+        
+    public function viewOurAssign()
+    {
+       
+            $listMyPropo= DB::table('proposals')
+                        ->join('companies','companies.company_id','=','proposals.ptid_proposal')
+                        ->join('events','events.event_id','=','proposals.eventid_proposal')
+                        ->join('users','users.id','=','proposals.assignid_proposal')
+                        ->join('masters','masters.master_id','=','proposals.statusproposal_id')
+                        ->where([['proposals.ptid_proposal','=',auth::user()->userid_tocompany]])
+                        ->get();
+
+
+
+            
+            $viewall= proposal::paginate(8);
+
+                    
+            
+            return view('ourAssign',['listMyPropo'=>$listMyPropo,'viewall'=>$viewall]);
+    
+}
+
+    public function detailOurAssign($proposal_id)
+    
+     {   
+
+         $detailProposal= DB::table('proposals')
+                        ->join('companies','companies.company_id','=','proposals.ptid_proposal')
+                        ->join('events','events.event_id','=','proposals.eventid_proposal')
+                        ->join('users','users.id','=','proposals.assignid_proposal')
+                        ->join('masters','masters.master_id','=','proposals.statusproposal_id')
+                        ->join('positions','positions.id_position','=','users.position_id')
+                        ->where([['proposals.proposal_id','=',$proposal_id]])
+                        ->get();
+        $logProposal = DB::table('logusers')
+                       ->join('users','users.id','=','logusers.log_touserid')
+                       ->join('proposals','proposals.proposal_id','=','logusers.log_fromproposal')
+                       ->where([['proposals.proposal_id','=',$proposal_id]])
+                        ->get();
+        //  $getAvailable=DB::table('proposals')
+        //                 ->join('users','users.id','=','proposals.assignid_proposal')
+        //                 ->where([['proposals.proposal_isend','=',TRUE]])
+        //                 ->groupBy('assignid_proposal')
+        //                 ->get();
+            // dd($getAvailable);
+        $getAssign=DB::table('users')
+                    ->join('positions','positions.id_position','=','users.position_id')
+                    ->where([['users.userid_tocompany','=',Auth::user()->userid_tocompany],['positions.position','!=','admin']])
+                    ->get();
+        $getPosition=DB::table('positions')
+                    ->where([['positions.position','=','admin']])
+                    ->get();
+                    
+
+        foreach($getPosition as $gp)
+        {
+            $admin= $gp->id_position;
+        }
+
+
+
+                        return view('detailOurAssign',['detailProposal'=>$detailProposal,'logProposal'=>$logProposal,'getAssign'=>$getAssign,'admin'=>$admin]);
+     }
+
+
+
+     public function viewMyAssignList(){
+
+
+           
+
+            $myAssignList= DB::table('proposals')
+                        ->join('companies','companies.company_id','=','proposals.ptid_proposal')
+                        ->join('events','events.event_id','=','proposals.eventid_proposal')
+                        ->join('users','users.id','=','proposals.assignid_proposal')
+                        ->join('masters','masters.master_id','=','proposals.statusproposal_id')
+                        ->where([['proposals.assignid_proposal','=',auth::user()->id]])
+                        ->orwhere([['proposals.userid_proposal','=',auth::user()->id]])
+                        ->get();
+       
+
+            
+            $viewall= proposal::paginate(8);
+
+                    
+            
+            return view('viewMyAssignList',['myAssignList'=>$myAssignList,'viewall'=>$viewall]);
+
+     }
+
+     
+    public function detaiProposalList($proposal_id)
+    
+    {   
+
+        $getStatusReject=DB::table('masters')
+                    ->where([['masters.text1','=','REJECTED'],['masters.prefix','=','STATUSPROPOSAL']])
+                    ->get();
+        $getStatusRevision=DB::table('masters')
+                    ->where([['masters.text1','=','REVISION'],['masters.prefix','=','STATUSPROPOSAL']])
+                    ->get();
+
+        $detailProposal= DB::table('proposals')
+                       ->join('companies','companies.company_id','=','proposals.ptid_proposal')
+                       ->join('events','events.event_id','=','proposals.eventid_proposal')
+                       ->join('users','users.id','=','proposals.assignid_proposal')
+                       ->join('masters','masters.master_id','=','proposals.statusproposal_id')
+                       ->join('positions','positions.id_position','=','users.position_id')
+                       ->where([['proposals.proposal_id','=',$proposal_id]])
+                       ->get();
+       $logProposal = DB::table('logusers')
+                      ->join('users','users.id','=','logusers.log_createdby')
+                      ->where([['logusers.log_fromproposal','=',$proposal_id]])
+                       ->get();
+         $getAssign=DB::table('users')
+                       ->join('positions','positions.id_position','=','users.position_id')
+                       ->where([['users.userid_tocompany','=',Auth::user()->userid_tocompany],['positions.position','!=','admin']])
+                       ->get();
+       //  $getAvailable=DB::table('proposals')
+       //                 ->join('users','users.id','=','proposals.assignid_proposal')
+       //                 ->where([['proposals.proposal_isend','=',TRUE]])
+       //                 ->groupBy('assignid_proposal')
+       //                 ->get();
+           // dd($getAvailable);
+    //    $getAssign=DB::table('users')
+    //                ->where([['users.userid_tocompany','=',Auth::user()->userid_tocompany]])
+    //                ->get();
+
+         $getPosition=DB::table('positions')
+                 ->where([['positions.position','=','admin']])
+                 ->get();
+
+      foreach($getPosition as $gp)
+      {
+             $admin= $gp->id_position;
+      }
+
+      foreach($getStatusReject as  $gj){
+            $reject=$gj->Master_id;
+      }
+
+      foreach($getStatusRevision as  $gr){
+        $revision=$gr->Master_id;
+    }
+
+        return view('detailMyAssignList',['detailProposal'=>$detailProposal,'logProposal'=>$logProposal,'getAssign'=>$getAssign,'admin'=>$admin,'revision'=>$revision,'reject'=>$reject]);
+    }
+
+
+
+
+     public function changePIC(Request $request)
+     {
+          $currentId = $request->proposal_id;
+
+                         
+        // $getAvailable=DB::table('proposals')
+        //             -join('users','users.id','=','proposals.assignid_proposal')
+        //             ->where([['proposals.poposal_isend','=',TRUE]])
+        //             ->groupBy('users.id')
+        
+        $changePIC= proposal::find($request->proposal_id);
+
+        $changePIC->assignid_proposal=$request->assignid_proposal;
+
+        $changePIC->save();
+
+        return back()->with('successMsg','Proposal Success Sended .');
+        
+        
+
+
+     }
 
 
         

@@ -14,8 +14,8 @@ class CreateMappingMembersTable extends Migration
     public function up()
     {
         Schema::create('mapping__members', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('event_id');
+            $table->increments('mappingmember_id');
+            $table->integer('mapevent_id');
             $table->integer('mapping_fromrequest');
             $table->timestamps();
         });

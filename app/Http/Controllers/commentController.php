@@ -61,28 +61,39 @@ class commentController extends Controller
      */
     public function store(Request $request)
     {
-
+        date_default_timezone_set('Asia/Jakarta');
+        $currtime=date('Y-m-d H:m');   
         $cobaiditem = $request->input('company_commentid');
-        
+        $test=$request->input('proposal_commentid');
        
-        if (Auth::check()) {
-            Comment::create([
-                'name' => Auth::user()->name,
-                'comment' => $request->input('comment'),
-                'user_commentid' => Auth::user()->id,
-                'item_id'=>$request->input('item_id'),
-                'company_commentid'=>$request->input('company_commentid'),
-                
+        // if (Auth::check()) {
+        //     Comment::create([
+        //         'name' => Auth::user()->name,
+        //         'comment' => $request->input('comment'),
+        //         'user_commentid' => Auth::user()->id,
+        //         'item_id'=>$request->input('item_id'),
+        //         'company_commentid'=>Auth::user()->userid_tocompany,
+        //         'proposal_commentid'=>$test,
 
 
-            ]);
+        //     ]);
 
-            return back()->with('success','Comment Added successfully..!');
-        }else{
-            return back()->withInput()->with('error','Something wrong');
-        }
+        //     return back()->with('success','Comment Added successfully..!');
+        // }else{
+        //     return back()->withInput()->with('error','Something wrong');
+        // }
+        
+                    $comment= new comment();
+                    $comment->comment=$request->comment;
+                    $comment->user_commentid=Auth::user()->id;
+                    $comment->item_id=$request->item_id;
+                    $comment->company_commentid=Auth::user()->userid_tocompany;
+                    $comment->proposal_commentid=$request->proposal_commentid;
+                    $comment->comment_created_at=$currtime;
+                    $comment->save();
 
-
+           return back();
+        
 
     }
 
@@ -183,19 +194,5 @@ class commentController extends Controller
 
     }
 
-    
-    public function deleteReplies($replies_id)
-    {
-
-       
-        $deleteReplies=DB::table('replies')
-                       ->where([['replies.replies_id','=',$replies_id]])
-                       ->delete();
-
-      
-        return back()->with('successDelReplies','success');
-        
-        
-
-    }
+ 
 }

@@ -7,11 +7,13 @@ use Illuminate\Support\Facades\DB;
 use Auth;
 use App\company;
 use Illuminate\Support\Facades\Input;
-
+use App\event;
 use App\review;
 use App\MappingRequest;
 use App\Mail\mailForRejectRequest;
 use App\Mail\mailForAcceptRequest;
+use App\Mail\mailForInvite;
+
 
 use Illuminate\Support\Facades\Mail;
 
@@ -50,6 +52,7 @@ class RequestorController extends Controller
                         $status2=DB::table('masters')->where([['prefix','=','STATUSPROPOSAL'],['text1','=','REJECTED'],])->get();
                         $status3=DB::table('masters')->where([['prefix','=','STATUSPROPOSAL'],['text1','=','APPROVED'],])->get();
                 
+                        $status4=DB::table('masters')->where([['prefix','=','STATUSREQUEST'],['text1','=','INVITED'],])->get();
                 
                         foreach($status1 as $st1){
                         
@@ -62,23 +65,42 @@ class RequestorController extends Controller
                             $id_submit2 = $st2->Master_id;
                         
                         }
+
+
+                        foreach($status4 as $st4){
+                        
+                            $invite = $st4->Master_id;
+                        
+                        }
                 
                         $getAlldata=DB::table('proposals')
-                                    ->join('events','events.event_id','=','proposals.ptid_proposal')
-                                    ->join('users','users.id','=','proposals.userid_proposal')
+                                    ->join('events','events.event_id','=','proposals.eventid_proposal')
+                                    ->join('companies','companies.company_id','=','proposals.ptid_proposal')
                                     ->join('masters','masters.master_id','=','proposals.statusproposal_id')
-                                    ->where([['proposals.statusproposal_id','=',$id_submit],['proposals.ptid_proposal','=',Auth::user()->id],])
+                                    ->where([['proposals.statusproposal_id','=',$id_submit],['proposals.assignid_proposal','=',Auth::user()->id]])
                                     ->get();
+                        // dd($getAlldata);
+                        // masalahnya id mappingnya ke double
                                     //ini kurangnya check data di screen saat submit proposal
-                        
                         $getAlldataForUser=DB::table('proposals')
                                     ->join('events','events.event_id','=','proposals.ptid_proposal')
                                     ->join('users','users.id','=','proposals.userid_proposal')
                                     ->join('masters','masters.master_id','=','proposals.statusproposal_id')
                                     ->where([['proposals.statusproposal_id','=',$id_submit2],['proposals.userid_proposal','=',Auth::user()->id],])
                                     ->get();
+                        
+                        $getAllInvite=DB::table('mapping_requests')
+                                    ->join('users','users.id','=','mapping_requests.req_userid')
+                                    ->join('events','events.event_id','=','mapping_requests.req_fromevent')
+            
+                                    ->join('companies','companies.company_id','=','mapping_requests.req_fromcompany')
+                                    ->join('masters','masters.Master_id','=','mapping_requests.req_status')
+            
+                                    ->where([['mapping_requests.req_sponsorid','=',Auth::user()->userid_tocompany],['mapping_requests.req_status','=',$invite],])
+                                    ->get(); 
+                        
 
-        return view('RequestList',['getAllRequest'=>$getAllRequest,'getAlldata'=>$getAlldata,'getAlldataForUser'=>$getAlldataForUser,'expiredDate'=>$expiredDate]);
+        return view('RequestList',['getAllRequest'=>$getAllRequest,'getAlldata'=>$getAlldata,'getAlldataForUser'=>$getAlldataForUser,'expiredDate'=>$expiredDate,'getAllInvite'=>$getAllInvite]);
 
     }
 
@@ -348,7 +370,7 @@ class RequestorController extends Controller
         
 
 
-        //  dd($doneRequest);
+        
 
         foreach($allRequest as $a)
         {
@@ -361,9 +383,10 @@ class RequestorController extends Controller
         $doneRequest  = DB::table('mapping_requests')
                      ->join('companies','companies.company_id','=','mapping_requests.req_fromcompany')//get nama
                      ->join('events','events.event_id','=','mapping_requests.req_fromevent')
-                     ->join('users','users.userid_tocompany','=','mapping_requests.req_fromcompany')
+                     ->join('users','users.id','=','mapping_requests.req_userid')
                      ->join('masters','masters.Master_id','=','mapping_requests.req_status')
-                     ->where([['users.id','=',Auth::user()->id],['mapping_requests.req_status','=',$done],])
+                     
+                     ->where([['mapping_requests.req_userid','=',Auth::user()->id],['mapping_requests.req_status','=',$done],])
                      ->get();
         $isReviewed = DB::table('reviews')
                     ->join('users','users.userid_tocompany','=','reviews.review_companyid')
@@ -373,7 +396,6 @@ class RequestorController extends Controller
                     ->where([['users.id','=',Auth::user()->id]])
                     ->get();    
           
-        // dd($isReviewed);
         $status = DB::table('masters')
                 ->where([['masters.prefix','=','STATUSREVIEW'],])
                 ->get();
@@ -458,6 +480,120 @@ class RequestorController extends Controller
 
         return back();
     }
+
+
+    public function RequestCompany(Request $request){
+
+        
+        date_default_timezone_set('Asia/Jakarta');
+        $currtime=date('Y-m-d H:i');
+        $status=DB::table('masters')->where([['prefix','=','STATUSREQUEST'],['text1','=','INVITED'],])->get();
+
+        foreach($status as $st){
+
+            $invite=$st->Master_id;
+        }
+        $event= event::find($request->event_id);
+
+        $company =company::find( $request->company_id);
+
+   
+
+        $getCurrMail = DB::table('companies')
+                    ->where([['companies.company_id','=',$company->company_id],])
+                    ->get();
+        $status = DB::table('Masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','INVITED']])->get();
+        $status2 = DB::table('Masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','REJECT']])->get();
+
+        foreach($status as $st){
+        
+        
+                        $invite= $st->Master_id;
+                    }
+        
+        foreach($status2 as $st2){
+        
+        
+                        $reject= $st2->Master_id;
+                    }
+        
+        
+        
+
+        foreach($getCurrMail as $gcm){
+
+
+            $mailForCompany =$gcm->website_address;
+        }
+
+        
+
+        $getCompanies = DB::table('mapping_requests')
+                        ->where([['mapping_requests.req_fromevent','=',$event->event_id],['mapping_requests.req_fromcompany','=',Auth::user()->userid_tocompany],['mapping_requests.req_status','=',$invite],['mapping_requests.req_sponsorid','=',$request->company_id]])
+                        ->get();
+
+        $getListMember= DB::table('mapping_requests')
+                        ->where([['mapping_requests.req_fromevent','=',$event->event_id],['mapping_requests.req_status','!=',$reject],['mapping_requests.req_fromcompany','=',$request->company_id]])
+                        ->get();
+            if(count($getCompanies)==NULL && count($getListMember)==NULL ){
+        
+                     $requestCo=new MappingRequest();
+                     $requestCo->req_sponsorid=Auth::User()->userid_tocompany;
+                     $requestCo->req_userid=Auth::user()->id;
+                     $requestCo->req_fromcompany=$request->company_id;//ini dituker karena kalau engg, outputny jadi beda
+                     $requestCo->req_fromevent=$event->event_id;
+                     $requestCo->req_status=$invite;
+                     $requestCo->req_created_at=$currtime;
+                     $requestCo->req_modified_by=Auth::user()->id;
+                     $requestCo->save();
+
+
+                     $getMakeRequestFrom = DB::table('companies')
+         
+                     ->where([['companies.company_id','=',Auth::user()->userid_tocompany],])
+                     ->get();
+ 
+ 
+                     foreach ($getCurrMail as $Mr)    
+                     {
+                     $req=$Mr->company_name;
+                     
+                     }
+ 
+                     foreach ($getMakeRequestFrom as $Fr)
+                     {
+                     $From=$Fr->company_name;
+                     
+                     }
+ 
+ 
+                     Mail::to($mailForCompany)->send(new mailForInvite($req,$From));
+ 
+ 
+                     return back()->with('successAdd','Success edit company .');
+ 
+            }
+            else{
+
+                return back()->with('failAdd','You Have Sent Request.');
+
+
+              
+
+            }
+               
+
+                  
+            
+            
+
+
+
+
+    }
+
+
+    
 
 
 }

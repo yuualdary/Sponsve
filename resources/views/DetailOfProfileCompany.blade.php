@@ -18,7 +18,7 @@
                                 <br>
 
                             <div class="col-md-8 col-md-offset-2">
-                                <div class="panel panel-default" style="width:700px; position:center; margin-right:500px;">
+                                <div class="panel panel-default" style="width:700px; position:center; margin-right:500px;margin-top:20px;">
                                     <div class="panel-heading">Update Your Picture</div>
                                     {{--menampilakn data user masing - masing sesuai hasil register yang mana bisa melakukan update pada profile --}}
                                     @if(session()->has('successMsg'))
@@ -204,8 +204,8 @@
                                                 <div class="col-md-6">
                                                     <input id="company_address" type="textarea" class="form-control" name="company_address" value="{{$compDet->company_address}}" required autofocus >
                                                     <br>
-                
-                                                    
+                                                    <iframe width="250" height="250" id="gmap_canvas" src="https://maps.google.com/maps?q={{$compDet->company_address}}&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
+                                                    </iframe>
                                                 </div>
                                             </div>
                                             
@@ -251,6 +251,7 @@
                                                 </div>
                                            
                                             <br>
+
                                             @endforeach     
                             
                                             <div class="form-group">
@@ -398,7 +399,19 @@
                                                   
                                                 </div>
                                             </div>
-                
+
+
+                                    
+                                        
+
+                                                {{-- <div class="mapouter"><div class="gmap_canvas">
+                                                        <iframe width="250" height="250" id="gmap_canvas" src="https://maps.google.com/maps?q={{$r->company_address}}4&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe><a href="https://www.embedgooglemap.net/blog/divi-discount-code-elegant-themes-coupon/%22%3Etheme divi dan divi builder</a></div><style>.mapouter{position:relative;text-align:right;height:500px;width:600px;}.gmap_canvas {overflow:hidden;background:none!important;height:500px;width:600px;}</style></div>
+
+                                        </div> --}}
+
+
+
+
                                         </form>
                                             
                 
@@ -435,13 +448,16 @@
                                                 <input id="userid_tocompany" type="hidden" class="form-control" readonly="readonly" name="userid_tocompay" value="{{$member->userid_tocompany}}" required autofocus>
                 
                 
-                                                   @if( Auth::user()->position_id === $admin && Auth::user()->id === $checkCurrIdExistInRecord) 
+                                                   @if( Auth::user()->position_id === $admin && Auth::user()->id === $checkCurrIdExistInRecord && $member->id != $isAdmin)
                                                                    
-                                                   <a href="{{url('/setPosition/'.$member->id)}}" class="btn btn-primary" >Send As Admin</a>       
-                                                      
+                                                   <a href="{{url('/setPosition/'.$member->id)}}" class="btn btn-primary" >Send As Admin</a> 
+                                                        
+
                                                         
                                                     <a href="{{url('/deleteUser/'.$member->id)}}" title="Delete" class="btn btn-primary" >
                                                         <i class="medium material-icons" style="font-size: 20px">delete</i>
+ 
+
                                                         @else
                                                     </a>
                 
@@ -507,6 +523,7 @@
                                                             
                                            
                                                     </tr>
+                                                    
                                                      
                                                   @endforeach
                                                                  

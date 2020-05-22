@@ -15,6 +15,28 @@ class MasterController extends Controller
         
         return view('positioninput');
     }
+    public function inputcategory()
+    {
+        return view('inputcotegory');
+    }
+    
+    public function eventCategory(Request $request)
+    {
+
+        $validator = Validator::make($request->all(),
+            [
+                'categoryname' => 'required',
+            ]);
+        if($validator->fails())
+        {
+            return redirect()->back()->withErrors($validator);
+        }
+
+        $category = new categories();
+        $category ->categoryname = $request->categoryname;
+        $category ->save();
+        return back();
+    }
     public function eventPosition(Request $request)
     {
 

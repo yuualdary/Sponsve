@@ -25,6 +25,7 @@
     {{-- <link rel="stylesheet" href="{{url('js/jquery/jquery-3.3.1.min.js')}}"> --}}
 
     {{-- <link rel="stylesheet" href="{{url('resource/assets/js/app.js')}}"> --}}
+ {{-- <script type="text/javascript" src="{{ asset('/js/app.js') }}"></script> --}}
 
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>

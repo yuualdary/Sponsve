@@ -23,64 +23,74 @@ class CompanyController extends Controller
 
         // if($validatedData->fails())
         // {
-        //     return redirect()->back()->withErrors($validator);
-        // }
+                    //     return redirect()->back()->withErrors($validator);
+                    // }
 
+             if(Auth::user()->userid_tocompany == NULL){
+                    
+                    $validator = Validator::make($request->all(),
+                        [
+                            'company_name' => 'required|unique:companies',
+                            'website_address' => 'required|unique:companies',
 
-        
-        $validator = Validator::make($request->all(),
-            [
-                'company_name' => 'required|unique:companies',
-                'website_address' => 'required|unique:companies',
+                        
+                        ]);
+                    if($validator->fails())
+                    {
+                        return redirect()->back()->withErrors($validator);
+                    }
                 
+                    if($request->hasFile('company_photo'))
+                        {
+                        
+                        
+                            $profileImage=$request->file('company_photo');
+                            $profileImageSaveAsName=time()."-proposal.".$profileImage->getClientOriginalExtension();
+                            $upload_path='aset/';
+                            $Companyfile=$upload_path . $profileImageSaveAsName;
+                            $success=$profileImage->move($upload_path,$profileImageSaveAsName);
+                        }
+                        $adminPos=DB::table('positions')
+                        ->where([['position','=','Admin']])
+                        ->get();
+                    
+                        foreach($adminPos as $aP){
+                        
+                             $admin= $aP->id_position;
+                        }
+                    
+                    //Company Create New
+                            $company =new Company();
+                            $company->company_name = $request->company_name;
+                            $company->company_address=$request->company_address;
+                            $company->company_phone=$request->company_phone;
+                            $company->website_address=$request->website_address;
+                            $company->social_media=$request->social_media;
+                            $company->company_photo=$Companyfile;
+                            $company->save();
+                    
+                    $currUser= user::find(Auth::user()->id);
+                    $currUser->userid_tocompany=$company->company_id;
+                    $currUser->position_id=$admin;
+                    $currUser->save();
+                    //Dipisah karna getclientoriginalextension() tidak bisa menerima data kosong. Next time coba dibuat nullable()
+                    if($request->hasFile('company_photo'))
+                    {
+                        $company->company_photo=$Companyfile;
+                    
+                    }
+                
+                    return redirect()->action(
+                        'CompanyController@viewDetailCompany',['company_id'=>$company->company_id] 
+                    )->with('successEdit','success');
+                    
+         }
+         else{
 
-            ]);
-        if($validator->fails())
-        {
-            return redirect()->back()->withErrors($validator);
-        }
-
-        if($request->hasFile('company_photo'))
-            {
-
-       
-                $profileImage=$request->file('company_photo');
-                $profileImageSaveAsName=time()."-proposal.".$profileImage->getClientOriginalExtension();
-                $upload_path='aset/';
-                $Companyfile=$upload_path . $profileImageSaveAsName;
-                $success=$profileImage->move($upload_path,$profileImageSaveAsName);
-            }
-            $adminPos=DB::table('positions')
-            ->where([['position','=','Admin']])
-            ->get();
-
-            foreach($adminPos as $aP){
-
-                 $admin= $aP->id_position;
-            }
-
-        //Company Create New
-                $company =new Company();
-                $company->company_name = $request->company_name;
-                $company->company_address=$request->company_address;
-                $company->company_phone=$request->company_phone;
-                $company->website_address=$request->website_address;
-                $company->social_media=$request->social_media;
-                $company->company_photo=$Companyfile;
-                $company->save();
-
-        $currUser= user::find(Auth::user()->id);
-        $currUser->userid_tocompany=$company->company_id;
-        $currUser->position_id=$admin;
-        $currUser->save();
-        //Dipisah karna getclientoriginalextension() tidak bisa menerima data kosong. Next time coba dibuat nullable()
-        if($request->hasFile('company_photo'))
-        {
-            $company->company_photo=$Companyfile;
-
-        }
-
-        return back()->with('successMsg','Success create company .');
+            return redirect()->action(
+                'CompanyController@viewDetailCompany',['company_id'=>Auth::user()->userid_tocompany]); 
+         }
+         
     }
 
     public function viewDetailCompany($company_id)
@@ -136,6 +146,11 @@ class CompanyController extends Controller
                      ->join('positions','positions.id_position','=','users.position_id')
                      ->where([['users.userid_tocompany','=',$company_id],['users.id','=',Auth::user()->id]])
                      ->get();
+        $adminCheck= DB::table('users')
+                     ->join('companies','companies.company_id','=','users.userid_tocompany')
+                     ->join('positions','positions.id_position','=','users.position_id')
+                     ->where([['users.userid_tocompany','=',$company_id],['users.id','=',Auth::user()->id],['positions.position','=','Admin']])
+                     ->get();
         foreach($checkCurrId as $cId)
         {   
             $checkCurrIdExistInRecord=$cId->id;
@@ -143,7 +158,21 @@ class CompanyController extends Controller
 
         }
 
+        if(count($adminCheck) != NULL){
         
+        foreach($adminCheck as $aC)
+        {   
+            $isAdmin=$aC->id;
+        }
+    }
+         else {
+
+            $isAdmin=0;
+
+
+         }
+
+
       
             $logUserCompany=DB::table('logusers')
                             ->join('users','users.id','=','logusers.log_touserid')
@@ -161,11 +190,79 @@ class CompanyController extends Controller
                         ->join('users', 'users.id','=','replies.user_replyid')
                          ->get();
        
-        return view('DetailOfProfileCompany',['compDet'=>$compDet,'getAlluser'=>$getAlluser,'testVar'=>$company_id,'getListMember'=>$getListMember,'admin'=>$admin,'owner'=>$owner,'getdata'=>$getdata,'reqDet'=>$reqDet,'checkCurrIdExistInRecord'=>$checkCurrIdExistInRecord,'logUserCompany'=>$logUserCompany,'comments'=>$comments,'reply'=>$reply]);
+        return view('DetailOfProfileCompany',['compDet'=>$compDet,'getAlluser'=>$getAlluser,'testVar'=>$company_id,'getListMember'=>$getListMember,'admin'=>$admin,'owner'=>$owner,'getdata'=>$getdata,'reqDet'=>$reqDet,'checkCurrIdExistInRecord'=>$checkCurrIdExistInRecord,'logUserCompany'=>$logUserCompany,'comments'=>$comments,'reply'=>$reply,'isAdmin'=>$isAdmin]);
 
         
     }
 
+    public function companyList(){
+
+            $companyList = DB::table('companies')
+                        
+                        ->paginate(8);
+        
+
+        
+                return view('companyList',['companyList'=>$companyList]);
+
+        }   
+
+
+        public function chooseCompanies($event_id){
+
+            date_default_timezone_set('Asia/Jakarta');
+            $currtime=date('Y-m-d H:i');    
+            
+            $expiredDate=date('Y-m-d', strtotime($currtime. ' + 7 days'));
+            $status = DB::table('Masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','REJECT']])->get();
+            $status2 = DB::table('Masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','SUBMIT']])->get();
+            $status3= DB::table('Masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','INVITED']])->get();
+
+
+            foreach($status as $st){
+
+
+                $reject= $st->Master_id;
+            }
+
+            foreach($status2 as $st2){
+        
+        
+                $submit= $st2->Master_id;
+            }
+
+            
+            foreach($status3 as $st3){
+        
+        
+                $invited= $st3->Master_id;
+            }
+
+            $companyList = DB::table('companies')
+                             ->where([['companies.company_id','!=',Auth::user()->userid_tocompany]])
+                             ->paginate(8);
+
+            $invitedMember = DB::table('mapping_requests')
+                            ->join('companies','companies.company_id','=','mapping_requests.req_fromcompany')
+                            ->join('masters','masters.master_id','=','mapping_requests.req_status')
+                            ->where([['mapping_requests.req_status','=',$invited],['mapping_requests.req_fromevent','=',$event_id]])
+                            ->get();
+                           
+                           
+            $yourMember = DB::table('mapping_requests')
+                            ->join('companies','companies.company_id','=','mapping_requests.req_fromcompany')
+                            ->join('masters','masters.master_id','=','mapping_requests.req_status')
+                            ->where([['mapping_requests.req_status','!=',$reject],['mapping_requests.req_status','!=',$invited],['mapping_requests.req_fromevent','=',$event_id]])
+                            ->get();
+
+
+        
+
+            
+        
+                return view('InviteMember',['companyList'=>$companyList,'event_id'=>$event_id,'invitedMember'=>$invitedMember,'submit'=>$submit,'yourMember'=>$yourMember]);
+
+        } 
 
     public function viewDetailCompanyFromListRequest($company_id)
     {
@@ -190,7 +287,7 @@ class CompanyController extends Controller
 
     }
 
-    public function viewCompany()
+    public function viewNewCompany()
     {   
         return view('ProfileCompany');
     }
@@ -363,7 +460,6 @@ class CompanyController extends Controller
 
         $logCompany2= new loguser();
         $logMessage2=$user->name." Joined To Company";
-        $logCompany2= new loguser();
         $logCompany2->log_message=$logMessage2;
         $logCompany2->log_touserid=$user->id;
         $logCompany2->log_createdby=Auth::user()->id;

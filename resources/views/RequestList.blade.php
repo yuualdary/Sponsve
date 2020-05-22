@@ -10,7 +10,9 @@
                     <div class="tab">
                             <button class="tablinks" onclick="openCity(event, 'Company')" id="defaultOpen">Detail Company</button>
                             <button class="tablinks" onclick="openCity(event, 'SOP')">Log Company</button>
-                         </div>
+                            <button class="tablinks" onclick="openCity(event, 'Invite')">Invite Request</button>
+ 
+                        </div>
             <div class="tabcontent"  id="Company">
 
             <div class="row mb-5">
@@ -142,11 +144,11 @@
                                 </td>
                             </tr>
                          @foreach($getAlldata as $u )
-                             @if($u->ptid_proposal === Auth::user()->id)
+                             @if($u->assignid_proposal === Auth::user()->id  )
 
                                 <tr>
                                     <td>
-                                     <b>   {{$u->name}}</b>
+                                     <b>   {{$u->company_name}}</b>
                                     </td>
                                     <td>
                                         {{$u->proposal_title}}
@@ -156,8 +158,8 @@
                                     </td>
                                    
                                     <td>
-                                        <a  href="{{url('/toCompanyFromList/'.$u->proposal_id)}}">View</a>
-
+                                        <a  href="{{url('/toDetailPropo/'.$u->proposal_id)}}">View</a>
+                                        
 
                                     </td>
                                 </tr>
@@ -200,6 +202,105 @@
                     
             </div>
         </div>
+
+
+
+        <div class="tabcontent"  id="Invite">
+
+            <div class="row mb-5">
+                <div class="col-md-9 order-2">
+
+                    <div class="row">
+                        <div class="col-md-12 mb-5">
+                            <div class="float-md-left mb-4"><h2 class="text-black h5">Invite Company</h2></div>
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                
+                        <table>
+                            <tr>
+                                <td>
+                                    Company Name
+                                    <br>
+                                </td>
+                                <td>
+                                    Requestor
+                                    <br>
+                                </td>
+                                <td>
+                                   Address
+                                   <br>
+                                </td>
+                                <td>
+                                   Event Name
+                                   <br>
+                                </td>
+
+                                <td>
+                                     Detail Company
+                                </td>
+
+                                <td>
+                                    Action    
+
+                                </td>
+                            
+                             
+                            </tr>
+                         @foreach($getAllInvite as $inv )
+
+                                <tr>
+                                    <td>
+                                     <b> {{$inv->company_name}}</b>
+                                    </td>
+                                    <td>
+                                        {{$inv->name}}
+                                    </td>
+                                    <td>    
+                                      <i>{{$inv->company_address}}</i>
+                                    </td>
+
+                                    <td>    
+                                      <i>{{$inv->title}}</i>
+                                    </td>
+                                    <td>
+
+                                    <a href="{{url('/toCompanyFromList/'.$inv->req_fromcompany)}}"> <i class="medium material-icons">create</i></a>
+                                        
+                                    </td>
+
+
+                                    <td>   
+                                      
+                                                 @if($inv->req_created_at >= $expiredDate )                    
+
+                                                             <i>This Request No Longer Available</i>
+
+                                                 @else 
+                                                             <a href="{{url('/approveRequest/'.$inv->Mapping_Req_Id)}}"> <i class="medium material-icons">check</i></a>
+                                                             <span class="tooltiptext"> Accept <span>
+    
+    
+                                                         <a href="{{url('/rejectRequest/'.$inv->Mapping_Req_Id)}}"> <i class="medium material-icons">close</i></a>
+                                                             <span class="tooltiptext"> Reject <span>
+                                                @endif
+                                     
+
+
+
+
+                                    </td>
+                   
+                                </tr>
+                             
+                          @endforeach
+                                         
+               
+                        </table>
+                     </div>
+                </div>
+            </div>
+
         <script>
         function openCity(evt, cityName) {
             var i, tabcontent, tablinks;

@@ -18,8 +18,8 @@ class CreateRepliesTable extends Migration
             $table->integer('comment_id'); 
             $table->integer('user_replyid');
             $table->string('reply');
-            $table->date('rep_created_at')->nullable();
-            $table->date('rep_modified_at')->nullable();
+            $table->datetime('rep_created_at')->nullable();
+            $table->datetime('rep_modified_at')->nullable();
             $table->integer('rep_modified_by')->nullable();
         });
     }

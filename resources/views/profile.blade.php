@@ -6,9 +6,25 @@
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     <div class="panel-heading">Update Your Picture</div>
-{{--menampilakn data user masing - masing sesuai hasil register yang mana bisa melakukan update pada profile --}}
+
+                    {{--menampilakn data user masing - masing sesuai hasil register yang mana bisa melakukan update pada profile --}}
+                    @if(session()->has('failMsg'))
+                    <div class="alert danger">
+                        <span class="closebtn">&times;</span>  
+                        <b><strong>Fail</strong> It' Look Like Your New Email Has Been Taken By Another User</b>
+                    </div>
+                    @endif
+
+
+                    @if(session()->has('sccsMsg'))
+                    <div class="alert success">
+                        <span class="closebtn">&times;</span>  
+                        <b><strong>Success</strong> Edit Your Data</b>
+                    </div>
+                    @endif
                     <div class="panel-body">
                         <form action="{{url('/updateProfile')}}" method="post" enctype="multipart/form-data">
+                            {{csrf_field()}}
                             <input type="hidden" name="_token" value="{{csrf_token()}}"/>
 
                             <div class="col-md-10 col-md-offset-1">
@@ -82,11 +98,9 @@
                                 </div>
                             </div>
 
-                            <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                                <label for="password" class="col-md-4 control-label">Password</label>
+                            {{-- <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}" >
 
                                 <div class="col-md-6">
-                                    <input id="password" type="password" class="form-control" name="password" value="" required>
 
                                     @if ($errors->has('password'))
                                         <span class="help-block">
@@ -94,7 +108,11 @@
                                     </span>
                                     @endif
                                 </div>
-                            </div>
+                            </div> --}}
+
+
+                            <input id="password" type="hidden" class="form-control" name="password" value="{{($user->password)}}" required>
+
 
 
                             <div class="form-group">
@@ -131,4 +149,19 @@
             </div>
         </div>
     </div>
+
+
+
+ <script> 
+   var close = document.getElementsByClassName("closebtn");
+        var i;
+
+        for (i = 0; i < close.length; i++) {
+        close[i].onclick = function(){
+            var div = this.parentElement;
+            div.style.opacity = "0";
+            setTimeout(function(){ div.style.display = "none"; }, 600);
+        }
+        }
+ </script>  
 @endsection

@@ -12,8 +12,8 @@
                         <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left" action="{{url('/doSearch')}}" method="get">
                             <form action="{{url('/doSearch')}}" class="site-block-top-search">
                                 <span class="icon icon-search2"></span>
-                                <input type="text" class="form-control border-0" name="search" placeholder="Search Image">
-                                <input class="btn btn-primary" type="submit" value="Search">
+                                <input type="text" class="form-control border-0" name="search" placeholder="Search Event">
+                                <button  type="submit"  class="btn btn-primary" name="action" value="name">Search</button>
                             </form>
                         </div>
 
@@ -108,28 +108,30 @@
                                     <a href="#">Management</a>
                                     <ul class="dropdown">
                                         <li class="has-children">
-                                            <a href="#">Manage Master Data</a>
-                                            <ul class="dropdown">
+                                         
                                                 <li><a href="{{url('positioninput')}}">Position</a></li>
-                                                <li><a href="{{url('MasterDataInput')}}">Master Add New Data</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="has-children">
-                                            <a href="#">Manage Category</a>
-                                            <ul class="dropdown">
-                                                <li><a href="{{url('inputcotegory')}}">Event</a></li>
-                                                <li><a href="{{url('viewAllRequest')}}">Invited Event</a></li>
-                                                <li><a href="{{url('viewdelCategory')}}">Delete</a></li>
-                                            </ul>
+                                                <li><a href="{{url('MasterDataInput')}}">Status</a></li>
+                                                <li><a href="{{url('inputcategory')}}">Category</a></li>
+
+                                          
                                         </li>
                                     </ul>
                                 </li>
+                                      
                                 
                               
                             @endif
                                 {{--//navigasi untuk para member--}}
                                 @if(Auth::user()->userid_tocompany === NULL)  
-                                <li><a href="{{url('/ProfileCompany')}}">New Company Profile</a></li>
+
+                                <li class="has-children">
+                                        <a href="#">Company</a>
+                                        <ul class="dropdown">
+    
+                                                <li><a href="{{url('/ProfileCompany')}}">New Company Profile</a></li>
+                                                <li><a href="{{url('companyList/')}}">Company List</a></li>
+        
+                                            </ul>
                                 {{-- <li class="has-children">
                                     <a href="#">Company Profile</a>
                                     <ul class="dropdown">
@@ -137,29 +139,67 @@
                                         <li><a href="{{url('/viewListCompany')}}">Company List </a></li>
                                         </ul>
                                 </li> --}}
-                                @else
-                               <li><a href="{{url('/toCompanyDet/'.Auth::user()->userid_tocompany)}}">My Company </a></li>
 
+                                <li class="has-children">
+                                    <a href="#">Event</a>
+                                    <ul class="dropdown">
+                                        <li><a href="{{url('view')}}">Event List</a></li>
+
+                                    </ul>
+                                </li>
+                                @else
+                                <li class="has-children">
+                                    <a href="#">Company</a>
+                                    <ul class="dropdown">
+
+                                            <li><a href="{{url('/toCompanyDet/'.Auth::user()->userid_tocompany)}}">My Company </a></li>
+                                            <li><a href="{{url('companyList/')}}">Company List</a></li>
+    
+                                        </ul>
+
+                                        <li class="has-children">
+                                            <a href="#">Event</a>
+                                            <ul class="dropdown">
+                                                <li><a href="{{url('view')}}">Event List</a></li>
+                                                <li><a href="{{url('CompanyEvent')}}">Company Event</a></li>
+        
+                                            </ul>
+                                        </li>
                                 @endif  
                                     
 
 
-                                <li><a href="{{url('view')}}">Event List</a></li>
+
+            
                                 <li class="has-children">
-                                    <a href="#">Manage Candidate</a>
+                                    {{-- <a href="#">Manage Candidate</a>
                                     <ul class="dropdown">
                                         <li><a href="{{url('viewuser')}}">Candidate List</a></li>
-                                    </ul>
+                                    </ul> --}}
                                   @if(Auth::user()->userid_tocompany != NULL)  
                                 <li class="has-children">
                                     <a href="#">Manage Your Event</a>
                                     <ul class="dropdown">
-                                        <li><a href="{{url('input')}}">event</a></li>
+                                        <li><a href="{{url('input')}}">Create Event</a></li>
+                                        <li><a href="{{url('viewMyEvent')}}">My Event List</a></li>
+
+                                        <li class="has-children">
+                                            <a href="#">Proposal Event List</a>
+                                            <ul class="dropdown">
+                                                    <li><a href="{{url('/ourAssign')}}">All Task</a></li>
+                                                    <li><a href="{{url('/viewMyAssignList')}}">My Task</a></li>
+                                            </ul>
+                                        </li>
+
+
                                         <li><a href="{{url('viewAllRequest')}}">Invited Event</a></li>
+
                                         <li><a href="{{url('viewdel')}}">Delete</a></li>
                                     </ul>
                                 </li>
                                 @endif
+
+                              
                                 {{-- <li><a href="{{url('cartview')}}">Shopping Cart</a></li> --}}
                         @endguest
                     </ul>

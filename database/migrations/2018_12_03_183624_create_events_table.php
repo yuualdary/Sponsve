@@ -23,6 +23,7 @@ class CreateeventsTable extends Migration
             $table->date('event_date');
             $table->string('location');
             $table->integer('category');
+            $table->integer('event_company');
             $table->text('propo');
             $table->date('event_created_at')->nullable();
             $table->date('event_modified_at')->nullable();

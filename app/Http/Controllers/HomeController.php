@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Input;
 use Image;
 use App\position;
 use App\reply;
+use App\catevent;
 
 class HomeController extends Controller
 {
@@ -41,6 +42,7 @@ class HomeController extends Controller
 
     public function UI()
     {
+        
         return view('UI');
 
     }
@@ -54,16 +56,12 @@ class HomeController extends Controller
     {
         return view('home');
     }
-    public function login()
+    public function loginForm()
     {
         return view('login');
     }
 
-    public function input()
-    {
-        $category = categories::all();
-        return view('input',['category'=>$category]);
-    }
+ 
     public function viewupdate()
     {
         return view('viewupdate');
@@ -137,6 +135,55 @@ class HomeController extends Controller
 
        
         $event->save();
+
+        $coba=$event->event_id;
+     
+        $checklist = $_POST['catevent_tocategory'];
+        
+        $countcheck = count($checklist);
+
+    foreach ($request->catevent_tocategory as $cat)
+    {
+
+        $catevent = new catevent();
+        $catevent->catevent_toevent = $coba;
+       
+  
+        
+        $catevent->catevent_tocategory = $cat;
+        
+        
+        $catevent->save();  
+
+    }
+
+        // $check=0;
+        // for ($check=0; $check<$countcheck;$check++){
+
+            
+        // $data= array($checklist);
+        // list($checklist) = $data;
+        //     $cb=$request->catevent_tocategory;
+        //     // $test=implode(",",$data);
+        //     dd($cb);
+        //     $catevent = new catevent();
+        //     $catevent->catevent_toevent = $coba;
+           
+      
+            
+        //     $catevent->catevent_tocategory = $test;
+            
+            
+        //     $catevent->save();  
+
+        
+        // dd($countcheck);
+
+        // $catevent = new catevent();
+        // $catevent->catevent_event = $event;
+        // $catevent->catevent_category = $request->catevent_category;
+        // $catevent->save();  
+
         return redirect('/view');
     }
     public function view()
@@ -276,21 +323,20 @@ class HomeController extends Controller
 
     public function profile()
     {
-        //view untuk profile
-        // $viewProfile =DB::table('users')
-        // ->join('positions','users.position_id','=','positions.id')
-        // ->select('users.*','positions.position')
-        // ->get();
-
-        // $position=DB::table('users')
-        //             ->join('positions','positions.id_position','=','users.position_id')
-        //             ->get();
+        $currentDataUser=DB::table('users')
+                        ->where([['users.id','=',Auth::user()->id]])
+                        ->get();
+        
+                        $user = $currentDataUser;
         $position=DB::table('positions')
                 ->where('positions.id_position','=',Auth::user()->position_id)
                 ->get();
        
-        
-        return view('profile', array('user' => Auth::user()),compact('position') );
+        foreach($user as $user)
+        {
+            $user;
+        }
+        return view('profile',['user'=>$user,'position'=>$position]);
     
 
     }
@@ -299,12 +345,27 @@ class HomeController extends Controller
     public function updateProfile(Request $request) {
         //Melakukan update pada profile masing - masing user
         
-       $position=Position::all();
+       $checkEmail=DB::table('users')
+                ->where([['users.email','=',$request->email]])
+                ->get();
+        $position=Position::all();
         $user=Auth::user();
         $user_id = $user->id;
+
+        
         $user->name=$request->name;
+        
+        if(count($checkEmail) == NULL || $request->email == Auth::user()->email ){
         $user->email=$request->email;
-        $user->password=bcrypt($request->password);
+        }
+
+
+        else{
+        
+            return back()->with('failMsg','Success edit company .');
+
+        }
+        $user->password=($request->password);
         if($request->hasFIle('gender'))
         {
             $user->gender=$request->gender;
@@ -338,7 +399,7 @@ class HomeController extends Controller
             $user->position_id=$request->position_id;
          
             $user->save();
-            return redirect('/');
+            return back()->with('sccsMsg','Success edit company .');
     }
     public function updateUser(Request $request) {
  
@@ -385,10 +446,7 @@ class HomeController extends Controller
     }
 
     //category=====================
-    public function inputcotegory()
-    {
-        return view('inputcotegory');
-    }
+  
     public function eventCategory(Request $request)
     {
 

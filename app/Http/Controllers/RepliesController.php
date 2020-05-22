@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Reply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Support\Facades\DB;
+
 class RepliesController extends Controller
 {
     /**
@@ -25,6 +28,29 @@ class RepliesController extends Controller
     public function create()
     {
         //
+    }
+
+
+
+    public function RepComment(request $request)
+    {   
+    
+       date_default_timezone_set('Asia/Jakarta');
+        $currtime=date('Y-m-d H:i');
+        $currDate=date('Y-m-d', strtotime($currtime. ' + 7 days'));
+        $reply = new reply();
+        $reply->comment_id=$request->comment_id;
+        $reply->user_replyid=auth::user()->id;
+        $reply->reply=$request->reply;
+        $reply->rep_created_at=$currtime;
+
+        $reply->save();
+        // return response()->json();
+        return \App::make('redirect')->back()->with('flash_success', 'Thank you,!');
+
+
+
+
     }
 
     /**
@@ -102,6 +128,24 @@ class RepliesController extends Controller
 
         }
         return 3;
+    }
+
+
+
+       
+    public function deleteReplies($replies_id)
+    {
+
+       
+        $deleteReplies=DB::table('replies')
+                       ->where([['replies.replies_id','=',$replies_id]])
+                       ->delete();
+
+      
+        return back()->with('successDelReplies','success');
+        
+        
+
     }
 
 

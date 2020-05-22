@@ -19,7 +19,7 @@ class CreateLogusersTable extends Migration
             $table->string('log_Status')->nullable();
             $table->integer('log_touserid')->nullable();
             $table->integer('log_fromcompanyid')->nullable();
-
+            $table->integer('log_fromproposal')->nullable(); 
             $table->integer('log_createdby')->nullable();
             $table->date('log_createdon')->nullable();
             $table->date('log_modifiedon')->nullable();

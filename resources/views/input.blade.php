@@ -8,7 +8,7 @@
                     <div class="panel-heading">event Your Picture</div>
 {{--melakukan event pada product--}}
                     <div class="panel-body">
-                        <form action="{{url('eventProduct')}}" method="post" enctype="multipart/form-data">
+                        <form action="{{url('createEvent')}}" method="post" enctype="multipart/form-data">
                                 {{ csrf_field() }}
 
 
@@ -112,6 +112,19 @@
                                     </select>
                     
                                 </div>
+                            </div>
+                            <div class="form-group">
+
+                            @foreach($category as $c)
+
+                                     <div class="col-md-6">
+                                         <input type="checkbox" class="form-control" id="catevent_category" name="catevent_tocategory[]" value="{{$c->category_id}}">
+                                             <label for="catevent_category">{{$c->categoryname}}</label>
+                            
+                               
+                
+                            @endforeach
+                                    </div>
                             </div>
 
 

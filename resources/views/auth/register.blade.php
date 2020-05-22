@@ -8,7 +8,7 @@
                 <div class="panel-heading">Register</div>
                 {{--Tampilan untuk melakukan register yang mana menggunakan fungsi auth untuk login--}}
 
-                <div class="panel-body">
+                <div class="" style="padding:20px;">
                     <form class="form-horizontal" action="{{ url('/register') }}" method="POST" enctype="multipart/form-data" role="form">
                         {{ csrf_field() }}
 
@@ -75,7 +75,7 @@
                             <div class="form-group{{ $errors->has('image') ? ' has-error' : '' }}">
                                 <label for="image" class="col-md-4 control-label">Image</label>
 
-                                <div class="col-md-6">
+                                <div class="col-md-6" style="margin-top:10px">
                                     <input type="file" name="image">
 
                                 </div>
