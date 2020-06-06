@@ -58,7 +58,7 @@
                             @foreach($status as $status)
                             <input type="hidden" name="statusproposal_id" value="{{ $status->Master_id }}" >
                         @endforeach
-                            @foreach($getPTName as $value)
+                            {{-- @foreach($getPTName as $value)
                             <div class="form-group{{ $errors->has('ptid_proposal') ? ' has-error' : '' }}">
                                 <label for="ptid_proposal" class="col-md-4 control-label">To</label>
                                <div class="col-md-6">
@@ -69,7 +69,7 @@
                                  
                                 </div>
                            </div>
-                            @endforeach
+                            @endforeach --}}
                             <br>
 
                             <div class="form-group{{ $errors->has('proposal_description') ? ' has-error' : '' }}">

@@ -5,7 +5,7 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+// require('./bootstrap');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -13,38 +13,38 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('chat-messages', require('./components/ChatMessages.vue'));
-Vue.component('chat-form', require('./components/ChatForm.vue'));
+// Vue.component('chat-messages', require('./components/ChatMessages.vue'));
+// Vue.component('chat-form', require('./components/ChatForm.vue'));
 
-const app = new Vue({
-    el: '#app',
+// const app = new Vue({
+//     el: '#app',
     
-    data: {
-        messages: []
-    },
+//     data: {
+//         messages: []
+//     },
 
-    created() {
-        this.fetchMessages();
+//     created() {
+//         this.fetchMessages();
 
-        Echo.private('chat')
-            .listen('MessageSent', (e) => {
-                this.messages.push({
-                    message: e.message.message,
-                    user: e.user
-                });
-            });
-    },
+//         Echo.private('chat')
+//             .listen('MessageSent', (e) => {
+//                 this.messages.push({
+//                     message: e.message.message,
+//                     user: e.user
+//                 });
+//             });
+//     },
 
-    methods: {
-        fetchMessages() {
-            axios.get('/messages').then(response => {
-                this.messages = response.data;
-            });
-        },
-        addMessage(message) {
-            this.messages.push(message);
+//     methods: {
+//         fetchMessages() {
+//             axios.get('/messages').then(response => {
+//                 this.messages = response.data;
+//             });
+//         },
+//         addMessage(message) {
+//             this.messages.push(message);
 
-            axios.post('/messages', message).then(response => {});
-        }
-    }
-});
+//             axios.post('/messages', message).then(response => {});
+//         }
+//     }
+// });

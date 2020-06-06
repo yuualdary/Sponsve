@@ -10,7 +10,7 @@
                 <div class="panel-body">  
                     
                 
-                    <div class="container">
+                    <div class="">
                             <div class="tab">
                                     <button class="tablinks" onclick="openCity(event, 'CurrentEvt')" id="defaultOpen">Invited Event</button>
                                     <button class="tablinks" onclick="openCity(event, 'DoneEvt')">Done Event</button>
@@ -27,9 +27,9 @@
                                                 <div class="float-md-left mb-4"><h2 class="text-black h5">Current Event</h2></div>
                                             </div>
                                         </div>
-                                        <div class="row mb-5">
-                                    
-                                            <table>
+                                        <div class="row" style="padding-left:20px">
+                        
+                                                <table class="table table-bordered">
                                                 <tr>
                                                     <td>
                                                         Event Name
@@ -90,8 +90,9 @@
                                                 <div class="float-md-left mb-4"><h2 class="text-black h5">Running Event</h2></div>
                                             </div>
                                         </div>
-                                        <div class="row mb-5">
-                                            <table>
+                                        <div class="row" style="padding-left:20px">
+                        
+                                                <table class="table table-bordered">
                                                 <tr>
                                                     <td>
                                                         Owner
@@ -122,7 +123,7 @@
                                                         <b> {{$done->company_name}}</b>
                                                         </td>
                                                         <td>
-                                                            {{$done->event_date}}
+                                                            {{$done->event_end}}
                                                         </td>
                                                         <td>    
                                                         <i>{{$done->title}}</i>
@@ -135,7 +136,7 @@
                                                         <td>
                                                             {{-- <a  href="{{url('/toDetailPropo/'.$done->proposal_id)}}">View</a>
                                                             <a  href="{{url('/toDetailPropo2/'.$done->proposal_id)}}">Revision</a> --}}
-                                                        <a class="btn btn-primary" title="Chat Live" data-mycompanyid="{{$done->event_id}}" data-mycompanyname="{{$done->title}}"  data-mycompanyphoto="{{ url($done->photo) }}"  data-mymappingid="{{$done->Mapping_Req_Id}}" style="color:white"  data-toggle="modal" data-target="#edit">Review</a>
+                                                        <a  class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa" title="Review Event" data-mycompanyid="{{$done->event_id}}" data-mycompanyname="{{$done->title}}"  data-mycompanyphoto="{{ url($done->photo) }}"  data-mymappingid="{{$done->Mapping_Req_Id}}" style="color:white"  data-toggle="modal" data-target="#edit">Review   <i class="small material-icons right">rate_review</i></a>
 
 
                                                         </td>
@@ -152,8 +153,6 @@
                                         </div>
                                 
                                     </div>
-                                        <br>
-                                        <br>
                                     
                                 </div>
                             </div>
@@ -170,25 +169,27 @@
                                                     <div class="float-md-left mb-4"><h2 class="text-black h5">Your Review </h2></div>
                                                 </div>
                                             </div>
-                                            <div class="row mb-5">
-                                                <table>
+                                            <div class="row" style="padding-left:20px">
+                        
+                                                    <table class="table table-bordered">
                                                     <tr>
                                                         <td>
-                                                            Owner
-                                                            <br>
+                                                            Event Owner
                                                         </td>
                                                         <td>
                                                             Event Date
-                                                            <br>
                                                         </td>
                                                         <td>
-                                                        Event
-                                                        <br>
+                                                            Event Name
                                                         </td>
-                                                    
                                                         <td>
-                                                            Your Rating
-                                                            <br>
+                                                            Review
+                                                        </td>
+                                                        <td>
+                                                            Rating
+                                                        </td>
+                                                        <td>
+                                                            Score
                                                         </td>
                                                     </tr>
                                                 
@@ -199,7 +200,7 @@
                                                         <b> {{$isrev->name}}</b>
                                                         </td> 
                                                         <td>
-                                                            {{$isrev->event_date}}
+                                                            {{$isrev->event_end}}
                                                         </td>
                                                         <td>    
                                                         <i>{{$isrev->title}}</i>
@@ -268,12 +269,12 @@
                   
                     <div class="form-group">
                         <label for="review_value">Your Review</label>
-                        <textarea name="review_value" id="review_value" value="review_value"  width="30px" class="form-control"></textarea>
+                        <textarea name="review_value" id="review_value" value="review_value"  width="30px" class="form-control" required></textarea>
                     </div>
 
                     <div class="form-group">
                         <label for="review_rating">Rating Scale</label>
-                        <input name="review_rating" id="review_rating" value=" "  width="30px" class="form-control"></textarea>
+                        <input name="review_rating" id="review_rating" value=" "  width="30px" class="form-control" required></textarea>
                         
                     </div>
                 

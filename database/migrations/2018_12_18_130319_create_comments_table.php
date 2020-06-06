@@ -20,9 +20,9 @@ class CreateCommentsTable extends Migration
             $table->string('name');
             $table->text('comment');
             $table->integer('user_commentid');
-            $table ->integer('item_id');
-            $table ->integer('company_commentid');
-            $table ->integer('proposal_commentid');
+            $table ->integer('item_id')->nullable();
+            $table ->integer('company_commentid')->nullable();
+            $table ->integer('proposal_commentid')->nullable();
 
             $table->datetime('comment_created_at')->nullable();
             $table->datetime('comment_modified_at')->nullable();

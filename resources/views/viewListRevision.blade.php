@@ -19,8 +19,9 @@
                             <div class="float-md-left mb-4"><h2 class="text-black h5">Edit Profile</h2></div>
                         </div>
                     </div>
-                    <div class="row mb-5">
-                        <table>
+                    <div class="row" style="padding-left:20px">
+                        
+                            <table class="table table-bordered">
                             <tr>
                                 <td>
                                     From

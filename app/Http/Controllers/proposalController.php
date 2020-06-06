@@ -74,6 +74,7 @@ class proposalController extends Controller
     foreach($getAssignData as $ga)
     {
         $Assigned=$ga->req_userid;
+        
     }
 
 
@@ -87,6 +88,7 @@ class proposalController extends Controller
         $proposal->proposal_description=$request->proposal_description;
         $proposal->proposal_file=$pfile;
         $proposal->statusproposal_id=$request->statusproposal_id;
+        $proposal->proposal_created_by=Auth::user()->id;
    
         $proposal->save();
 
@@ -265,10 +267,10 @@ class proposalController extends Controller
             
             $getProposalData=DB::table('proposals')
                     ->join('companies','companies.company_id','=','proposals.userid_proposal')
-                    ->join('events','events.event_id','=','proposals.ptid_proposal')
+                    ->join('events','events.event_id','=','proposals.eventid_proposal')
                     ->where('proposals.proposal_id','=',$proposal_id)
-                     ->Get();
-
+                     ->get();
+            // dd($getProposalData);
           $comments = DB::table('comments')
                      ->join('users', 'users.id','=','comments.user_commentid')  
                      ->where('comments.proposal_commentid','=',$proposal_id)                    
@@ -284,7 +286,7 @@ class proposalController extends Controller
         foreach($getProposalData as $ck){
 
             $checkStatus= $ck->statusproposal_id;
-            $checkUser=$ck->userid_proposal;
+            $checkUser=$ck->proposal_created_by;
             $checkId=$ck->proposal_id;
             $checkAssign=$ck->assignid_proposal;
         }
@@ -339,14 +341,16 @@ class proposalController extends Controller
 
                             $status2=DB::table('masters')
                                       ->where([['prefix','=','STATUSPROPOSAL'],['text1','=','APPROVED'],])->get();
-
-                                      
-                          foreach($status as $st1)
+ 
+                          foreach($status2 as $stA)
                           {
   
-                              $id_submit = $st1->Master_id;
+                              $id_submit = $stA->Master_id;
              
+
                           }
+
+
                             $proposal2=proposal::find($request->proposal_id);
 
                             $proposal2->statusproposal_id=$id_submit;
@@ -355,7 +359,7 @@ class proposalController extends Controller
                             $proposal2->save();
 
 
-                            $getProposalid = $proposal->proposal_id;
+                            $getProposalid = $proposal2->proposal_id;
                             $company=DB::table('companies')
                                     ->where([['companies.company_id','=',Auth::user()->userid_tocompany]])
                                     ->get();
@@ -395,6 +399,8 @@ class proposalController extends Controller
                                     $id_submit = $st1->Master_id;
                    
                                 }
+
+
                                  $proposal=proposal::find($request->proposal_id);
 
                                   $proposal->statusproposal_id=$id_submit;
@@ -509,7 +515,7 @@ class proposalController extends Controller
                      $profileImage->getClientOriginalExtension();
              
                      $upload_path='aset/';
-                     $pfile=$upload_path . $profileImageSaveAsName;
+                     $pfile=$profileImageSaveAsName;
                      $success=$profileImage->move($upload_path,$profileImageSaveAsName);
                 }
                      $status=DB::table('masters')
@@ -750,16 +756,17 @@ class proposalController extends Controller
                         ->join('users','users.id','=','proposals.assignid_proposal')
                         ->join('masters','masters.master_id','=','proposals.statusproposal_id')
                         ->where([['proposals.ptid_proposal','=',auth::user()->userid_tocompany]])
-                        ->get();
-
+                        ->orwhere([['proposals.userid_proposal','=',auth::user()->userid_tocompany]])
+                        ->paginate(8);
+            
 
 
             
-            $viewall= proposal::paginate(8);
+           
 
                     
             
-            return view('ourAssign',['listMyPropo'=>$listMyPropo,'viewall'=>$viewall]);
+            return view('ourAssign',['listMyPropo'=>$listMyPropo]);
     
 }
 
@@ -818,16 +825,15 @@ class proposalController extends Controller
                         ->join('users','users.id','=','proposals.assignid_proposal')
                         ->join('masters','masters.master_id','=','proposals.statusproposal_id')
                         ->where([['proposals.assignid_proposal','=',auth::user()->id]])
-                        ->orwhere([['proposals.userid_proposal','=',auth::user()->id]])
-                        ->get();
+                        ->orwhere([['proposals.userid_proposal','=',auth::user()->userid_tocompany]])
+                        ->paginate(8);
        
 
             
-            $viewall= proposal::paginate(8);
 
                     
             
-            return view('viewMyAssignList',['myAssignList'=>$myAssignList,'viewall'=>$viewall]);
+            return view('viewMyAssignList',['myAssignList'=>$myAssignList]);
 
      }
 
@@ -846,7 +852,7 @@ class proposalController extends Controller
         $detailProposal= DB::table('proposals')
                        ->join('companies','companies.company_id','=','proposals.ptid_proposal')
                        ->join('events','events.event_id','=','proposals.eventid_proposal')
-                       ->join('users','users.id','=','proposals.assignid_proposal')
+                       ->join('users','users.id','=','proposals.proposal_created_by')
                        ->join('masters','masters.master_id','=','proposals.statusproposal_id')
                        ->join('positions','positions.id_position','=','users.position_id')
                        ->where([['proposals.proposal_id','=',$proposal_id]])
@@ -882,6 +888,7 @@ class proposalController extends Controller
             $reject=$gj->Master_id;
       }
 
+
       foreach($getStatusRevision as  $gr){
         $revision=$gr->Master_id;
     }
@@ -908,7 +915,7 @@ class proposalController extends Controller
 
         $changePIC->save();
 
-        return back()->with('successMsg','Proposal Success Sended .');
+        return back()->with('successAdd','Proposal Success Sended .');
         
         
 

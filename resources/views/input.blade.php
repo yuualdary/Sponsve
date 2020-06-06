@@ -42,15 +42,29 @@
                             </div>
 
 
-                            <div class="form-group{{ $errors->has('event_date') ? ' has-error' : '' }}">
-                                <label for="event_date" class="col-md-4 control-label">Event Date</label>
+                            <div class="form-group{{ $errors->has('event_start') ? ' has-error' : '' }}">
+                                    <label for="event_start" class="col-md-4 control-label">Event Start</label>
+    
+                                    <div class="col-md-6">
+                                        <input id="event_start" type="date" class="form-control" name="event_start"  value="{{ old('event_start') }}"  required>
+    
+                                        @if ($errors->has('event_start'))
+                                            <span class="help-block">
+                                            <strong>{{ $errors->first('event_start') }}</strong>
+                                        </span>
+                                        @endif
+                                    </div>
+                                </div>
+    
+                            <div class="form-group{{ $errors->has('event_end') ? ' has-error' : '' }}">
+                                <label for="event_end" class="col-md-4 control-label">Event End</label>
 
                                 <div class="col-md-6">
-                                    <input id="event_date" type="date" class="form-control" name="event_date" required>
+                                    <input id="event_end" type="date" class="form-control" name="event_end"  value="{{ old('event_end') }}" required>
 
-                                    @if ($errors->has('event_date'))
+                                    @if ($errors->has('event_end'))
                                         <span class="help-block">
-                                        <strong>{{ $errors->first('event_date') }}</strong>
+                                        <strong>{{ $errors->first('event_end') }}</strong>
                                     </span>
                                     @endif
                                 </div>
@@ -74,7 +88,7 @@
                                 <label for="location" class="col-md-4 control-label">Location</label>
 
                                 <div class="col-md-6">
-                                    <input id="location" type="text" class="form-control" name="location" required>
+                                    <input id="location" type="text" class="form-control" name="location"  value="{{ old('location') }}" required>
 
                                     @if ($errors->has('location'))
                                         <span class="help-block">
@@ -103,7 +117,7 @@
 
 
 
-                                <div class="col-md-6">
+                                {{-- <div class="col-md-6">
                                     <select class="form-control" id="category" name="category">
                                 
                                     @foreach($category as $c)
@@ -112,21 +126,22 @@
                                     </select>
                     
                                 </div>
-                            </div>
-                            <div class="form-group">
+                            </div> --}}
 
                             @foreach($category as $c)
+                            <div class="form-group">
+
 
                                      <div class="col-md-6">
-                                         <input type="checkbox" class="form-control" id="catevent_category" name="catevent_tocategory[]" value="{{$c->category_id}}">
+                                     <input  type="checkbox" id="catevent_category" name="catevent_tocategory[]" value="{{$c->category_id}}"{{ (is_array(old('catevent_tocategory')) and in_array('$c->category_id', old('catevent_tocategory'))) ? ' checked' : '' }}>
                                              <label for="catevent_category">{{$c->categoryname}}</label>
                             
-                               
+                                            </div>
+                                        </div>
+            
                 
                             @endforeach
-                                    </div>
-                            </div>
-
+                        
 
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">

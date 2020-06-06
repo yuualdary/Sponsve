@@ -8,6 +8,8 @@ use App\Reply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\event;
+use App\Events\MessageSent;
+
 use Illuminate\Support\Facades\DB;
 
 
@@ -62,7 +64,8 @@ class commentController extends Controller
     public function store(Request $request)
     {
         date_default_timezone_set('Asia/Jakarta');
-        $currtime=date('Y-m-d H:m');   
+        $currtime=date('Y-m-d H:i');   
+        // dd($currtime);
         $cobaiditem = $request->input('company_commentid');
         $test=$request->input('proposal_commentid');
        
@@ -91,6 +94,13 @@ class commentController extends Controller
                     $comment->proposal_commentid=$request->proposal_commentid;
                     $comment->comment_created_at=$currtime;
                     $comment->save();
+
+                    // $user=Auth::user();
+                    // $message = $user->message()->create([
+                    //     'message' => $request->input('comment')
+                    //   ]);
+
+                    // broadcast(new MessageSent($user, $message))->toOthers();
 
            return back();
         

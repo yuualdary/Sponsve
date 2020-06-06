@@ -89,7 +89,7 @@ class HomeController extends Controller
         //         'caption' => 'required',
         //         'photo' => 'required|mimes:jpeg,bmp,png',
         //         'location'=>'required',
-        //         'event_date'=>'required',
+        //         'event_end'=>'required',
         //         'category'=>'required'
 
         //     ]);
@@ -127,7 +127,7 @@ class HomeController extends Controller
         $event->title = $request->title;
         $event->caption = $request->caption;
         $event->photo = $filename;
-        $event->event_date=$request->event_date;
+        $event->event_end=$request->event_end;
 
         $event->location=$request->location;
         $event->category=$request->category;
@@ -366,10 +366,9 @@ class HomeController extends Controller
 
         }
         $user->password=($request->password);
-        if($request->hasFIle('gender'))
-        {
+      
             $user->gender=$request->gender;
-        }
+        
      
 //        if($request->hasFile('image')){
 //            $image = $request->file('image');

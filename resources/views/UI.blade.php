@@ -20,8 +20,8 @@
                         <!-- Add Pagination -->
                         <div class="swiper-pagination" style="margin-bot: 100px"></div>
                         <!-- Add Arrows -->
-                        <div class="swiper-button-next" style="margin-right: 170px; color: #F55151;"></div>
-                        <div class="swiper-button-prev" style="margin-left: 170px; color: #F55151;"></div>
+                        <div class="swiper-button-next" style="margin-right: 170px; color: #3097D1;"></div>
+                        <div class="swiper-button-prev" style="margin-left: 170px; color: #3097D1;"></div>
             </div>
         </div>
         <div class="site-section site-section-sm site-blocks-1 bg-light">
@@ -29,19 +29,22 @@
                   <div class="row bg-light">
                     <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="">
                         <div class="text">
-                            <h2 class="text-uppercase">1. Free Shipping</h2>
+
+                            <h2 class="text-uppercase">Discover Event & Company</h2>
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer accumsan tincidunt fringilla.</p>
+
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="100">
                       <div class="text">
-                        <h2 class="text-uppercase">Free Returns</h2>
+                        <h2 class="text-uppercase">Document Contract</h2>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer accumsan tincidunt fringilla.</p>
+
                       </div>
                     </div>
                     <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="200">
                       <div class="text">
-                        <h2 class="text-uppercase">Customer Support</h2>
+                        <h2 class="text-uppercase">Forum Discussion</h2>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer accumsan tincidunt fringilla.</p>
                       </div>
                     </div>
@@ -51,7 +54,7 @@
         <div class="site-section block-3 site-blocks-2 bg-white">
                 <div class="container" >
                   <div class="row justify-content-center bg-white">
-                    <div class="col-md-7 site-section-heading text-center pt-4">
+                    <div class="col-md-12 site-section-heading text-center pt-4">
                       <h2>Upcoming Event</h2>
 
 
@@ -70,11 +73,11 @@
                                       </figure>
                                     
                                       <h3><b><a href="{{url('detail/'.$i->event_id)}}">{{$i->title}}</a></b></h3>
-                                    <h3>{{$i->event_date}}</h3>
+                                    <h3>{{$i->event_end}}</h3>
                                       @foreach ($categoryForEvent as $catforevt)
                                       @if($i->event_id === $catforevt->catevent_toevent)
   
-                                      <i><b> <li style="float:left; display:inline-block;">#{{$catforevt->categoryname}}<a>,</a></li></b></i>
+                                      <i><b> <li style="float:left; display:inline-block;"><i class="medium material-icons" style="color:#3097D1;">local_offer</i>{{$catforevt->categoryname}}<a>,</a></li></b></i>
                                       @endif
                                        @endforeach                                    <p class="text-primary font-weight-bold">{{$i->location}}</p>
                                       <br>

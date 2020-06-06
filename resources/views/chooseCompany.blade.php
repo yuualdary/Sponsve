@@ -34,7 +34,7 @@
                         <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                             <div class="block-4 text-center border">
                                 <div class="block-4-text p-4">
-                                <i><b style=" color:#000000"> <img src= "{{url('/' .$i->company_photo)}}" style="width:30px; height:30px; float:left; border-radius:50%; margin-right:25px;"><a href="{{url('toCompanyFromList/'.$i->company_id)}}"> {{  $i->company_name }} </b></a></i>&nbsp;&nbsp;
+                                <i><b style=" color:#000000"> <img src= "{{url('/' .$i->company_photo)}}" style="width:30px; height:30px; float:left; border-radius:50%; margin-right:25px;"><a href="{{url('toCompanyFromList/'.$i->company_id)}}"> {{$i->company_name}} </b></a></i>&nbsp;&nbsp;
                                    <br>
                                    <br>
                             

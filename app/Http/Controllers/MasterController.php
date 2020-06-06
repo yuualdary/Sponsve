@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Validator;
 use App\positions;
 use App\master;
+use App\categories;
 
 class MasterController extends Controller
 {

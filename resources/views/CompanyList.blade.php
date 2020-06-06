@@ -3,7 +3,10 @@
     <div class="bg-light py-3">
         <div class="container">
             <div class="row">
-                <div class="col-md-12 mb-0"><a href="{{ url('/') }}">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Shop</strong></div>
+                <div class="col-md-12 mb-0"><a href="{{ url('/') }}">Home</a> 
+                    {{-- <label class="text">Manage Your Event</label><span class="mx-2 mb-0">/</span>  --}}
+                    <span class="mx-2 mb-0">/</span>
+                    <strong class="text-black">Company List</strong>
             </div>
         </div>
     </div>
@@ -20,7 +23,7 @@
                             <div class="float-md-left mb-4"><h2 class="text-black h5">Company List</h2></div>
                         </div>
                     </div>
-{{--menampilkan product yang sudah dibuat--}}
+                    {{--menampilkan product yang sudah dibuat--}}
                     <div class="row mb-5">
                         @foreach($companyList as $i)
                         <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
@@ -49,7 +52,8 @@
                         {{-- {{$ins->appends(['search'=>request()->search])->links()}} --}}
                         {{--{{$product->appends([request()->query])->links()}}--}}
                     </p>
+                </div>    
             </div>
         </div>
-
+    </div>
 @endsection

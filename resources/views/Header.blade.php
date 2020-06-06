@@ -13,13 +13,13 @@
                             <form action="{{url('/doSearch')}}" class="site-block-top-search">
                                 <span class="icon icon-search2"></span>
                                 <input type="text" class="form-control border-0" name="search" placeholder="Search Event">
-                                <button  type="submit"  class="btn btn-primary" name="action" value="name">Search</button>
+                                <button  type="submit"  class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa" name="action"  title="Search Event" value="name">Search  <i class="small material-icons">search</i></button>
                             </form>
                         </div>
 
-                        <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
+                        <div class="col-12 mb-3 mb-md-0 col-md-4 order- order-md-2 text-center">
                             <div class="site-logo">
-                                <a href="{{ url('/') }}" class="js-logo-clone">ScriptSi</a>
+                                <a href="{{ url('/') }}" class="js-logo-clone">SponsVe</a>
                             </div>
                         </div>
 
@@ -42,7 +42,7 @@
                                             @endif --}}
 
                                             <li style="width:20px;margin-right:10px;margin-top:5px;">
-                                                <a href="{{url('/RequestList/'.Auth::user()->userid_tocompany)}}"><i class="medium material-icons" style="width:50px; height:50px; position:absolute; top:1px; right:5px; border-radius:50%;">notifications</i></a>
+                                                <a href="{{url('/RequestList/'.Auth::user()->userid_tocompany)}}"><i class="medium material-icons"  style="width:50px; height:50px; position:absolute; top:1px; right:5px; border-radius:50%; color:#3097D1;">notifications</i></a>
                                             </li>
                                             
                                             <li class="dropdown">
@@ -183,9 +183,9 @@
                                         <li><a href="{{url('input')}}">Create Event</a></li>
                                         <li><a href="{{url('viewMyEvent')}}">My Event List</a></li>
 
-                                        <li class="has-children">
-                                            <a href="#">Proposal Event List</a>
-                                            <ul class="dropdown">
+                                        <li class="has-children js-clone-nav d-none d-md-block">
+                                            <a href="#">Contract Event List</a>
+                                            <ul class="dropdown ">
                                                     <li><a href="{{url('/ourAssign')}}">All Task</a></li>
                                                     <li><a href="{{url('/viewMyAssignList')}}">My Task</a></li>
                                             </ul>
@@ -194,7 +194,6 @@
 
                                         <li><a href="{{url('viewAllRequest')}}">Invited Event</a></li>
 
-                                        <li><a href="{{url('viewdel')}}">Delete</a></li>
                                     </ul>
                                 </li>
                                 @endif

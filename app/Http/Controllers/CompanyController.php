@@ -12,12 +12,13 @@ use App\Http\Requests\AddYourEmployeePost;
 use Image;
 use Illuminate\Support\Facades\Input;
 use App\loguser;
+use App\Rules\validMail;
 
 class CompanyController extends Controller
 {
     //
 
-    public function createCompany(AddYourEmployeePost $request)
+    public function createCompany(Request $request)
     {
         // $validatedData = $request->validated();
 
@@ -27,17 +28,33 @@ class CompanyController extends Controller
                     // }
 
              if(Auth::user()->userid_tocompany == NULL){
+
+
+                
+                // $companyEmail=DB::table('companies')
+                // ->where([['companies.website_address','=',$request->website_address]])
+                // ->get();
+                $mail=$request->website_address;
                     
-                    $validator = Validator::make($request->all(),
+                // if(count($companyEmail)!=NULL){
+
+
+                //     return response()->json(['fail'=>'This email already taken']);
+
+                // }
+                    $validator = $request->validate(
                         [
-                            'company_name' => 'required|unique:companies',
-                            'website_address' => 'required|unique:companies',
+                            'website_address'=>['required', new validMail($mail)],
+
+                            // 'company_name' => 'required|unique:companies',
 
                         
                         ]);
                     if($validator->fails())
                     {
+                        
                         return redirect()->back()->withErrors($validator);
+
                     }
                 
                     if($request->hasFile('company_photo'))
@@ -63,6 +80,7 @@ class CompanyController extends Controller
                             $company =new Company();
                             $company->company_name = $request->company_name;
                             $company->company_address=$request->company_address;
+                            $company->status_company=$request->status_company;
                             $company->company_phone=$request->company_phone;
                             $company->website_address=$request->website_address;
                             $company->social_media=$request->social_media;
@@ -182,7 +200,7 @@ class CompanyController extends Controller
             
             $comments = DB::table('comments')
                         ->join('users', 'users.id','=','comments.user_commentid')
-                        ->where('comments.company_commentid','=',$company_id)                    
+                        ->where([['comments.company_commentid','=',$company_id],['comments.proposal_commentid','=',NULL],['comments.item_id','=',NULL]])                    
                         ->get();
 
             $reply = DB::table('replies')
@@ -337,6 +355,7 @@ class CompanyController extends Controller
                             
 
                                 $company->company_address=$request->company_address;
+                                $company->status_company=$request->status_company;
                                 $company->company_phone=$request->company_phone;
                                 $company->website_address=$request->website_address;
                                 $company->social_media=$request->social_media;

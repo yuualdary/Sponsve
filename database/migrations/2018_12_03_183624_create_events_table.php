@@ -20,7 +20,9 @@ class CreateeventsTable extends Migration
             $table->string('title');
             $table->text('caption');
             $table->text('photo');
-            $table->date('event_date');
+            $table->date('event_start');
+
+            $table->date('event_end');
             $table->string('location');
             $table->integer('category');
             $table->integer('event_company');

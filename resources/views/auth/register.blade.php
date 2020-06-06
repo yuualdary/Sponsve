@@ -45,7 +45,7 @@
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control" name="password" required>
-
+                                <i style="font-size: 11px;font-style:italic;">The password must be at least 6</i>
                                 @if ($errors->has('password'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('password') }}</strong>
@@ -68,8 +68,8 @@
 
                             <select class="form-control" id="type" name="gender">
                             <option>--Choose Your Gender--</option>
-                            <option>Male</option>
-                            <option>Female</option>
+                            <option value="Male" {{old('gender')=="Male" ? 'selected':''}}>Male</option>
+                            <option value="Female" {{old('gender')=="Female" ? 'selected':''}}>Female</option>
                             </select>
                         </div>
                             <div class="form-group{{ $errors->has('image') ? ' has-error' : '' }}">

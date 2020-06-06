@@ -28,8 +28,8 @@ class RequestorController extends Controller
         date_default_timezone_set('Asia/Jakarta');
         $currtime=date('Y-m-d H:i');
 
-        $expiredDate=date('Y-m-d', strtotime($currtime. ' + 7 days'));
-        // dd($currtime);
+        $expiredDate=date('Y-m-d', strtotime($currtime. ' - 7 days'));
+        //  dd($expiredDate);
         $status=DB::table('masters')->where([['prefix','=','STATUSREQUEST'],['text1','=','SUBMIT'],])->get();
 
         foreach($status as $s) 
@@ -48,6 +48,7 @@ class RequestorController extends Controller
 
                         ->where([['mapping_requests.req_sponsorid','=',$getId],['mapping_requests.req_status','=',$Submit],])
                         ->get(); 
+
                         $status1=DB::table('masters')->where([['prefix','=','STATUSPROPOSAL'],['text1','=','SUBMITTED'],])->get();
                         $status2=DB::table('masters')->where([['prefix','=','STATUSPROPOSAL'],['text1','=','REJECTED'],])->get();
                         $status3=DB::table('masters')->where([['prefix','=','STATUSPROPOSAL'],['text1','=','APPROVED'],])->get();
@@ -93,10 +94,10 @@ class RequestorController extends Controller
                                     ->join('users','users.id','=','mapping_requests.req_userid')
                                     ->join('events','events.event_id','=','mapping_requests.req_fromevent')
             
-                                    ->join('companies','companies.company_id','=','mapping_requests.req_fromcompany')
+                                    ->join('companies','companies.company_id','=','mapping_requests.req_sponsorid')
                                     ->join('masters','masters.Master_id','=','mapping_requests.req_status')
             
-                                    ->where([['mapping_requests.req_sponsorid','=',Auth::user()->userid_tocompany],['mapping_requests.req_status','=',$invite],])
+                                    ->where([['mapping_requests.req_fromcompany','=',Auth::user()->userid_tocompany],['mapping_requests.req_status','=',$invite],])
                                     ->get(); 
                         
 
@@ -364,7 +365,7 @@ class RequestorController extends Controller
                         ->join('events','events.event_id','=','mapping_requests.req_fromevent')
                         ->join('users','users.userid_tocompany','=','mapping_requests.req_fromcompany')
                         ->join('masters','masters.Master_id','=','mapping_requests.req_status')
-                        ->where([['mapping_requests.req_status','=',$Acc],['events.event_date','>',$currtime]])
+                        ->where([['mapping_requests.req_status','=',$Acc],['events.event_end','>',$currtime]])
                         ->get();
         
         
@@ -381,13 +382,14 @@ class RequestorController extends Controller
         }
 
         $doneRequest  = DB::table('mapping_requests')
-                     ->join('companies','companies.company_id','=','mapping_requests.req_fromcompany')//get nama
+                     ->join('companies','companies.company_id','=','mapping_requests.req_sponsorid')//get nama
                      ->join('events','events.event_id','=','mapping_requests.req_fromevent')
                      ->join('users','users.id','=','mapping_requests.req_userid')
                      ->join('masters','masters.Master_id','=','mapping_requests.req_status')
                      
                      ->where([['mapping_requests.req_userid','=',Auth::user()->id],['mapping_requests.req_status','=',$done],])
                      ->get();
+                    //  dd($doneRequest);
         $isReviewed = DB::table('reviews')
                     ->join('users','users.userid_tocompany','=','reviews.review_companyid')
                     ->join('events','events.event_id','=','reviews.review_event')

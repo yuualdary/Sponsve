@@ -12,7 +12,7 @@
                                 {{ csrf_field() }}
 {{--melalukan input category--}}
 
-                            <div class="form-group{{ $errors->has('title') ? ' has-error' : '' }}">
+                            <div class="form-group{{ $errors->has(  'title') ? ' has-error' : '' }}">
                                 <label for="title" class="col-md-4 control-label">Position Name</label>
 
                                 <div class="col-md-6">

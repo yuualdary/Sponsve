@@ -6,7 +6,7 @@
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     <div class="panel-heading">event Your Proposal</div>
-{{--melakukan event pada product--}}
+                    {{--melakukan event pada product--}}
                     <div class="panel-body">
                     <form action="{{url('/rejectProposal')}}" method="post" enctype="multipart/form-data">
 

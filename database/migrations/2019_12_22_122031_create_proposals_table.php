@@ -25,6 +25,7 @@ class CreateProposalsTable extends Migration
             $table->text('proposal_file');
             $table->integer('statusproposal_id');
             $table->boolean('proposal_isend');
+            $table->integer('proposal_created_by')->nullable();
             $table->date('proposal_created_at')->nullable();
             $table->date('proposal_modified_at')->nullable();
             $table->integer('proposal_modified_by')->nullable();

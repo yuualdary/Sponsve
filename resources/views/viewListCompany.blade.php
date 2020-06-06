@@ -13,8 +13,9 @@
                             <div class="float-md-left mb-4"><h2 class="text-black h5">List of Company</h2></div>
                         </div>
                     </div>
-                    <div class="row mb-12">
-                        <table class="table table-bordered">
+                    <div class="row" style="padding-left:20px">
+                        
+                            <table class="table table-bordered">
                             <tr>
                                 <td>
                                     Company Name

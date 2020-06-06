@@ -95,7 +95,7 @@
                                             
                 
                                             <div class="form-group{{ $errors->has('company_address') ? ' has-error' : '' }}">
-                                                <label for="email" class="col-md-4 control-label">Company address</label>
+                                                <label for="company_address" class="col-md-4 control-label">Company address</label>
                 
                                                 <div class="col-md-6">
                                                     <input id="company_address" type="textarea" class="form-control" name="company_address" value="{{$compDet->company_address}}" required autofocus >
@@ -209,6 +209,20 @@
                                                 </div>
                                             </div>
                                             
+                                            <div class="form-group{{ $errors->has('status_company') ? ' has-error' : '' }}">
+                                                <label for="status_compant" class="col-md-4 control-label">Status Company</label>
+                
+                                                <div class="col-md-6">
+
+                                                        <select class="form-control" id="type" name="status_company" required>
+                                                                <option>{{$compDet->status_company}}</option>
+                                                                <option>Company</option>
+                                                                <option>Organization</option>
+                                                            </select>
+                                                    <br>
+                
+                                                </div>
+                                            </div>
                                             <div class="form-group{{ $errors->has('company_phone') ? ' has-error' : '' }}">
                                                 <label for="company_phone" class="col-md-4 control-label">Company Phone</label>
                 
@@ -255,12 +269,19 @@
                                             @endforeach     
                             
                                             <div class="form-group">
-                                                    <div class="col-md-6 col-md-offset-4" style="padding-bottom:20px;">
-                                                        <button type="submit" class="btn btn-primary" name="action" value="Edit" style="color: white">
+                                                    <div style="padding-bottom:20px; margin-left:330px; float:left;">
+                                                        <button class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa;" name="action" value="Edit" >
                                                             Save Data
                                                         </button>
                                                     </div>
-                                             </div>                         
+
+                                                    {{-- <div style="padding-bottom:20px; margin-right:180px; float:right;" >
+                                                            <button  class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa;" onclick="window.history.back();" class="btn btn-primary" >
+                                                               Cancel
+                                                            </button>
+                                                        </div> --}}
+                                             </div>     
+                                              <br>                    
                                                              
                                     </form>
                 
@@ -295,8 +316,8 @@
                 
                                      
                                         <div class="col-md-1">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="medium material-icons" style="font-size: 20px;color: white">add</i>
+                                            <button type="submit" class="btn waves-effect waves-light" title="Add Staff" style="background-color:#3097D1; color:#fafafa;"">
+                                                <i class="medium material-icons" >add</i>
                                                 {{--Jangan Lupa Download Icon--}}
                                             </button>
                                                         <br>
@@ -366,6 +387,19 @@
                                                     
                                                 </div>
                                             </div>
+                                            <div class="form-group{{ $errors->has('status_company') ? ' has-error' : '' }}">
+                                                    <label for="status_compant" class="col-md-4 control-label">Status Company</label>
+                    
+                                                    <div class="col-md-6">
+    
+                                                            <select class="form-control" id="type" name="status_company" required>
+                                                                    <option>{{$compDet->status_company}}</option>
+                                                                  
+                                                                </select>
+                                                        <br>
+                    
+                                                    </div>
+                                                </div>
                                             
                                             <div class="form-group{{ $errors->has('company_phone') ? ' has-error' : '' }}">
                                                 <label for="company_phone" class="col-md-4 control-label">Company Phone</label>
@@ -485,8 +519,6 @@
 
                         <div id="LogCompany" class="tabcontent">
                         <div class="panel-body">
-                                <br>
-                                <br>
                                 <div class="container">
                                    
                         
@@ -708,7 +740,7 @@ $(document).ready(function (){
     
     if(currUser === isAdmin){
 
-        $("#company_address").attr("readonly",true)
+        $("#company_address").attr("readonly",false)
 
     }
 })

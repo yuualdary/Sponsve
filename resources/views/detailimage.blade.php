@@ -6,6 +6,11 @@
     @guest
     <br>
         <div class="container">
+            <div class="col-md-12 mb-0" style="padding-left:0px;padding-bottom:20px;">
+                        <a onclick="window.history.back();" style="color:white;" class="btn btn-xs btn-primary">   
+                            <i class="material-icons">arrow_back</i>Back
+                        </a>
+            </div>
             <div class="row">
                 <div class="col-md-8">
                     <div class="panel panel-default">
@@ -32,7 +37,7 @@
                             <b><strong>Success</strong> Delete Your Comment</b>
                         </div>
                         @endif
-
+                        
 
                     
 
@@ -46,37 +51,57 @@
 
                         <i><b style=" color:#000000"> <img src= "{{url('/' .$U->image)}}" style="width:50px; height:50px; float:left; border-radius:50%; margin-right:25px;"> {{  $U->name }} </b></i>&nbsp;&nbsp;
                         <br>
-                            <i style="font-size=5px">as {{$U->position}}</i>
+                        <i style="font-size=5px">as {{$U->position}} at {{$U->company_name}}</i>
                             @endif
                         @endforeach
-                            {{--<label class="col-md-4 control-label">{{$event->title}}</label>--}}
-                            {{--<label class="col-md-4 control-label">{{$event->caption}}</label>--}}
-                            {{--<label class="col-md-4 control-label">{{$event->price}}</label>--}}
-                            {{--<label class="col-md-4 control-label">{{$event->category}}</label>--}}
-                            <h3>{{$U->title}}</h3>
+                        <br>
+                        {{--<label class="col-md-4 control-label">{{$event->title}}</label>--}}
+                        {{--<label class="col-md-4 control-label">{{$event->caption}}</label>--}}
+                        {{--<label class="col-md-4 control-label">{{$event->price}}</label>--}}
+                        {{--<label class="col-md-4 control-label">{{$event->category}}</label>--}}
+                       <h3 style="margin-right:50%;float:right;"> <b>{{$U->title}}</b></h3>
+                       <br>
                         
-                            <img src="{{url('/'.$U->photo)}}" style="width:570px; height:300px;">
-                            <br>
+                       <img src="{{url('/'.$U->photo)}}" style="width:100%; ">
+                       <br>
                                 
-                            <h4>{{$U->caption}}</h4>
-                            <h4>{{$U->location}}</h4>
-                            <h4>{{$U->categoryname}}</h4>
-                            <h4>{{$U->event_date}}</h4>
+                            <h4><i class="medium material-icons" style="color:#3097D1;">description</i>{{$U->caption}}</h4>
+                            <hr class="simple" style="border-color:#ccc ;border-width:3px ;">
+                            <h4><i class="medium material-icons" style="color:#3097D1;">place</i>{{$U->location}}</h4>
+                            <h4><i class="medium material-icons" style="color:#3097D1;">event</i>{{$U->event_start}} - {{$U->event_end}}</h4>
                         </div>
 
                     
 
                     </div>
                     <div class="panel panel-default">
-                        <div class="panel-heading">Comments</div>
+                        <div class="panel-heading">Comments <i class="medium material-icons" style="color:#3097D1;">forum</i></div>
                         {{--menampilkan hasil comment dengan menampilkan nama,foto profile,dan isi comment berdasarkan masing - masing account--}}
                         <div class="panel-body comment-container" >
                             @foreach($comments as $comment)
                                 <div class="well">
-
-                                <i><b style=" color:#000000">   <img src= "{{url('/' .$comment->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;">{{  $comment->name }} </b></i>&nbsp;&nbsp;
-                        
-                                    <span> {{ $comment->comment }} </span>
+                                       <b style="float:right;"> {{$comment->comment_created_at}}</b>
+                                        <hr class="simple" style="border-color:#ccc ;border-width:3px;">
+                                    
+                                        <div class="row">
+                                                    
+                                                <div class="col-sm-5">  
+                                                    @if($U->user_id===$comment->user_commentid)
+                                                    <i><b style=" color:#000000">   <img src= "{{url('/' .$comment->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;"> <a href="{{ url('/viewDetailUserProile/'.$comment->id) }}" style="color:#000;"> {{$comment->name }}  <i class="material-icons" style="color:#3097D1" title="Event Owner">assignment_ind</i>
+                                                    </a> </b></i>&nbsp;&nbsp;
+                                                    @else 
+                                                    <i><b style=" color:#000000">   <img src= "{{url('/' .$comment->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;"> <a href="{{ url('/viewDetailUserProile/'.$comment->id) }}" style="color:#000;"> {{$comment->name }}</a> </b></i>&nbsp;&nbsp;
+        
+                                                    @endif
+                                                    
+                                                    <br>
+                                                    <i style="font-size=5px">as {{$U->position}} at {{$U->company_name}}</i>
+                                                </div>
+                                                <div class="col-sm-7">
+                                                    <div style="text-align: justify;"><span> {{ $comment->comment }} </span></div>
+                                                </div>
+                                        </div>
+                                    
                                     <div style="margin-left:10px;">
                                         <a style="cursor: pointer;"class="reply"></a>&nbsp;
                                         <a style="cursor: pointer;"  class="delete-comment" href="{{url('doDeleteComment/'.$comment->event_id)}}"></a>
@@ -93,16 +118,27 @@
                                             @foreach($reply as $rep)
                                         @if($comment->cmntid == $rep->comment_id)
                                         <div id="reply">
-                                            <i><b style=" color:#000000"> <img src= "{{url('/' .$rep->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;"> {{  $rep->name }} </b></i>&nbsp;&nbsp;
-                                            <span> {{ $rep->reply }} 
+                                                <hr class="simple" style="border-color:#ccc ;border-width:3px ;">
+                                                <b style="float:right;">{{$rep->rep_created_at}}</b> 
                                                 <br>
-                                                <i style="font-size: 10px;">{{$rep->rep_created_at}}</i> 
-                                            
-                                            </span>
-                                                <br>
-                                                <br>
-                                                <br>
+                                                
+                                                <div class="row">
+                                                    
+                                                    <div class="col-sm-5"> 
+                                                        @if($U->user_id===$rep->user_replyid)
+                                                        <i><b style=" color:#000000">   <img src= "{{url('/' .$rep->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;"> <a href="{{ url('/viewDetailUserProile/'.$rep->id) }}" style="color:#000;"> {{$rep->name }}  <i class="material-icons" style="color:#3097D1" title="Event Owner">assignment_ind</i>
+                                                        </a> </b></i>&nbsp;&nbsp;
+                                                            @else 
+                                                            <i><b style=" color:#000000">   <img src= "{{url('/' .$rep->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;"> <a href="{{ url('/viewDetailUserProile/'.$rep->id) }}" style="color:#000;"> {{$rep->name }}</a> </b></i>&nbsp;&nbsp;
+                                                    
+                                                        @endif                                            
+                                                            <span> {{ $rep->reply }} 
+                                                        <br>
+                                                    
+                                                    </span>
+                                                    </div>
                                                 </div>
+                                        </div>
                                         @endif
                                             @endforeach 
                                                     
@@ -122,7 +158,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="panel panel-default">
-                        <div class="panel-heading">Companies who join this event's</div>
+                        <div class="panel-heading">Companies who join this event's     <i class="material-icons" style="color:#3097D1;">people</i></div>
                         {{--melakukan comment pada detail [] product dengan menggunakan masing - masing account dan kita bisa mendelete commetn dan melihat comment orang lain--}}
                         <div class="panel-body" style="min-height:5 0px;" >
                         
@@ -142,7 +178,7 @@
                     </div>
 
                     <div class="panel panel-default">
-                            <div class="panel-heading">Location</div>
+                            <div class="panel-heading">Location  <i class="material-icons">place</i></div>
                                 <div class="panel-body">
     
     
@@ -187,8 +223,26 @@
     @else
     {{-- ////////////////////////////////////////////////////////////////// --}}
 
-
+  
     <div class="container">
+            @if(session()->has('successEdit'))
+            <div class="alert success">
+                <span class="closebtn">&times;</span>  
+                <b><strong>Success</strong> Edit Your Data</>
+            </div>
+            @endif
+            @if(session()->has('successAdd'))
+            <div class="alert success">
+                <span class="closebtn">&times;</span>  
+                <b><strong>Success</strong> Send Your Request</b>
+            </div>
+            @endif
+
+            <div class="col-md-12 mb-0" style="padding-left:0px;padding-bottom:20px;">
+                    <a onclick="window.history.back();" style="color:white;" class="btn btn-xs btn-primary">   
+                        <i class="material-icons">arrow_back</i>Back
+                    </a>
+            </div>
         <div class="row">
             <div class="col-md-8">
                 <div class="panel panel-default">
@@ -196,12 +250,8 @@
                     <div class="panel-heading">Detail Event</div>
                    
                     {{--menampilkan detail dari product dan bisa melihat detail tersebut dan bisa melakukan comment terhadap product tersebut--}}
-                    @if(session()->has('successAdd'))
-                    <div class="alert success">
-                        <span class="closebtn">&times;</span>  
-                        <b><strong>Success</strong> Send Your Request</b>
-                    </div>
-                    @endif
+                
+                   
                     
                     {{-- @if(session()->has('error'))    
                         <div class="alert">
@@ -219,12 +269,7 @@
                      @endif
               
 
-                    @if(session()->has('successEdit'))
-                    <div class="alert success">
-                        <span class="closebtn">&times;</span>  
-                        <b><strong>Success</strong> Edit Your Data</>
-                    </div>
-                    @endif
+                 
                     
                     <div class="panel-body">
                     
@@ -233,28 +278,29 @@
 
                     <i><b style=" color:#000000"> <img src= "{{url('/' .$U->image)}}" style="width:50px; height:50px; float:left; border-radius:50%; margin-right:25px;"> {{  $U->name }} </b></i>&nbsp;&nbsp;
                     <br>
-                        <i style="font-size=5px">as {{$U->position}}</i>
+                        <i style="font-size=5px">as {{$U->position}} at {{$U->company_name}}</i>
                         @endif
                     @endforeach
+                    <br>
                         {{--<label class="col-md-4 control-label">{{$event->title}}</label>--}}
                         {{--<label class="col-md-4 control-label">{{$event->caption}}</label>--}}
                         {{--<label class="col-md-4 control-label">{{$event->price}}</label>--}}
                         {{--<label class="col-md-4 control-label">{{$event->category}}</label>--}}
-                        <h3>{{$U->title}}</h3>
-                       
-                        <img src="{{url('/'.$U->photo)}}" style="width:570px; height:300px;">
+                       <br>
+                        <img src="{{url('/'.$U->photo)}}" style="width:100%; ">
                         <br>
-                    
+                        <h3 style="margin-right:40%;float:right; "> <b>"{{$U->title}}"</b></h3>
+                        <br>
                     <h4>Rating {{$setRating}}    <i class="material-icons">star</i>
                     </h4>
                             
-                        <h4>{{$U->caption}}</h4>
-                        <h4>{{$U->location}}</h4>
-                        <h4>{{$U->event_date}}</h4>
-
+                        <h4><i class="medium material-icons" style="color:#3097D1;">description</i>{{$U->caption}}</h4>
+                        <hr class="simple" style="border-color:#ccc ;border-width:3px ;">
+                        <h4 style="width:100%; float:center;"><i class="medium material-icons" style="color:#3097D1;">place</i>{{$U->location}}</h4>
+                       <h4>  <i class="medium material-icons" style="color:#3097D1;">event</i> {{$U->event_start}} - {{$U->event_end}}</h4>
                         @foreach ($categoryForEvent as $catforevt)
                             
-                       <i><b> <li style="float:left; display:inline-block;">#{{$catforevt->categoryname}}<a>,</a></li></b></i>
+                       <i><b> <li style="float:left; display:inline-block;"><i class="medium material-icons" style="color:#3097D1;">local_offer</i>{{$catforevt->categoryname}}<a>,</a></li></b></i>
 
                         @endforeach
 
@@ -284,10 +330,14 @@
                                     <!-- @foreach($event as $value) -->
                                     <input  name="item_id" value="{{$event->event_id}}" type="hidden">
                                     <!-- @endforeach -->
+
+                                    
                                     <div class="row pull-right" style="padding: 0 10px 0 10px;">
                                         <div class="form-group" >
-                                            <input type="submit" class="btn btn-primary btn-lg" style="width: 100%" name="submit">
-                                        </div>
+                                            <button class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa"type="submit" name="action">Submit
+                                                <i class="small material-icons right">send</i>
+                                              </button>                                      
+                                              </div>
                                     </div>
                                 </form>
     
@@ -302,16 +352,35 @@
 
                 
                 <div class="panel panel-default">
-                        <div class="panel-heading">Comments</div>
+                        <div class="panel-heading">Comments <i class="medium material-icons" style="color:#3097D1;">forum</i></div>
                         {{--menampilkan hasil comment dengan menampilkan nama,foto profile,dan isi comment berdasarkan masing - masing account--}}
                         <div class="panel-body comment-container" >
                             @foreach($comments as $comment)
                                 <div class="well">
-    
-                                <i><b style=" color:#000000">   <img src= "{{url('/' .$comment->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;"> <a href="{{ url('/viewDetailUserProile/'.$comment->id) }}" style="color:#000;"> {{$comment->name }}</a> </b></i>&nbsp;&nbsp;
-                           
-                                    <span> {{ $comment->comment }} </span>
+                                        <b style="float:right;"> {{$comment->comment_created_at}}</b>
+                                        <hr class="simple" style="border-color:#ccc ;border-width:3px ;">
+
+                                    <div class="row">
+                                                    
+                                        <div class="col-sm-5">  
+                                            @if($U->user_id===$comment->user_commentid)
+                                            <i><b style=" color:#000000">   <img src= "{{url('/' .$comment->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;"> <a href="{{ url('/viewDetailUserProile/'.$comment->id) }}" style="color:#000;"> {{$comment->name }}  <i class="material-icons" style="color:#3097D1" title="Event Owner">assignment_ind</i>
+                                            </a> </b></i>&nbsp;&nbsp;
+                                            @else 
+                                            <i><b style=" color:#000000">   <img src= "{{url('/' .$comment->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;"> <a href="{{ url('/viewDetailUserProile/'.$comment->id) }}" style="color:#000;"> {{$comment->name }}</a> </b></i>&nbsp;&nbsp;
+
+                                            @endif
+                                            
+                                            <br>
+                                            <i style="font-size=5px">as {{$U->position}} at {{$U->company_name}}</i>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <div style="text-align: justify;"><span> {{ $comment->comment }} </span></div>
+                                        </div>
+                                    </div>    
+
                                     <div style="margin-left:10px;">
+                                        <br>
                                         <a style="cursor: pointer;" id="{{ $comment->event_id }}" name="{{ Auth::user()->name }}" token="{{ csrf_token() }}" class="reply">Reply</a>&nbsp;
                                         @if(Auth::user()->id === $comment->user_commentid)
                                                  <a style="cursor: pointer;"  class="delete-comment" href="{{url('deleteComment/'.$comment->cmntid)}}">Delete</a>
@@ -325,26 +394,40 @@
                                             
                                          <div class="well">
                                            
-                                                     <div class="reply-to-reply-form">
+                                            <div class="reply-to-reply-form">
                                               @foreach($reply as $rep)
-                                          @if($comment->cmntid == $rep->comment_id)
-                                          <div id="reply">
-                                            <i><b style=" color:#000000"> <img src= "{{url('/' .$rep->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;"> <a href="{{ url('/viewDetailUserProile/'.$rep->id) }}" style="color:#000;"> {{$rep->name }} </b></i></a>&nbsp;&nbsp;
-                                            <span> {{ $rep->reply }} 
-                                                <br>
-                                                @if(Auth::user()->id === $rep->user_replyid)
-    
-                                                     <a style="cursor: pointer;"  class="delete-comment" href="{{url('deleteReplies/'.$rep->replies_id)}}">Delete</a>
-                                                @endif
-                                                <br>
-                                                <i style="font-size: 10px;">{{$rep->rep_created_at}}</i> 
+
+                                             @if($comment->cmntid == $rep->comment_id)
                                             
-                                            </span>
-    
-                                                <br>
-                                                <br>
-                                                <br>
+                                            <div id="reply">
+                                                <hr class="simple" style="border-color:#ccc ;border-width:3px ;">
+                                                <b style="float:right;">{{$rep->rep_created_at}}</b> 
+                                                <div class="row">
+                                                    
+                                                    <div class="col-sm-5">  
+                                                    @if($U->user_id===$rep->user_replyid)
+                                                                        <i><b style=" color:#000000">   <img src= "{{url('/' .$rep->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;"> <a href="{{ url('/viewDetailUserProile/'.$rep->id) }}" style="color:#000;"> {{$rep->name }}  <i class="material-icons" style="color:#3097D1" title="Event Owner">assignment_ind</i>
+                                                                        </a> </b></i>&nbsp;&nbsp;
+                                                                            @else 
+                                                                        <i><b style=" color:#000000">   <img src= "{{url('/' .$rep->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;"> <a href="{{ url('/viewDetailUserProile/'.$rep->id) }}" style="color:#000;"> {{$rep->name }}</a> </b></i>&nbsp;&nbsp;
+                                                                    
+                                                    @endif
+                                                    <br>
+                                                    @if(Auth::user()->id === $rep->user_replyid)
+        
+                                                        <a style="cursor: pointer;"  class="delete-comment" href="{{url('deleteReplies/'.$rep->replies_id)}}">Delete</a>
+                                                    @endif
+                                                    </div>
+                                                    <div class="col-sm-7">                 
+                                                    <div style="text-align: justify;"><span > {{ $rep->reply }} </span></div>
+                                                    </div> 
+                                                    <br>
+                                                    
+                                                    <br>
+                                                
+                                                    </span>
                                                 </div>
+                                        </div>
                                         @endif
                                               @endforeach 
                                                      <form id="comment-form" method="post" action="{{ url('/RepComment') }}" >
@@ -363,8 +446,11 @@
                                                             <!-- @endforeach -->
                                                             <div class="row pull-right" style="padding: 0 10px 0 10px;">
                                                                 <div class="form-group">
-                                                                    <input type="submit" class="btn btn-primary btn-lg" style="width: 100% " name="submit">
-                                                                </div>
+                                                                    <button class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa"type="submit" name="action">Submit
+                                                                        <i class="small material-icons right">send</i>
+                                                                      </button>  
+                                                                    
+                                                                    </div>
                                                             </div>
                                                      </form>
                                                    
@@ -398,7 +484,7 @@
             
             <div class="col-md-4">
                     <div class="panel panel-default">
-                            <div class="panel-heading">Companies who join this event's</div>
+                            <div class="panel-heading">Companies who join this event's     <i class="medium material-icons" style="color:#3097D1;">people</i></div>
                             {{--melakukan comment pada detail [] product dengan menggunakan masing - masing account dan kita bisa mendelete commetn dan melihat comment orang lain--}}
                             <div class="panel-body" style="min-height:5 0px;" >
                             
@@ -416,9 +502,9 @@
                             </div>
         
                     </div>
-                    @if(Auth::user()->userid_tocompany === $U->userid_tocompany)
+                    @if(Auth::user()->userid_tocompany === $U->userid_tocompany && Auth::user()->id == $U->user_id)
                         <div class="panel panel-default">
-                                    <div class="panel-heading">List Of Member</div>
+                                    <div class="panel-heading">List Of Member<i class="material-icons" style="color:#3097D1;">person</i></div>
                                     {{--melakukan comment pada detail [] product dengan menggunakan masing - masing account dan kita bisa mendelete commetn dan melihat comment orang lain--}}
                                     <div class="panel-body" style="min-height:5 0px;" >
                                     
@@ -431,7 +517,7 @@
                                                 <a class="btn btn-primary" title="Make Proposal"  href="{{url('toProposal',['event_id'=>$member->event_id,'company_id'=>$member->company_id])}}" ><i class="Large material-icons">contact_mail</i></a>
                                                 {{-- <button class="btn btn-info" data-toCompany="{{$member->company_id}}" data-companyName="{{$member->company_name}}"  id="myBtn" >Chat</button> --}}
 
-                                                <a class="btn btn-primary" title="Chat Live" data-mycompanyid="{{$member->company_id}}" data-mycompanyname="{{$member->company_name}}" data-mycompanyphoto="{{ url($member->company_photo) }}" da   ta-mycompanyphoto="{{ url($member->company_photo) }}"  style="color:white" data-toggle="modal" data-target="#edit">Chat</a>
+                                                <a class="btn btn-primary" title="Chat Live" data-mycompanyid="{{$member->company_id}}" data-mycompanyname="{{$member->company_name}}" data-mycompanyphoto="{{ url($member->company_photo) }}" data-mycompanyphoto="{{ url($member->company_photo) }}"  style="color:white" data-toggle="modal" data-target="#edit">Chat</a>
                                             </li>
                                         </ul>
                                         
@@ -452,23 +538,27 @@
                         
                     @endif
                     <div class="panel panel-default">
-                            <div class="panel-heading">Action</div>
+                            <div class="panel-heading">Action   <i class="material-icons" style="color:#3097D1;">accessibility</i>
+                            </div>
                             {{--melakukan comment pada detail [] product dengan menggunakan masing - masing account dan kita bisa mendelete commetn dan melihat comment orang lain--}}
                             <div class="panel-body">{{--pembagian role pada cart jadi admin bisa mendelte cart dan add to cart sedangkan member hanya bisa add saja tidak bisa melakukan delete--}}
                            
-                                @if(Auth::user()->userid_tocompany === $U->userid_tocompany)
+                                @if(Auth::user()->userid_tocompany === $U->userid_tocompany && Auth::user()->id === $U->user_id)
                                 
-                                    <a class="btn btn-primary" onclick="myFunction()" href="{{url('/deleteEvent/'.$U->event_id)}}" >Delete</a>
-                                    <a class="btn btn-primary" title="Edit Data" href="{{url('/updateEvent/'.$U->event_id)}}">Update</a>
-                                    <a class="btn btn-primary" title="Edit Data" href="{{url('/chooseCompanies/'.$U->event_id)}}">Invite Company</a>
+                                <a class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa ;width:40%" data-toggle="modal" data-target="#modalDelete"  >Delete  <i class="medium material-icons">delete</i></a>
+                                <a class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa;width:40%" title="Edit Event" href="{{url('/updateEvent/'.$U->event_id)}}">Update<i class="medium material-icons">update</i></a>
+                                <br>
+                                <br>   
+                                <a class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa; width:55%" title="Invite Company" href="{{url('/chooseCompanies/'.$U->event_id)}}">Invite Company<i class="medium material-icons">person_add</i></a>
         
-                                    <a class="btn btn-primary" title="Download Proposal" href="{{url('downloadPropo/'.$U->event_id)}}"><i class="medium material-icons">file_download</i></a>
+                                    <a class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa" title="Download Proposal" href="{{url('downloadPropo/'.$U->event_id)}}">Download<i class="medium material-icons">file_download</i></a>
                                    
-                                 </a>
+                                 
                                  @elseif($check === $Acc &&  Auth::user()->userid_tocompany != $U->userid_tocompany)
                                  <i><b>Your Company Has Been Approved</b></i><a class="btn btn-primary" title="Make Proposal" href="{{url('/toProposal/'.$U->event_id)}}" ><i class="Large material-icons">contact_mail</i>l</a>
         
-                                  
+                                 <a class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa ;width:30%" title="Download Proposal" href="{{url('downloadPropo/'.$U->event_id)}}">Download<i class="small material-icons">file_download</i></a>
+
                                   
                               
         
@@ -477,10 +567,10 @@
         
                                  
                                      
-                                @elseif($U->event_date <= $currtime)
+                                @elseif($U->event_end <= $currtime)
                                 
 
-                                         <i><b>This event already closed at {{$U->event_date}}</b></i>
+                                         <i><b>This event already closed at {{$U->event_end}}</b></i>
 
                                      
                                 @else
@@ -499,8 +589,8 @@
         
                     </div>
                     <div class="panel panel-default">
-                        <div class="panel-heading">Location</div>
-                            <div class="panel-body">
+                        <div class="panel-heading">Location  <i class="medium material-icons" style="color:#3097D1;">place</i></div>
+                        <div class="panel-body">
 
 
                                     <iframe width="100%" height="250" id="gmap_canvas" src="https://maps.google.com/maps?q={{$U->location}}&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
@@ -509,7 +599,7 @@
                         </div>
 
                         <div class="panel panel-default">
-                            <div class="panel-heading">Reviews</div>
+                            <div class="panel-heading">Reviews    <i class="medium material-icons" style="color:#3097D1;">thumbs_up_down</i></div>
                                 <div class="panel-body">
                                     <ul style="list-style-type:none;">      
                                         @foreach($viewReview as $review)
@@ -536,6 +626,31 @@
                      </div>
         </div>
         
+    </div>
+    <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content col-md-12" style="margin-top:200px">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Delete</h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                            
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>
+                                                            Are you sure want to delete ?
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                            Cancel
+                                                        </button>
+                                                        <a type="button" href="{{url('/deleteEvent/'.$U->event_id)}}" class="btn btn-primary">
+                                                            Delete
+                                                        </a>
+                                                    </div>
+            </div>
+        </div>
     </div>
 
     
@@ -678,6 +793,7 @@
 
 
 
+<script type="text/javascript" src="{{ asset('/js/app.js') }}"></script>
 
 
 <script>

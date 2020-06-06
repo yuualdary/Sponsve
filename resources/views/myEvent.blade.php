@@ -20,7 +20,7 @@
                             <div class="float-md-left mb-4"><h2 class="text-black h5">All My Event</h2></div>
                         </div>
                     </div>
-{{--menampilkan product yang sudah dibuat--}}
+                    {{--menampilkan product yang sudah dibuat--}}
                     <div class="row mb-5">
                         @foreach($event as $i)
 
@@ -58,7 +58,8 @@
                         {{$ins->appends(['search'=>request()->search])->links()}}
                         {{--{{$product->appends([request()->query])->links()}}--}}
                     </p>
+                </div>    
             </div>
         </div>
-
+    </div>
 @endsection

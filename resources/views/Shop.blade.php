@@ -3,7 +3,8 @@
     <div class="bg-light py-3">
         <div class="container">
             <div class="row">
-                <div class="col-md-12 mb-0"><a href="{{ url('/') }}">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Shop</strong></div>
+                
+                <div class="col-md-12 mb-0"><a href="{{ url('/') }}"> Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Event List</strong></div>
             </div>
         </div>
     </div>
@@ -20,7 +21,7 @@
                             <div class="float-md-left mb-4"><h2 class="text-black h5"></h2></div>
                                 <form action="{{url('/doSearch')}}" class="site-block-top-search">
    
-                                         <select name="search">
+                                         <select  class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa" name="search">
                                              <option>- Month -</option>
                                              <option value="01">January</option>
                                              <option value="02">Febuary</option>
@@ -35,13 +36,13 @@
                                              <option value="11">November</option>
                                              <option value="12">December</option>
                                          </select>
-                                        <button  type="submit"class="btn " name="action" value="month">Search</button>
+                                        <button  type="submit"  class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa" name="action" value="month">Search <i class="small material-icons">search</i></button>
 
                                 </form>
 
                         </div>
                     </div>
-{{--menampilkan product yang sudah dibuat--}}
+                    {{--menampilkan product yang sudah dibuat--}}
 
 
                     
@@ -60,13 +61,13 @@
                                     </figure>
                                   
                                     <h3><b><a href="{{url('detail/'.$i->event_id)}}">{{$i->title}}</a></b></h3>
-                                    <p class="mb-0">{{$i->caption}}</p>
+                                    <p class="mb-0" style="width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{$i->caption}}</p>
                                     @foreach ($categoryForEvent as $catforevt)
                                     @if($i->event_id === $catforevt->catevent_toevent)
 
-                                    <i><b> <li style="float:left; display:inline-block;">#{{$catforevt->categoryname}}<a>,</a></li></b></i>
+                                    <i><b> <li style="float:left; display:inline-block;"> <li style="float:left; display:inline-block;"><i class="medium material-icons" style="color:#3097D1;">local_offer</i>{{$catforevt->categoryname}}<a>,</a></li></b></i>
                                     @endif
-                                     @endforeach                                    <p class="text-primary font-weight-bold">{{$i->location}}</p>
+                                     @endforeach                                    <p class="text-primary font-weight-bold" style="width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{$i->location}}</p>
                                     <br>
                                      <p class="text-primary font-weight-bold"><a href="{{url('detail/'.$i->event_id)}}">Show more....</a></p>
                                 </div>
@@ -79,7 +80,8 @@
                         {{$event->appends($data)->links()}}
                         {{--{{$product->appends([request()->query])->links()}}--}}
                     </p>
+                </div>    
             </div>
         </div>
-
+    </div>
 @endsection

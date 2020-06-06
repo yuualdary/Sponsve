@@ -31,7 +31,7 @@
                             <div class="form-group">
                    
 
-                                        <img src= "{{url('/' .$gc->photo)}}" style="width:700px; height:300px; float:center;">
+                                        <img src= "{{url('/' .$gc->photo)}}" style="width:100%; " >
                                     <br>
                                     <br>
                                 
@@ -66,7 +66,19 @@
                                     @endif
                                 </div>
                             </div>
+                            <div class="form-group{{ $errors->has('location') ? ' has-error' : '' }}">
+                                <label for="location" class="col-md-4 control-label">Location</label>
 
+                                <div class="col-md-6">
+                                    <textarea id="location" type="text" class="form-control" name="location" required>{{$gc->location}}</textarea>
+
+                                    @if ($errors->has('location'))
+                                        <span class="help-block">
+                                        <strong>{{ $errors->first('location') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
                            
                             <div class="form-group">
                                 <label for="photo" class="col-md-4 control-label">image</label>
@@ -86,44 +98,139 @@
                                 </div>
                             </div>
 
+                            <div class="form-group{{ $errors->has('event_start') ? ' has-error' : '' }}">
+                                    <label for="event_start" class="col-md-4 control-label" style="width:100%;">Event Start</label>
+    
+                                    <div class="col-md-6">
+                                        <input id="event_start" type="date" class="form-control" name="event_start" value="{{ $gc->event_start}}"required>
+                                        <br>
+                                        @if ($errors->has('event_start'))
+                                            <span class="help-block">
+                                            <strong>{{ $errors->first('event_start') }}</strong>
+    
+                                        </span>
+                                        @endif
+                                    </div>
+                                </div>
+    
 
          
 
                       
-                            <div class="form-group{{ $errors->has('category') ? ' has-error' : '' }}">
-                                <label for="category" class="col-md-4 control-label">category</label>
+                          
 
-
-
-                                <div class="col-md-6">
-                                    <select class="form-control" id="type" name="category">
-                                    
-                                     
-                                        
-                                            <option value="{{$gc->category_id}}">{{$gc->categoryname}}</option>
-                                          
-                                        <br>
-                                    </select>
-                                </div>
-                            </div>
-
-
-                            <div class="form-group{{ $errors->has('event_date') ? ' has-error' : '' }}">
-                                <label for="caption" class="col-md-4 control-label" style="width:100%;">Caption</label>
+                            <div class="form-group{{ $errors->has('event_end') ? ' has-error' : '' }}">
+                                <label for="event_start" class="col-md-4 control-label" style="width:100%;">Event End</label>
 
                                 <div class="col-md-6">
-                                    <input id="event_date" type="date" class="form-control" name="event_date" value="{{ $gc->event_date}}"required>
+                                    <input id="event_end" type="date" class="form-control" name="event_end" value="{{ $gc->event_end}}"required>
                                     <br>
-                                    @if ($errors->has('event_date'))
+                                    @if ($errors->has('event_end'))
                                         <span class="help-block">
-                                        <strong>{{ $errors->first('event_date') }}</strong>
+                                        <strong>{{ $errors->first('event_end') }}</strong>
 
                                     </span>
                                     @endif
                                 </div>
                             </div>
 
+
+
+
                             @endforeach
+
+                            
+
+                            {{-- <div class="col-md-6">
+
+                            
+                            <i><b> <li style="float:left; display:inline-block;"><i class="medium material-icons" style="color:#3097D1;">local_offer</i>{{$catforevt->categoryname}}<a>,</a></li></b></i>
+                            </div> --}}
+
+                            {{-- @foreach ($list2 as $check)
+
+
+                            @foreach ($cat as $allcheck)
+                            <div class="col-md-6">
+                                    @if($allcheck->category_id === $check->category_id)
+
+                                    <label class="checkbox-inline">
+
+
+                                <input  type="checkbox" id="catevent_category" name="catevent_tocategory[]" value="{{$check->category_id}}" checked>
+                                @if($cat->permissions) @if(in_array($permission->id, $role->permissions->pluck('id')) checked @endif @endif 
+                                       {{$check->categoryname}}</label>
+
+                                @elseif($allcheck->category_id != $check->category_id)
+                                    
+                                <input  type="checkbox" id="catevent_category" name="catevent_tocategory[]" value="{{$allcheck->category_id}}" >
+                                {{-- @if($cat->permissions) @if(in_array($permission->id, $role->permissions->pluck('id')) checked @endif @endif 
+                                       {{$allcheck->categoryname}}</label>
+
+                                
+                                @endif
+                       
+                                       </div>
+                                   </div>
+                                   @endforeach
+
+                             @endforeach --}}
+
+                             <div class="form-group">
+
+
+                             @foreach($cat as $allcheck)
+                             <?php $a=0;?>
+
+                                   @foreach ($list2 as $check)
+                                       @if($allcheck->category_id === $check->category_id)
+                                     
+                                       <?php $a=1;?>
+                                       
+                                       @break
+
+                                       @endif
+                                   @endforeach
+                                   @if($a==1)
+                                   <div style="padding-bottom:20px; margin-left:230px; float:left; width:200px;">
+
+                                   <label class="checkbox-inline">
+
+                                    <input  type="checkbox" id="catevent_category" name="catevent_tocategory[]" value="{{$allcheck->category_id}}" checked>
+                                           {{$allcheck->categoryname}}</label>
+                                   </div> 
+                                   @else
+                                   <div style="padding-bottom:20px; margin-left:500px; float:left;width:200px;">
+
+                                   <label class="checkbox-inline">
+
+                                    <input  type="checkbox" id="catevent_category" name="catevent_tocategory[]" value="{{$allcheck->category_id}}" >
+                                           {{$allcheck->categoryname}}</label>
+                                   </div>
+                                   @endif
+
+                            @endforeach
+
+                            </div>
+
+
+                            
+                            {{-- @foreach($category as $c)
+                            <div class="form-group">
+
+
+                                     <div class="col-md-6">
+                                     <input  type="checkbox" id="catevent_category" name="catevent_tocategory[]" value="{{$c->category_id}}"{{ (is_array(old('catevent_tocategory')) and in_array('$c->category_id', old('catevent_tocategory'))) ? ' checked' : '' }}>
+                                             <label for="catevent_category">{{$c->categoryname}}</label>
+                            
+                                            </div>
+                                        </div>
+            
+                
+                            @endforeach --}}
+
+
+
 
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">

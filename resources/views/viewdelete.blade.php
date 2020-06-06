@@ -26,9 +26,9 @@
                                 <div class="block-4 text-center border">
                                     <div class="block-4-text p-4">
                                         <figure class="block-4-image">
-                                            <a href="shop-single.html"><img src="{{url($i->photo)}}" alt="" class="img-fluid"></a>
+                                           <img src="{{url($i->photo)}}" alt="" class="img-fluid">
                                         </figure>
-                                        <h3><a href="shop-single.html">{{$i->title}}</a></h3>
+                                        <h3>{{$i->title}}</h3>
                                         <p class="mb-0">{{$i->caption}}</p>
                                         <p class="mb-0">{{$i->category}}</p>
                                         <p class="text-primary font-weight-bold">{{$i->price}}</p>

@@ -36,7 +36,7 @@ class User extends Authenticatable
     protected $fillable = [
         //Fillable untuk coloumn pada inputan
 
-        'name', 'email', 'password','gender','image','user_code','title', 'caption,','photo', 'location','category','position','position_id','position_name','event_date','category_id',
+        'name', 'email', 'password','gender','image','user_code','title', 'caption,','photo', 'location','category','position','position_id','position_name','event_end','category_id',
        
     ];
 

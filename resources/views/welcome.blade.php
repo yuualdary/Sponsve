@@ -3,7 +3,7 @@
 <head>
     {{--bagian kerangka dari website meliputi header,contetnt,footer ,css,js link--}}
    
-    <title>ScriptSi </title>
+    <title>SponsVe</title>
     <link rel = "icon" href =  
     "https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_200X200.png" 
         type = "image/x-icon"> 
@@ -135,11 +135,12 @@
     </style>
 
 </head>
-<body>
+<body style="background-color:#fff">
 
     @include('header')
     
     @yield('content')
+
     <div id="app">
         @yield('content2')
     </div>

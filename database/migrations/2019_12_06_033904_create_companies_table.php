@@ -19,6 +19,7 @@ class CreateCompaniesTable extends Migration
             $table->text('company_address');
             $table->integer('company_phone');
             $table->string('website_address');
+            $table->string('status_company');
             $table->text('social_media');
             $table->text('company_photo');
             $table->boolean('isapprove_company')->nullable();
