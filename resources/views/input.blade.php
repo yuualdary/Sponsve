@@ -17,6 +17,7 @@
 
                                 <div class="col-md-6">
                                     <input id="title" type="text" class="form-control" name="title" value="{{ old('title') }}" required autofocus>
+                                    <br>
 
                                     @if ($errors->has('title'))
                                         <span class="help-block">
@@ -25,13 +26,14 @@
                                     @endif
                                 </div>
                             </div>
-                            <input type="hidden" name="user_id" value="{{ Auth::user()->id }}" >
-
+\                            <input type="hidden" name="user_id" value="{{ Auth::user()->id }}" >
+                            <br>
                             <div class="form-group{{ $errors->has('caption') ? ' has-error' : '' }}">
                                 <label for="caption" class="col-md-4 control-label">Caption</label>
 
                                 <div class="col-md-6">
                                     <input id="caption" type="textarea" class="form-control" name="caption" value="{{ old('caption') }}" required>
+                                    <br>
 
                                     @if ($errors->has('caption'))
                                         <span class="help-block">
@@ -40,6 +42,7 @@
                                     @endif
                                 </div>
                             </div>
+                            <br>
 
 
                             <div class="form-group{{ $errors->has('event_start') ? ' has-error' : '' }}">
@@ -47,7 +50,8 @@
     
                                     <div class="col-md-6">
                                         <input id="event_start" type="date" class="form-control" name="event_start"  value="{{ old('event_start') }}"  required>
-    
+                                        <br>
+
                                         @if ($errors->has('event_start'))
                                             <span class="help-block">
                                             <strong>{{ $errors->first('event_start') }}</strong>
@@ -55,12 +59,14 @@
                                         @endif
                                     </div>
                                 </div>
-    
+                                <br>
+
                             <div class="form-group{{ $errors->has('event_end') ? ' has-error' : '' }}">
                                 <label for="event_end" class="col-md-4 control-label">Event End</label>
 
                                 <div class="col-md-6">
                                     <input id="event_end" type="date" class="form-control" name="event_end"  value="{{ old('event_end') }}" required>
+                                    <br>
 
                                     @if ($errors->has('event_end'))
                                         <span class="help-block">
@@ -69,10 +75,13 @@
                                     @endif
                                 </div>
                             </div>
+                            <br>
+
                             <div class="form-group{{ $errors->has('photo') ? ' has-error' : '' }}">
                                 <label for="photo" class="col-md-4 control-label">image</label>
                                <div class="col-md-6">
                                    <input id="photo" type="file" class="form-control" name="photo" required>
+                                   <br>
 
                                    @if ($errors->has('photo'))
                                         <span class="help-block">
@@ -89,6 +98,7 @@
 
                                 <div class="col-md-6">
                                     <input id="location" type="text" class="form-control" name="location"  value="{{ old('location') }}" required>
+                                    <br>
 
                                     @if ($errors->has('location'))
                                         <span class="help-block">
@@ -102,6 +112,7 @@
                                 <label for="propo" class="col-md-4 control-label">Proposal</label>
                                <div class="col-md-6">
                                    <input id="propo" type="file" class="form-control" name="propo" required>
+                                   <br>
 
                                    @if ($errors->has('propo'))
                                         <span class="help-block">
