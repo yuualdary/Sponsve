@@ -80,7 +80,7 @@ Route::post('/changePIC','proposalController@changePIC');
 
 //untuk UI
 Route::get('/doSearch','EventController@searchEvent')->name('search');
-route::get('/','eventController@UI');
+route::get('/','EventController@UI');
 route::get('/image','HomeController@image');
 route::get('/welcome','HomeController@welcome');
 route::get('/login','HomeController@loginForm');

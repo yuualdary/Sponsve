@@ -75,7 +75,7 @@ Route::get('/viewuser','proposalController@viewAllProposal');
 
 //untuk UI
 Route::get('/doSearch','EventController@search');
-route::get('/','eventController@UI');
+route::get('/','EventController@UI');
 route::get('/image','HomeController@image');
 route::get('/welcome','HomeController@welcome');
 route::get('/login','HomeController@login');
