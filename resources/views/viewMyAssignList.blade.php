@@ -39,7 +39,7 @@
                                    <br>
                             
                                     <figure class="block-4-image">
-                                        <a href="{{url('detail/'.$p->id)}}"><img src="{{url($p->photo)}}" alt="" class="img-fluid"></a>
+                                        <a href="{{url('detailMyAssignList/'.$p->proposal_id)}}"><img src="{{url($p->photo)}}" alt="" class="img-fluid"></a>
                                   
                                     </figure>
                                   

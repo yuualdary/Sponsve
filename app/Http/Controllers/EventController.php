@@ -15,6 +15,8 @@ use Validator;
 use Redirect;
 use Auth;
 use File;
+use App\position;
+use App\company;
 use App\catevent;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
@@ -33,7 +35,7 @@ class EventController extends Controller
     }
 
 
-    public function viewMyEvent()
+    public function viewMyEvent(Request $request)
     {
        
             $ins = event::paginate(8);
@@ -44,14 +46,16 @@ class EventController extends Controller
                     $categoryForEvent = DB::table('catevents')
                     ->join('categories','categories.category_id','=','catevents.catevent_tocategory')
                     ->get();
-                    
-            
-                    return view('myEvent',['event'=>$event,'ins'=>$ins,'categoryForEvent'=>$categoryForEvent]);
+              
+                    $data=$request->all();
+
+                    return view('myEvent',['event'=>$event,'ins'=>$ins,'categoryForEvent'=>$categoryForEvent,'data'=>$data]);
     
     }
 
     public function searchEvent(Request $request){
-
+        date_default_timezone_set('Asia/Jakarta');
+        $currtime=date('Y-m-d');
         switch ($request->input('action'))
             {
                 case'name':
@@ -68,27 +72,107 @@ class EventController extends Controller
                             ->get();
                 
                     
-                    return view('shop',['data'=>$data,'event'=>$event,'ins'=>$ins,'categoryForEvent'=>$categoryForEvent]);
+                    return view('shop',['data'=>$data,'event'=>$event,'ins'=>$ins,'categoryForEvent'=>$categoryForEvent,'search'=>$search]);
                 break;
 
 
                 case'month':
                      $ins = event::paginate(8);
                     
-                     $search = $request->search;
+                     $searchmonth = $request->searchmonth;
+                     $searchevent = $request->searchevent;
                      $data=$request->all();
 
-                     $event=DB::table('events')
-                             ->join('users','users.id',"=",'events.user_id')
-                             ->whereMonth('events.event_end','=',$search)
-                             ->paginate(9);
-                     $categoryForEvent = DB::table('catevents')
-                             ->join('categories','categories.category_id','=','catevents.catevent_tocategory')
-                             ->get();
-                    
-                    
+                     if($searchmonth != NULL && $searchevent == "- Event Date -"){
+                              $event=DB::table('events')
+                                      ->join('users','users.id',"=",'events.user_id')
+                                      ->whereMonth('events.event_start','=',$searchmonth)
+                                      ->paginate(9);
+                              $categoryForEvent = DB::table('catevents')
+                                      ->join('categories','categories.category_id','=','catevents.catevent_tocategory')
+                                      ->get();
+
+
+                                 return view('shop',['data'=>$data,'event'=>$event,'ins'=>$ins,'categoryForEvent'=>$categoryForEvent]);
+                     }
+
+                     elseif($searchevent != NULL && $searchmonth == "- Month -"){
+
+                            if($searchevent == "new"){
+                                        $event=DB::table('events')
+                                               ->join('users','users.id',"=",'events.user_id')
+                                                ->where([['events.event_start','>=',$currtime]])
+
+                                                ->orderBy('events.event_start','ASC')
+                                               
+                                               ->paginate(9);
+                                        $categoryForEvent = DB::table('catevents')
+                                               ->join('categories','categories.category_id','=','catevents.catevent_tocategory')
+                                                ->get();
+                                        
+                            }else{
+
+                                       $event=DB::table('events')
+                                                ->join('users','users.id',"=",'events.user_id')
+                                                ->orderBy('events.event_start','ASC')
+                                                ->paginate(9);
+
+                                         $categoryForEvent = DB::table('catevents')
+                                                ->join('categories','categories.category_id','=','catevents.catevent_tocategory')
+                                                ->get();
+
+                            }
+               
+               
+                         return view('shop',['data'=>$data,'event'=>$event,'ins'=>$ins,'categoryForEvent'=>$categoryForEvent]);
+                     }
+
+                     elseif($searchevent != NULL && $searchmonth != NULL){
+
+                        if($searchevent == "new"){
+                        
+                                        $event=DB::table('events')
+                                                ->join('users','users.id',"=",'events.user_id')
+                                                ->where([['events.event_start','>=',$currtime]])
+
+                                                ->whereMonth('events.event_start','=',$searchmonth)
+                                                ->paginate(9);
+                                         $categoryForEvent = DB::table('catevents')
+                                              ->join('categories','categories.category_id','=','catevents.catevent_tocategory')
+                                              ->get();
+                        }else{
+
+
+                                         $event=DB::table('events')
+                                                ->join('users','users.id',"=",'events.user_id')
+                                                ->whereMonth('events.event_start','=',$searchmonth)
+                                                ->paginate(9);
+
+                                         $categoryForEvent = DB::table('catevents')
+                                                ->join('categories','categories.category_id','=','catevents.catevent_tocategory')
+                                                ->get();
+                        }
+
+                            return view('shop',['data'=>$data,'event'=>$event,'ins'=>$ins,'categoryForEvent'=>$categoryForEvent]);
+                     }
+
+                     else{
+
+                        $event=DB::table('events')
+                                ->join('users','users.id',"=",'events.user_id')
+                                ->paginate(9);
+                        $categoryForEvent = DB::table('catevents')
+                                ->join('categories','categories.category_id','=','catevents.catevent_tocategory')
+                                ->get();
+           
+           
                         return view('shop',['data'=>$data,'event'=>$event,'ins'=>$ins,'categoryForEvent'=>$categoryForEvent]);
+
+                     }
                  break;
+
+
+                
             }   
     }
 
@@ -97,6 +181,8 @@ class EventController extends Controller
 
     public function view(Request $request)
     {
+        date_default_timezone_set('Asia/Jakarta');
+        $currtime=date('Y-m-d');
         $ins = event::paginate(8);
 
 
@@ -106,15 +192,16 @@ class EventController extends Controller
             $ins = event::paginate(8);
             $event=DB::table('events')
                     ->join('users','users.id',"=",'events.user_id')
+                    ->where([['events.event_start','>=',$currtime]])
                     ->orderBy('events.event_start','ASC')
                     ->paginate(9);
             $categoryForEvent = DB::table('catevents')
                     ->join('categories','categories.category_id','=','catevents.catevent_tocategory')
                     ->get();
-                    
+             $search =NULL;       
             $data=$request->all();
 
-                    return view('shop',['data'=>$data,'event'=>$event,'ins'=>$ins,'categoryForEvent'=>$categoryForEvent]);
+                    return view('shop',['data'=>$data,'event'=>$event,'ins'=>$ins,'categoryForEvent'=>$categoryForEvent,'search'=>$search]);
             
         }
         else
@@ -122,7 +209,8 @@ class EventController extends Controller
         $ins = event::paginate(8);
         $event=DB::table('events')
                 ->join('users','users.id',"=",'events.user_id')
-                ->join('categories','categories.category_id','=','events.category')
+                ->where([['events.event_start','>=',$currtime]])
+
                 ->orderBy('events.event_start','ASC')
 
                 ->paginate(9);
@@ -140,12 +228,13 @@ class EventController extends Controller
 
 
     public function companyEvent(Request $request){
-
+        date_default_timezone_set('Asia/Jakarta');
+        $currtime=date('Y-m-d');
 
         $data=$request->all();
         $event=DB::table('events')
                 ->join('users','users.id',"=",'events.user_id')
-                ->where([['events.event_company','=',Auth::user()->userid_tocompany]])
+                ->where([['events.event_company','=',Auth::user()->userid_tocompany],['events.event_start','>=',$currtime]])
                 ->paginate(9);
         $categoryForEvent = DB::table('catevents')
                 ->join('categories','categories.category_id','=','catevents.catevent_tocategory')
@@ -234,7 +323,7 @@ class EventController extends Controller
 
         $getStatus2= DB::table('masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','Submit']])
                      ->get();   
-        
+
         foreach($getStatus2 as $s2)
         {
             $Pen = $s2->Master_id;
@@ -246,25 +335,98 @@ class EventController extends Controller
          {
              $Done = $s3->Master_id;
          }
+         
+        $getStatus4= DB::table('masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','Invited']])
+                ->get();
+        foreach($getStatus4 as $s4)
+        {
+        $Inv = $s4->Master_id;
+        }
+
+        $getStatus5= DB::table('masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','Reviewed']])
+        ->get();
+        
+        foreach($getStatus5 as $s5)
+        
+        {
+        
+            $Review = $s5->Master_id;
+        
+          }
+
                      
         //  dd($Done);
 
         //fungsi detail pada view imagedetail yang mana menggunakan table event,comment,dan replies,user agar variable bisa defined
           $event = event::find($event_id);
-          $comments = DB::table('comments')
+        //   if(Auth::user()->userid_tocompany != NUll){
+             $comments = DB::table('comments')
                         ->join('events', 'events.event_id','=','comments.item_id')
                         ->join('users', 'users.id','=','comments.user_commentid')
-                        ->join('positions','positions.id_position','=','users.position_id')
-                        ->join('companies','companies.company_id','=','users.userid_tocompany')
-                        ->where('comments.item_id','=',$event_id)                    
+                        // ->join('positions','positions.id_position','=','users.position_id')
+                        // ->join('companies','companies.company_id','=','users.userid_tocompany')
+                        ->where('comments.item_id','=',$event_id)  
+                        ->orderBy('comments.comment_created_at','DESC')                  
                         ->paginate(10);
+                
+
+          
 
             $reply = DB::table('replies')
                         ->join('comments', 'comments.cmntid','=','replies.comment_id')
                         ->join('users', 'users.id','=','replies.user_replyid')
+                        // ->join('positions','positions.id_position','=','users.position_id')
+                        // ->join('companies','companies.company_id','=','users.userid_tocompany')
+                        
+                         ->get();     
+            //  $positions = DB::table('comments')
+            //              ->join('users', 'users.id','=','comments.user_commentid')
+            //              ->join('positions','positions.id_position','=','users.position_id')
+            //              ->join('companies','companies.company_id','=','users.userid_tocompany')
+            //              ->where('comments.item_id','=',$event_id)                    
+            //              ->paginate(10);
+
+            // dd($comments);
+            $positions = DB::table('comments')
+                         ->join('events', 'events.event_id','=','comments.item_id')
+                         ->join('users', 'users.id','=','comments.user_commentid')
+                         ->join('positions','positions.id_position','=','users.position_id')
+                         ->join('companies','companies.company_id','=','users.userid_tocompany')
+                         ->where('comments.item_id','=',$event_id)                    
+                         ->paginate(10);
+            // dd($positions);
+            
+            $replyPos = DB::table('replies')
+                        ->join('comments', 'comments.cmntid','=','replies.comment_id')
+                        ->join('users', 'users.id','=','replies.user_replyid')
                         ->join('positions','positions.id_position','=','users.position_id')
                         ->join('companies','companies.company_id','=','users.userid_tocompany')
-                         ->get();
+                        
+                         ->get();    
+            // dd($replyPos);
+
+
+                    
+
+        //   }else{
+        //     $comments = DB::table('comments')
+        //                  ->join('events', 'events.event_id','=','comments.item_id')
+        //                  ->join('users', 'users.id','=','comments.user_commentid')
+        //                  ->where('comments.item_id','=',$event_id)                    
+        //                  ->paginate(10);
+
+    
+
+
+
+        //     $reply = DB::table('replies')
+        //                 ->join('comments', 'comments.cmntid','=','replies.comment_id')
+        //                 ->join('users', 'users.id','=','replies.user_replyid')
+        //                 ->join('companies','companies.company_id','=','users.userid_tocompany')
+        //                  ->get();
+
+
+        //   }
           
             $getUsers = DB::table('users')
                         ->leftjoin('events','events.user_id','=','users.id')
@@ -292,6 +454,8 @@ class EventController extends Controller
                         
                         ->where([['mapping_requests.req_fromevent','=',$event_id],['mapping_requests.req_status','=',$Acc],])
                         ->orwhere([['mapping_requests.req_fromevent','=',$event_id],['mapping_requests.req_status','=',$Done],])
+                        ->orwhere([['mapping_requests.req_fromevent','=',$event_id],['mapping_requests.req_status','=',$Review],])
+
                         ->get();
      
 
@@ -356,7 +520,7 @@ class EventController extends Controller
                     
         $getAssign=DB::table('users')
                   ->join('positions','positions.id_position','=','users.position_id')
-                  ->where([['users.userid_tocompany','=',Auth::user()->userid_tocompany],['positions.position','!=','admin']])
+                  ->where([['users.userid_tocompany','=',Auth::user()->userid_tocompany],])
                   ->get();  
 
         $viewReview=DB::table('reviews')
@@ -386,13 +550,13 @@ class EventController extends Controller
                           }              
     if($user = Auth::user()){
 
-        return view('detailimage',['currtime'=>$currtime,'event'=>$event,'comments'=>$comments,'reply'=>$reply,'getUsers'=>$getUsers,'listMember'=>$listMember,'Acc'=>$Acc,'check'=>$check,'Pen'=>$Pen,'getChatUser'=>$getChatUser,'setRating'=>$setRating,'getAssign'=>$getAssign,'categoryForEvent'=>$categoryForEvent,'viewReview'=>$viewReview]);
+        return view('detailimage',['currtime'=>$currtime,'event'=>$event,'comments'=>$comments,'reply'=>$reply,'getUsers'=>$getUsers,'listMember'=>$listMember,'Acc'=>$Acc,'check'=>$check,'Pen'=>$Pen,'Inv'=>$Inv,'getChatUser'=>$getChatUser,'setRating'=>$setRating,'getAssign'=>$getAssign,'categoryForEvent'=>$categoryForEvent,'viewReview'=>$viewReview,'positions'=>$positions,'replyPos'=>$replyPos]);
 //         return response()->json([
 // $tesJson
 //                 ]);
     } else{
         
-         return view('detailimage',['event'=>$event,'comments'=>$comments,'reply'=>$reply,'getUsers'=>$getUsers,'listMember'=>$listMember,'Acc'=>$Acc,'Pen'=>$Pen,'setRating'=>$setRating,'getAssign'=>$getAssign,'categoryForEvent'=>$categoryForEvent,'viewReview'=>$viewReview]);
+         return view('detailimage',['event'=>$event,'comments'=>$comments,'reply'=>$reply,'getUsers'=>$getUsers,'listMember'=>$listMember,'Acc'=>$Acc,'Pen'=>$Pen,'setRating'=>$setRating,'getAssign'=>$getAssign,'categoryForEvent'=>$categoryForEvent,'viewReview'=>$viewReview,'positions'=>$positions,'replyPos'=>$replyPos]);
     }
     }
 
@@ -579,20 +743,19 @@ class EventController extends Controller
     public function createEvent(Request $request)
     {
         //event product yang ingin dimasukkin
-        // $validator = Validator::make($request->all(),
-        //     [
-        //         'title' => 'required',
-        //         'caption' => 'required',
-        //         'photo' => 'required|mimes:jpeg,bmp,png',
-        //         'location'=>'required',
-        //         'event_end'=>'required',
-        //         'category'=>'required'
+        $validator = Validator::make($request->all(),
+            [
+                'title' => 'required',
+                'caption' => 'required',
+                'photo' => 'required|mimes:jpeg,bmp,png',
+                'location'=>'required',
+               
 
-        //     ]);
-        // if($validator->fails())
-        // {
-        //     return redirect()->back()->withErrors($validator);
-        // }
+            ]);
+        if($validator->fails())
+        {
+            return redirect()->back()->withErrors($validator);
+        }
 
         $start=$request->event_start;
         $end=$request->event_end;
@@ -600,12 +763,7 @@ class EventController extends Controller
         $validator = $request->validate(
             [
                 'event_start'=>['required', new dateValidation($start,$end)],
-                'event_end'=>['required', new dateValidation($start,$end)],
-
-
-               
-
-            
+                'event_end'=>['required', new dateValidation($start,$end)],       
             ]);
      
 
@@ -699,8 +857,9 @@ class EventController extends Controller
         // $catevent->catevent_category = $request->catevent_category;
         // $catevent->save();  
 
-        return redirect('/view');
-    }
+        return redirect()->action(
+            'EventController@detail',['event_id'=>$event->event_id] 
+        )->with('successEdit','success');    }
 
 
     public function deleteEvent($event_id){

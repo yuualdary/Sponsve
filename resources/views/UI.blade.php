@@ -5,23 +5,23 @@
             <div class="swiper-container">
                         <div class="swiper-wrapper" id="slideshow">
                                 <div class="swiper-slide">
-                                    <img src="images/Events1.jpg" style="height: 400px; width: 900px;border-radius: 3%;">
+                                    <img src="images/Events1.jpg">
                                 </div>
                                 <div class="swiper-slide">
-                                    <img src="images/down.jpg" style="height: 400px; width: 900px;border-radius: 3%;">
+                                    <img src="images/down.jpg" >
                                 </div>
                                 <div class="swiper-slide">
-                                    <img src="images/ipman.jpg" style="height: 400px; width: 900px;border-radius: 3%;">
+                                    <img src="images/ipman.jpg" >
                                 </div>
                                 <div class="swiper-slide">
-                                    <img src="images/osu.png" style="height: 400px; width: 900px;border-radius: 3%;">
+                                    <img src="images/osu.png" >
                                 </div>  
                         </div>
                         <!-- Add Pagination -->
                         <div class="swiper-pagination" style="margin-bot: 100px"></div>
                         <!-- Add Arrows -->
-                        <div class="swiper-button-next" style="margin-right: 170px; color: #3097D1;"></div>
-                        <div class="swiper-button-prev" style="margin-left: 170px; color: #3097D1;"></div>
+                        <div class="swiper-button-next" ></div>
+                        <div class="swiper-button-prev" ></div>
             </div>
         </div>
         <div class="site-section site-section-sm site-blocks-1 bg-light">
@@ -72,14 +72,15 @@
                                     
                                       </figure>
                                     
-                                      <h3><b><a href="{{url('detail/'.$i->event_id)}}">{{$i->title}}</a></b></h3>
+                                      <h3><strong><a href="{{url('detail/'.$i->event_id)}}">{{$i->title}}</a></strong></h3>
                                     <h3>{{$i->event_end}}</h3>
                                       @foreach ($categoryForEvent as $catforevt)
-                                      @if($i->event_id === $catforevt->catevent_toevent)
-  
-                                      <i><b> <li style="float:left; display:inline-block;"><i class="medium material-icons" style="color:#3097D1;">local_offer</i>{{$catforevt->categoryname}}<a>,</a></li></b></i>
-                                      @endif
-                                       @endforeach                                    <p class="text-primary font-weight-bold">{{$i->location}}</p>
+                                        @if($i->event_id === $catforevt->catevent_toevent)
+    
+                                        <i><li style="float:left; display:inline-block;"><i class="medium material-icons" style="color:#3097D1;">local_offer</i>{{$catforevt->categoryname}}<a></a></li></i>
+                                        @endif
+                                       @endforeach                                    
+                                       <h3  class="text-primary font-weight-bold"><br>{{$i->location}}</h3>
                                       <br>
                                        <p class="text-primary font-weight-bold"><a href="{{url('detail/'.$i->event_id)}}">Show more....</a></p>
                                   </div>

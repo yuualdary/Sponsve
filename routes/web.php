@@ -106,7 +106,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-
+Route::get('/test','HomeController@test');
 
 //comment Reply
 Route::post('/RepComment','RepliesController@RepComment');
@@ -150,7 +150,7 @@ Route::get('chooseCompanies/{event_id}','CompanyController@chooseCompanies');
 //Request
 Route::get('RequestList/{id}','RequestorController@requestList');
 Route::get('toCompanyDet/{company_id}','CompanyController@viewDetailCompany');
-Route::get('approveRequest/{Mapping_Req_Id}','RequestorController@approveRequest');
+Route::post('approveRequest','RequestorController@approveRequest');
 Route::get('rejectRequest/{Mapping_Req_Id}','RequestorController@rejectRequest');
 Route::post('RequestCompany','RequestorController@RequestCompany');
 Route::get('chooseeCompany/{event_id}','RequestorController@chooseCompany');
@@ -174,7 +174,7 @@ Route::get('/viewAllRequest','RequestorController@allRequest');
 
 //chat pusher 
 
-Route::get('/chatHome','chatsController@index');
+Route::get('/chatHome','ChatsController@index');
 Route::get('/divmessage','chatsController@test');
 
 // Route::get('messages','chatController@fetchMessages');
@@ -184,3 +184,5 @@ Route::get('messages', 'ChatsController@fetchMessages');
 Route::post('messages', 'ChatsController@sendMessage');
 Route::post('/getReview','requestorController@sendReview');
 Route::get('deleteEvent/{event_id}','EventController@deleteEvent');
+Route::get('/passwordForm','HomeController@passwordForm');
+route::post('/forgotPassword','HomeController@forgetPassword');

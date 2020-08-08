@@ -1,4 +1,4 @@
-@extends('welcome')
+@extends('welcome2')
 
 @section('content')
 <br>
@@ -95,7 +95,14 @@
                                                     @endif
                                                     
                                                     <br>
-                                                    <i style="font-size=5px">as {{$U->position}} at {{$U->company_name}}</i>
+                                                    <br>
+                                                    @foreach ($positions as $pos)
+                                                        @if($pos->cmntid === $comment->cmntid)
+                                                             <i style="font-size=5px">as {{$pos->position}} at {{$pos->company_name}}</i>
+                                                        
+        
+                                                        @endif
+                                                    @endforeach
                                                 </div>
                                                 <div class="col-sm-7">
                                                     <div style="text-align: justify;"><span> {{ $comment->comment }} </span></div>
@@ -104,7 +111,7 @@
                                     
                                     <div style="margin-left:10px;">
                                         <a style="cursor: pointer;"class="reply"></a>&nbsp;
-                                        <a style="cursor: pointer;"  class="delete-comment" href="{{url('doDeleteComment/'.$comment->event_id)}}"></a>
+                                        <a style="cursor: pointer;"  class="delete-comment" href="{{url('deleteComment/'.$comment->event_id)}}"></a>
                                         <div class="reply-form">
 
                                             <!-- Dynamic Reply form -->
@@ -334,7 +341,7 @@
                                     
                                     <div class="row pull-right" style="padding: 0 10px 0 10px;">
                                         <div class="form-group" >
-                                            <button class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa"type="submit" name="action">Submit
+                                            <button id="btn_comment"class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa"type="submit" name="action">Submit
                                                 <i class="small material-icons right">send</i>
                                               </button>                                      
                                               </div>
@@ -354,7 +361,7 @@
                 <div class="panel panel-default">
                         <div class="panel-heading">Comments <i class="medium material-icons" style="color:#3097D1;">forum</i></div>
                         {{--menampilkan hasil comment dengan menampilkan nama,foto profile,dan isi comment berdasarkan masing - masing account--}}
-                        <div class="panel-body comment-container" >
+                        <div id="load_comment" class="panel-body comment-container" >
                             @foreach($comments as $comment)
                                 <div class="well">
                                         <b style="float:right;"> {{$comment->comment_created_at}}</b>
@@ -372,7 +379,14 @@
                                             @endif
                                             
                                             <br>
-                                            <i style="font-size=5px">as {{$U->position}} at {{$U->company_name}}</i>
+                                            @foreach ($positions as $pos)
+                                                @if($pos->cmntid === $comment->cmntid)
+                                                     <i style="font-size=5px">as {{$pos->position}} at {{$pos->company_name}}</i>
+                                                
+
+                                                @endif
+                                            @endforeach
+
                                         </div>
                                         <div class="col-sm-7">
                                             <div style="text-align: justify;"><span> {{ $comment->comment }} </span></div>
@@ -381,7 +395,7 @@
 
                                     <div style="margin-left:10px;">
                                         <br>
-                                        <a style="cursor: pointer;" id="{{ $comment->event_id }}" name="{{ Auth::user()->name }}" token="{{ csrf_token() }}" class="reply">Reply</a>&nbsp;
+                                        <label>Reply</label>&nbsp;
                                         @if(Auth::user()->id === $comment->user_commentid)
                                                  <a style="cursor: pointer;"  class="delete-comment" href="{{url('deleteComment/'.$comment->cmntid)}}">Delete</a>
                                         @endif
@@ -413,6 +427,15 @@
                                                                     
                                                     @endif
                                                     <br>
+                                                    @foreach ($replyPos as $repPos)
+                                                        @if($repPos->replies_id === $rep->replies_id)
+                                                             <i style="font-size=5px">as {{$repPos->position}} at {{$repPos->company_name}}</i>
+                                                    
+    
+                                                        @endif
+                                                    @endforeach
+                                                    <br>
+
                                                     @if(Auth::user()->id === $rep->user_replyid)
         
                                                         <a style="cursor: pointer;"  class="delete-comment" href="{{url('deleteReplies/'.$rep->replies_id)}}">Delete</a>
@@ -456,7 +479,7 @@
                                                    
                                                   </div>
                                                 
-                                            </div>
+\                                         </div>
                                          
                                 
     
@@ -517,7 +540,7 @@
                                                 <a class="btn btn-primary" title="Make Proposal"  href="{{url('toProposal',['event_id'=>$member->event_id,'company_id'=>$member->company_id])}}" ><i class="Large material-icons">contact_mail</i></a>
                                                 {{-- <button class="btn btn-info" data-toCompany="{{$member->company_id}}" data-companyName="{{$member->company_name}}"  id="myBtn" >Chat</button> --}}
 
-                                                <a class="btn btn-primary" title="Chat Live" data-mycompanyid="{{$member->company_id}}" data-mycompanyname="{{$member->company_name}}" data-mycompanyphoto="{{ url($member->company_photo) }}" data-mycompanyphoto="{{ url($member->company_photo) }}"  style="color:white" data-toggle="modal" data-target="#edit">Chat</a>
+                                                {{-- <a class="btn btn-primary" title="Chat Live" data-mycompanyid="{{$member->company_id}}" data-mycompanyname="{{$member->company_name}}" data-mycompanyphoto="{{ url($member->company_photo) }}" data-mycompanyphoto="{{ url($member->company_photo) }}"  style="color:white" data-toggle="modal" data-target="#edit">Chat</a> --}}
                                             </li>
                                         </ul>
                                         
@@ -554,18 +577,18 @@
                                     <a class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa" title="Download Proposal" href="{{url('downloadPropo/'.$U->event_id)}}">Download<i class="medium material-icons">file_download</i></a>
                                    
                                  
-                                 @elseif($check === $Acc &&  Auth::user()->userid_tocompany != $U->userid_tocompany)
-                                 <i><b>Your Company Has Been Approved</b></i><a class="btn btn-primary" title="Make Proposal" href="{{url('/toProposal/'.$U->event_id)}}" ><i class="Large material-icons">contact_mail</i>l</a>
-        
-                                 <a class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa ;width:30%" title="Download Proposal" href="{{url('downloadPropo/'.$U->event_id)}}">Download<i class="small material-icons">file_download</i></a>
-
+                                    @elseif($check === $Acc &&  Auth::user()->userid_tocompany != $U->userid_tocompany)
+                                    <b>Your Company Has Been Approved</b>
+                                    <a class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa ;" title="Download Proposal" href="{{url('downloadPropo/'.$U->event_id)}}">Download<i class="small material-icons">file_download</i></a>
                                   
                               
         
-                                 @elseif($check === $Pen &&  Auth::user()->userid_tocompany != $U->userid_tocompany)
+                                 @elseif(($check === $Pen) &&  Auth::user()->userid_tocompany != $U->userid_tocompany)
                                  <i><b>Pending Request ....</b></i>
         
-                                 
+                                 @elseif(($check === $Inv) &&  Auth::user()->userid_tocompany != $U->userid_tocompany)
+                                 <i><b>This event has sent you invite, you can check that at  </b></i>
+
                                      
                                 @elseif($U->event_end <= $currtime)
                                 
@@ -576,9 +599,10 @@
                                 @else
                                 
                                     {{-- <a class="btn btn-primary" href="{{url('RequestSp/'.$event->event_id)}}" >Make Request</a> --}}
-                                    <a class="btn btn-primary" title="Assign"  data-tomyevent="{{$event->event_id}}" data-toggle="modal" data-target="#request" >Make Request</a>
-        
-        
+                                    <a class="btn waves-effect waves-light"title="Join To Their Event" style="background-color:#3097D1; color:#fafafa ;" data-tomyevent="{{$event->event_id}}" data-toggle="modal" data-target="#request" >Make Request <i class="medium material-icons">call_made</i></a>
+                
+                                    <a class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa" title="Download Proposal" href="{{url('downloadPropo/'.$U->event_id)}}">Download<i class="medium material-icons">file_download</i></a>
+
                                 @endif
 
 
@@ -753,40 +777,40 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" id="myModalLabel">Assign</h4>
         </div>
-        <form  method="post" action="{{url('/RequestSp')}}">
-                {{csrf_field()}}
-            <div class="modal-body">
-                <input type="hidden" name="event_id" id="rid" cols="20" rows="5" class="form-control">
+                  <form  method="post" action="{{url('/RequestSp')}}">
+                          {{csrf_field()}}
+                      <div class="modal-body">
+                          <input type="hidden" name="event_id" id="rid" cols="20" rows="5" class="form-control">
 
-             <label for="req_userid" class="float-md-left mb-4">Assign to :</label>
+                       <label for="req_userid" class="float-md-left mb-4">Assign to :</label>
 
-            <select id="req_userid" name="req_userid">
-                
-        @if($getAssign === NULL){
+                      <select id="req_userid" name="req_userid">
 
-
-        }
-        
-        @else
-        {
-            @foreach ($getAssign as $assign)
-                 <option value="{{$assign->id}}"> <img src= "{{ url($assign->image) }}" style="width:10px; height:10px; border-radius:50%">{{$assign->name}}
-                 </option>                                              
-                   @endforeach
-                }
-        @endif
-            </select>
+                  @if($getAssign === NULL)
 
 
+                  
 
-                
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-            </div>
-            </div>
-    
-        </form>
+                  @else
+                  
+                      @foreach ($getAssign as $assign)
+                           <option value="{{$assign->id}}"> <a img src= "{{ url($assign->image) }}" style="width:10px; height:10px; border-radius:50%"></a>{{$assign->name}} #{{$assign->user_code}}
+                           </option>                                              
+                             @endforeach
+                          
+                  @endif
+                      </select>
+                  
+                  
+                  
+
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-primary">Save Changes</button>
+                      </div>
+                      </div>
+                  
+                  </form>
       </div>
     </div>
 </div>
@@ -800,34 +824,23 @@
     function myFunction() {
   confirm("Do You Want to Delete Your Event ?");
     }
-
     $('#request').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget) 
         var eventreq = button.data('tomyevent') 
-
         
-
-
         var modal = $(this)
         modal.find('.modal-body #rid').val(eventreq);
     
-
     })
-
-
     $('#edit').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget) 
         var data = button.data('mycompanyid') 
         var companyname = button.data('mycompanyname') 
-
         var companyphoto = button.data('mycompanyphoto') 
-
-
         var modal = $(this)
         modal.find('.modal-body #cid').val(data);
         modal.find('.modal-body #ccn').val(companyname);
         modal.find('.modal-body #ccp').attr("src",companyphoto);
-
         
         //       $.ajax({
         //           url: "te,
@@ -845,17 +858,13 @@
         var modal = document.getElementById("myModal");
         
         var btn = document.getElementById("myBtn");
-
         var span = document.getElementsByClassName("close")[0];
-
         btn.onclick = function() {
         modal.style.display = "block";
         }
-
         span.onclick = function() {
         modal.style.display = "none";
         }
-
         window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
@@ -863,7 +872,6 @@
         }
         var close = document.getElementsByClassName("closebtn");
         var i;
-
         for (i = 0; i < close.length; i++) {
         close[i].onclick = function(){
             var div = this.parentElement;
@@ -874,60 +882,27 @@
     });
 </script>
 <script>
-
-
-
     // $.ajaxSetup({
-
     //     headers: {
-
     //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-
     //     }
-
     // });
-
-
-
     // $(".btn-submit").click(function(e){
-
     //     e.preventDefault();
-
-
-
     //     var comment_id = $("input[name=comment_id]").val();
         
     //     var user_id = $("input[name=user_id]").val();
-
     //     var reply = $("input[name=reply ]").val();
-
         
-
-
-
     //     $.ajax({
-
     //        type:'POST',
-
     //        url:'/detail/{id}',
-
     //        data:{comment_id:comment_id, user_id:user_id, reply:reply},
-
     //        success:function(data){
-
     //           alert(data.success);
-
     //        }
-
     //     });
-
-
-
 	// });
-
-
-
-
 </script>
 
 

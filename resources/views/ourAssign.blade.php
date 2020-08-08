@@ -35,7 +35,7 @@
                                    <br>
                             
                                     <figure class="block-4-image">
-                                        <a href="{{url('detail/'.$p->id)}}"><img src="{{url($p->photo)}}" alt="" class="img-fluid"></a>
+                                        <a href="{{url('detailMyAssignList/'.$p->proposal_id)}}"><img src="{{url($p->photo)}}" alt="" class="img-fluid"></a>
                                   
                                     </figure>
                                   
@@ -43,7 +43,7 @@
                                     <h5>Status : </h5><i class="mb-0">{{$p->text1}}</i>
                                     <h5>Last Activity :</h5><p class="text-primary font-weight-bold">{{$p->proposal_modified_at}}</p>
                                     <br>
-                                     <p class="text-primary font-weight-bold"><a href="{{url('detail/'.$p->event_id)}}">Show more....</a></p>
+                                     <p class="text-primary font-weight-bold"><a href="{{url('detailMyAssignList/'.$p->proposal_id)}}">Show more....</a></p>
                                 </div>
                             </div>
                         </div>

@@ -19,9 +19,14 @@
                     <div class="row">
                         <div class="col-md-12 mb-5">
                             <div class="float-md-left mb-4"><h2 class="text-black h5"></h2></div>
-                                <form action="{{url('/doSearch')}}" class="site-block-top-search">
+                            {{-- <form action="{{url('/doSearch')}}" class="site-block-top-search">
+                                <span class="icon icon-search2"></span>
+                            <input type="text" class="form-control border-0" name="search" value="{{$search}}" placeholder="Search Event">
+                                <button  type="submit"  class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa" name="action"  title="Search Event" value="name">Search  <i class="small material-icons">search</i></button>
+                            </form>
+                                <form action="{{url('/doSearch')}}" class="site-block-top-search"> --}}
    
-                                         <select  class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa" name="search">
+                                         <select  class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa" name="searchmonth">
                                              <option>- Month -</option>
                                              <option value="01">January</option>
                                              <option value="02">Febuary</option>
@@ -36,6 +41,15 @@
                                              <option value="11">November</option>
                                              <option value="12">December</option>
                                          </select>
+                                        
+                                         <select  class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa" name="searchevent">
+                                            <option>- Event Date -</option>
+                                            <option value="new">Ongoing Event</option>
+                                            <option value="old">All Event</option>
+        
+                                        </select>
+
+                                    
                                         <button  type="submit"  class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa" name="action" value="month">Search <i class="small material-icons">search</i></button>
 
                                 </form>

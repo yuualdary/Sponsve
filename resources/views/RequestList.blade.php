@@ -1,4 +1,4 @@
-@extends('welcome')
+@extends('welcome2')
 @section('content')
 
 
@@ -8,8 +8,8 @@
            
             <div class="container">
                     <div class="tab">
-                            <button class="tablinks" onclick="openCity(event, 'Company')" id="defaultOpen">Detail Company</button>
-                            <button class="tablinks" onclick="openCity(event, 'SOP')">Log Company</button>
+                            <button class="tablinks" onclick="openCity(event, 'Company')" id="defaultOpen">Request List</button>
+                            <button class="tablinks" onclick="openCity(event, 'SOP')">Assigned Document Contract</button>
                             <button class="tablinks" onclick="openCity(event, 'Invite')">Invite Request</button>
  
                     </div>
@@ -24,7 +24,7 @@
                                 </div>
                             </div>
                             <div class="row" style="padding-left:20px">
-                        
+                                <div class="site-blocks-table col-md-12">
                                 <table class="table table-bordered">
                                     <tr>
                                         <td>
@@ -84,40 +84,52 @@
                                                                     <i>This Request No Longer Available</i>
 
                                                         @else 
-                                                                <a  class="btn btn-xs btn-primary" style="color:white" data-toggle="modal" data-target="#companyApprove"> 
+                                            <a  class="btn btn-xs btn-primary" style="color:white" data-toggle="modal" data-target="#companyApprove" data-fromevent="{{$Req->Mapping_Req_Id}}"> 
                                                                     <i class="medium material-icons">check</i>
                                                                     Accept
                                                                 </a>    
             
             
                                                                 <a  class="btn btn-xs btn-primary" style="color:white" data-toggle="modal" data-target="#companyReject" > 
-                                                                    <i class="medium material-icons">close</i>
+                                                                         <i class="medium material-icons">close</i>
                                                                     Reject
                                                                 </a>
                                                                 <div class="modal fade" id="companyApprove" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                                                         <div class="modal-dialog">
                                                                             <div class="col-md-12 modal-content">
-                                                                                                    <div class="modal-header">
+                                                                                                       <div class="modal-header">
                                                                                                         <h4 class="modal-title">Accept</h4>
-                                                                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                                                                                                            ×
-                                                                                                        </button>
-                                                                                                        
-                                                                                                    </div>
-                                                                                                    <div class="modal-body">
-                                                                                                        <p>
-                                                                                                            Are you sure want to Accept ?
-                                                                                                        </p>
-                                                                                                    </div>
+                                                                                                        <form  method="post" action="{{url('/approveRequest')}}">
+                                                                                                            {{csrf_field()}}
+                                                                                                        <div class="modal-body">
+                                                                                                            <input type="text" name="Mapping_Req_Id" id="pid" cols="20" rows="5" class="form-control">
+                                                                                                          
+                                                                                                         {{-- <label for="req_userid" class="float-md-left mb-4">Assign to :</label> --}}
+                                                                                                          
+                                                                                                        {{-- <select id="req_userid" name="req_userid">
+                                                                                                            
+                                                                                                    @if($myMemberList === NULL)
+                                                                                                      
                                                                                                     
-                                                                                                    <div class="modal-footer">
-                                                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">
-                                                                                                            Cancel
-                                                                                                        </button>
-                                                                                                        <a type="button" class="btn btn-primary"   href="{{url('/approveRequest/'.$Req->Mapping_Req_Id)}}">
-                                                                                                            Yes
-                                                                                                        </a>
-                                                                                                    </div>
+                                                                                                    
+                                                                                                    @else
+                                                                                                          @foreach ($myMemberList as $assign)
+                                                                                                                    <option value="{{$assign->id}}"> <a img src= "{{ url($assign->image) }}" style="width:10px; height:10px; border-radius:50%"></a>{{$assign->name}} #{{$assign->user_code}}
+                                                                                                                    </option>                                              
+                                                                                                            @endforeach
+                                                                                                    @endif
+                                                                                                        </select> --}}
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                            
+                                                                                                        <div class="modal-footer">
+                                                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                                                            <button type="submit" class="btn btn-primary" name="action" value="join">Save Changes</button>
+                                                                                                        </div>
+                                                                                                        </div>
+                                                                                                    
+                                                                                                    </form>
                                                                             </div><!-- /.modal-content -->
                                                                         </div>
                                                                 </div>
@@ -161,6 +173,7 @@
                                                 
                     
                                 </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -179,7 +192,7 @@
                                 </div>
                             </div>
                             <div class="row" style="padding-left:20px">
-                        
+                                <div class="site-blocks-table col-md-12">
                                 <table class="table table-bordered">
                                     <tr>
                                         <td>
@@ -251,6 +264,7 @@
                                         @endif
                                     @endforeach
                                 </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -267,17 +281,17 @@
                                         </div>
                                     </div>
                                     <div class="row" style="padding-left:20px">
-                                
+                                        <div class="site-blocks-table col-md-12">
                                         <table class="table table-bordered">
                                             <tr>
                                                 <td>
                                                     Company Name
                                                     <br>
                                                 </td>
-                                                <td>
+                                                {{-- <td>
                                                     Requestor
                                                     <br>
-                                                </td>
+                                                </td> --}}
                                                 <td>
                                                    Address
                                                    <br>
@@ -288,7 +302,7 @@
                                                 </td>
                 
                                                 <td>
-                                                     Detail Company
+                                                     Detail Event
                                                 </td>
                 
                                                 <td style="width:30%">
@@ -304,9 +318,9 @@
                                                     <td>
                                                      <b> {{$inv->company_name}}</b>
                                                     </td>
-                                                    <td>
+                                                    {{-- <td>
                                                         {{$inv->name}}
-                                                    </td>
+                                                    </td>--}}
                                                     <td>    
                                                       <i>{{$inv->company_address}}</i>
                                                     </td>
@@ -315,8 +329,8 @@
                                                       <i>{{$inv->title}}</i>
                                                     </td>
                                                     <td>
-                
-                                                    <a href="{{url('/toCompanyFromList/'.$inv->req_fromcompany)}}"> <i class="medium material-icons">create</i></a>
+                                                    
+                                                    <a href="{{url('/detail/'.$inv->req_fromevent)}}"> <i class="medium material-icons">create</i></a>
                                                         
                                                     </td>
                 
@@ -328,7 +342,7 @@
                                                                              <i>This Request No Longer Available</i>
                 
                                                                  @else 
-                                                                        <a class="btn btn-xs btn-primary" style="color:white" data-toggle="modal" data-target="#invitAccept"> 
+                                                                        <a class="btn btn-xs btn-primary" style="color:white" data-toggle="modal" data-fromevent="{{$inv->Mapping_Req_Id}}"data-target="#invitAccept"> 
                                                                             <i class="medium material-icons">check</i>
                                                                             Accept
                                                                         </a>
@@ -342,25 +356,39 @@
                                                                                         <div class="modal-dialog">
                                                                                             <div class="col-md-12 modal-content">
                                                                                                                     <div class="modal-header">
-                                                                                                                        <h4 class="modal-title">Accept</h4>
-                                                                                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                                                                                                                            ×
-                                                                                                                        </button>
-                                                                                                                        
+                                                                                                                        <h4 class="modal-title">Assign</h4>
                                                                                                                     </div>
-                                                                                                                    <div class="modal-body">
-                                                                                                                        <p>
-                                                                                                                            Are you sure want to Accept ?
-                                                                                                                        </p>
-                                                                                                                    </div>
-                                                                                                                    <div class="modal-footer">
-                                                                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">
-                                                                                                                            Cancel
-                                                                                                                        </button>
-                                                                                                                        <a type="button" class="btn btn-primary"  href="{{url('/approveRequest/'.$inv->Mapping_Req_Id)}}">
-                                                                                                                            Yes
-                                                                                                                        </a>
-                                                                                                                    </div>
+                                                                                                                        <form  method="post" action="{{url('/approveRequest')}}">
+                                                                                                                            {{csrf_field()}}
+                                                                                                                        <div class="modal-body">
+                                                                                                                            <input type="hidden" name="Mapping_Req_Id" id="eid" cols="20" rows="5" class="form-control">
+                                                                                                                          
+                                                                                                                         <label for="req_userid" class="float-md-left mb-4">Assign to :</label>
+                                                                                                                          
+                                                                                                                        <select id="req_userid" name="req_userid">
+                                                                                                                            
+                                                                                                                    @if($myMemberList === NULL)
+                                                                                                                      
+                                                                                                                    
+                                                                                                                    
+                                                                                                                    @else
+                                                                                                                          @foreach ($myMemberList as $assign)
+                                                                                                                                    <option value="{{$assign->id}}"> <a img src= "{{ url($assign->image) }}" style="width:10px; height:10px; border-radius:50%"></a>{{$assign->name}} #{{$assign->user_code}}
+                                                                                                                                    </option>                                              
+                                                                                                                            @endforeach
+                                                                                                                    @endif
+                                                                                                                        </select>
+                                                                                                                    
+                                                                                                                    
+                                                                                                                    
+                                                                                                                            
+                                                                                                                        <div class="modal-footer">
+                                                                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                                                                            <button type="submit" class="btn btn-primary" name="action" value="invite">Save Changes</button>
+                                                                                                                        </div>
+                                                                                                                        </div>
+                                                                                                                    
+                                                                                                                    </form>
                                                                                             </div><!-- /.modal-content -->
                                                                                         </div>
                                                                         </div>
@@ -406,6 +434,7 @@
                                                          
                                
                                         </table>
+                                        </div>
                                      </div>
                                 </div>
                             </div>
@@ -420,8 +449,36 @@
     <!-- /.modal -->
 
         
+    <script type="text/javascript" src="{{ asset('/js/app.js') }}"></script>
 
     <script>
+
+
+    $('#invitAccept').on('show.bs.modal', function (request) {
+        var button = $(request.relatedTarget) 
+        var eventfrom = button.data('fromevent') 
+
+        
+
+
+        var modal = $(this)
+        modal.find('.modal-body #eid').val(eventfrom);
+    
+
+    })
+
+    $('#companyApprove').on('show.bs.modal', function (request) {
+        var button = $(request.relatedTarget) 
+        var eventfrom = button.data('fromevent') 
+
+        
+
+
+        var modal = $(this)
+        modal.find('.modal-body #pid').val(eventfrom);
+    
+
+    })
         function openCity(evt, cityName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tabcontent");

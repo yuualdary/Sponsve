@@ -37,7 +37,7 @@ class mailForInvite extends Mailable
       
             
             return $this->from('legionscriptsi@gmail.com')
-                        ->view('Email')
+                        ->view('EmailForInviteReq')
                         ->with([
                             'Company_Name' =>  $this->req,
                             'Company_From'=>$this->From,

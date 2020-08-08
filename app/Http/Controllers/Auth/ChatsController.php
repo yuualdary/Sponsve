@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\user;
 
-use App\Message;
+use App\comment;
 use App\Events\MessageSent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +28,8 @@ class ChatController extends Controller
      */
     public function index()
     {
-        return view('chat');
+        $message = comment::all();
+        return view('chat',['message'=>$message]);
     }
 
     /**
@@ -37,7 +39,7 @@ class ChatController extends Controller
      */
     public function fetchMessages()
     {
-        return Message::with('user')->get();
+        return comment::with('userid')->get();
     }
 
     /**
@@ -50,9 +52,10 @@ class ChatController extends Controller
     {
         $user = Auth::user();
 
-        $message = $user->messages()->create([
-            'message' => $request->input('message')
-        ]);
+        $message =new comment();
+        $message->user_id=auth::user()->id;
+        $message->comment=$request->comment;
+        $message->save();
 
         broadcast(new MessageSent($user, $message))->toOthers();
 

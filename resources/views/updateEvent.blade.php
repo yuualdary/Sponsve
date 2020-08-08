@@ -71,7 +71,7 @@
 
                                 <div class="col-md-6">
                                     <textarea id="location" type="text" class="form-control" name="location" required>{{$gc->location}}</textarea>
-
+                                    <br>
                                     @if ($errors->has('location'))
                                         <span class="help-block">
                                         <strong>{{ $errors->first('location') }}</strong>
@@ -152,9 +152,10 @@
 
                             @foreach ($cat as $allcheck)
                             <div class="col-md-6">
+                                
                                     @if($allcheck->category_id === $check->category_id)
 
-                                    <label class="checkbox-inline">
+                                    
 
 
                                 <input  type="checkbox" id="catevent_category" name="catevent_tocategory[]" value="{{$check->category_id}}" checked>
@@ -177,39 +178,37 @@
                              @endforeach --}}
 
                              <div class="form-group">
+                             <label for="event_start" class="col-md-4 control-label" style="width:100%;">Category</label>
+                                <div class="col-md-6">
+                                    @foreach($cat as $allcheck)
+                                    <?php $a=0;?>
 
+                                        @foreach ($list2 as $check)
+                                            @if($allcheck->category_id === $check->category_id)
+                                            
+                                            <?php $a=1;?>
+                                            
+                                            @break
 
-                             @foreach($cat as $allcheck)
-                             <?php $a=0;?>
+                                            @endif
+                                        @endforeach
+                                        @if($a==1)
 
-                                   @foreach ($list2 as $check)
-                                       @if($allcheck->category_id === $check->category_id)
-                                     
-                                       <?php $a=1;?>
-                                       
-                                       @break
+                                        <label>
+                                            <input  type="checkbox" id="catevent_category" style="margin-bottom:10px" name="catevent_tocategory[]" value="{{$allcheck->category_id}}" checked>
+                                                {{$allcheck->categoryname}}&nbsp;&nbsp;&nbsp;
+                                        </label>
+                                        @else
 
-                                       @endif
-                                   @endforeach
-                                   @if($a==1)
-                                   <div style="padding-bottom:20px; margin-left:230px; float:left; width:200px;">
+                                        <label>
 
-                                   <label class="checkbox-inline">
+                                            <input  type="checkbox" id="catevent_category" style="margin-bottom:10px" name="catevent_tocategory[]" value="{{$allcheck->category_id}}" >
+                                                {{$allcheck->categoryname}}&nbsp;&nbsp;&nbsp;
+                                        </label>
+                                        @endif
 
-                                    <input  type="checkbox" id="catevent_category" name="catevent_tocategory[]" value="{{$allcheck->category_id}}" checked>
-                                           {{$allcheck->categoryname}}</label>
-                                   </div> 
-                                   @else
-                                   <div style="padding-bottom:20px; margin-left:500px; float:left;width:200px;">
-
-                                   <label class="checkbox-inline">
-
-                                    <input  type="checkbox" id="catevent_category" name="catevent_tocategory[]" value="{{$allcheck->category_id}}" >
-                                           {{$allcheck->categoryname}}</label>
-                                   </div>
-                                   @endif
-
-                            @endforeach
+                                    @endforeach
+                                </div>
 
                             </div>
 

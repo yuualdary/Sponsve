@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <div class="row">
+        <div class="row" style="margin-top:10px;">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     <div class="panel-heading">Create Your Company</div>
@@ -86,7 +86,7 @@
                             </div>
                            
                             <div class="form-group{{ $errors->has('website_address') ? ' has-error' : '' }}">
-                             <label for="website_address" class="col-md-4 control-label">website address</label>
+                             <label for="website_address" class="col-md-4 control-label">Company Email</label>
 
                                 <div class="col-md-6">
                                     <input id="website_address" type="text" class="form-control" name="website_address"  required>

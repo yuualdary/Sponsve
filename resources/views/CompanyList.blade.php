@@ -40,6 +40,7 @@
                                   
                                     {{-- <h3><b><a href="{{url('detail/'.$i->company_id)}}">{{$i->company}}</a></b></h3> --}}
                                     <p class="mb-0">{{$i->company_address}}</p>
+                                    <h3  class="text-primary font-weight-bold"><br>{{$i->status_company}}</h3>
                                     <br>
                                      <p class="text-primary font-weight-bold"><a href="{{url('toCompanyFromList/'.$i->company_id)}}">Show more....</a></p>
                                 </div>
@@ -51,6 +52,8 @@
                     <p>
                         {{-- {{$ins->appends(['search'=>request()->search])->links()}} --}}
                         {{--{{$product->appends([request()->query])->links()}}--}}
+                        {{$companyList->appends($data)->links()}}
+
                     </p>
                 </div>    
             </div>

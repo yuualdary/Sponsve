@@ -270,6 +270,11 @@ class proposalController extends Controller
                     ->join('events','events.event_id','=','proposals.eventid_proposal')
                     ->where('proposals.proposal_id','=',$proposal_id)
                      ->get();
+            $getProposalDataRev=DB::table('proposals')
+                     ->join('companies','companies.company_id','=','proposals.ptid_proposal')
+                     ->join('events','events.event_id','=','proposals.eventid_proposal')
+                     ->where('proposals.proposal_id','=',$proposal_id)
+                      ->get();
             // dd($getProposalData);
           $comments = DB::table('comments')
                      ->join('users', 'users.id','=','comments.user_commentid')  
@@ -292,7 +297,7 @@ class proposalController extends Controller
         }
 
 
-            return view('detailofproposal',['getProposalData'=>$getProposalData,'submit'=>$submit,'approve'=>$approve,'reject'=>$reject,'comments'=>$comments,'reply'=>$reply,'proposal'=>$proposal,'checkUser'=>$checkUser,'checkStatus'=>$checkStatus,'checkId'=>$checkId,'checkAssign'=>$checkAssign]);
+            return view('detailofproposal',['getProposalData'=>$getProposalData,'getProposalDataRev'=>$getProposalDataRev,'submit'=>$submit,'approve'=>$approve,'reject'=>$reject,'comments'=>$comments,'reply'=>$reply,'proposal'=>$proposal,'checkUser'=>$checkUser,'checkStatus'=>$checkStatus,'checkId'=>$checkId,'checkAssign'=>$checkAssign]);
 
 
     }
@@ -795,7 +800,7 @@ class proposalController extends Controller
             // dd($getAvailable);
         $getAssign=DB::table('users')
                     ->join('positions','positions.id_position','=','users.position_id')
-                    ->where([['users.userid_tocompany','=',Auth::user()->userid_tocompany],['positions.position','!=','admin']])
+                    ->where([['users.userid_tocompany','=',Auth::user()->userid_tocompany],])
                     ->get();
         $getPosition=DB::table('positions')
                     ->where([['positions.position','=','admin']])

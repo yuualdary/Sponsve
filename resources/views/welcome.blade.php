@@ -4,9 +4,7 @@
     {{--bagian kerangka dari website meliputi header,contetnt,footer ,css,js link--}}
    
     <title>SponsVe</title>
-    <link rel = "icon" href =  
-    "https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_200X200.png" 
-        type = "image/x-icon"> 
+ 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -38,6 +36,15 @@
     <link rel="stylesheet" href="css/Style.css">
 
     <style>
+        .page h1.format-icon:before {
+content: none;
+}
+        #app-navbar-collapse ul li{
+        list-style-type: none;
+        }
+        #app-navbar-collapse li{
+            text-align: left;
+        }
         .chat {
             list-style: none;
             margin: 0;
@@ -131,6 +138,92 @@
             -ms-flex-align: center;
             -webkit-align-items: center;
             align-items: center;
+        }
+        .swiper-button-prev{
+          margin-left: 170px;
+          position: absolute;
+          top: 50%;
+          width: calc(var(--swiper-navigation-size) / 44 * 27);
+          height: var(--swiper-navigation-size);
+          margin-top: calc(-1 * var(--swiper-navigation-size) / 2);
+          z-index: 10;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color:#3097D1;
+        }
+        .swiper-button-next {
+          margin-right:170px ;
+          position: absolute;
+          top: 50%;
+          width: calc(var(--swiper-navigation-size) / 44 * 27);
+          height: var(--swiper-navigation-size);
+          margin-top: calc(-1 * var(--swiper-navigation-size) / 2);
+          z-index: 10;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color:#3097D1;
+        }
+        .swiper-slide img{
+              height: 400px; 
+              width: 900px;
+              border-radius: 3%;
+        }
+        #profile2{
+            position:relative; 
+            padding-left:200px;
+        }
+        #imgprofile{
+            width:50px; 
+            height:50px; 
+            position:absolute; 
+            top:1px; 
+            right:160px; 
+            border-radius:50%;
+        }
+        @media only screen and (max-width: 600px) {
+            #imgprofile{
+                width:30px; 
+                height:30px; 
+                position:absolute; 
+                top:1px; 
+                right:110px; 
+                border-radius:50%;
+            }
+            #profile{
+                width:100%;
+            }
+            #profile2{
+                position:relative; 
+                padding-left:0px;
+            }
+            .swiper-wrapper {
+            width: 70%;
+            height: 70%;
+          }
+          .swiper-container {
+            width: 100%;
+            height: 100%;
+          }
+          .swiper-slide img{
+              height: 50%; 
+              width: 50%;
+              border-radius: 3%;
+          }
+          .swiper-slide img{
+            height: 250px; 
+            width: 350px;
+            border-radius: 3%;
+          }
+          .swiper-button-next{
+            margin-right: 70px;
+          }
+          .swiper-button-prev{
+              margin-left: 70px;
+          }
         }
     </style>
 
@@ -254,27 +347,52 @@
             // }
     </script>
     <script>
-
-            var swiper = new Swiper('.swiper-container', {
-                slidesPerView: 2,
-                spaceBetween: 600,
-                centeredSlides: true,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-            });
-    
-            // automatic slideshow
-            setInterval(function() { 
-                swiper.slideNext()
-            },  5000);
+            var mq = window.matchMedia( "(max-width: 600px)" );
+            if (mq.matches) {
+                // window width is at less than 570px
+                var swiper = new Swiper('.swiper-container', {
+                    slidesPerView: 1,
+                    spaceBetween: 600,
+                    centeredSlides: true,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                });
+        
+                // automatic slideshow
+                setInterval(function() { 
+                    swiper.slideNext()
+                },  5000);
+            }
+            else {
+                // window width is greater than 
+                var swiper = new Swiper('.swiper-container', {
+                    slidesPerView: 2,
+                    spaceBetween: 600,
+                    centeredSlides: true,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                });
+        
+                // automatic slideshow
+                setInterval(function() { 
+                    swiper.slideNext()
+                },  5000);
+            }
             
-        </script>
+            
+    </script>
 
 
 </body>

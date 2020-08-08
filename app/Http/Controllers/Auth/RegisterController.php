@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Http\Controllers\Auth\nullable;
 use Illuminate\Support\Facades\Input;
+use App\Mail\mailForRegister;
 
+use Illuminate\Support\Facades\Mail;
 
 
 
@@ -38,7 +40,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -87,8 +89,16 @@ class RegisterController extends Controller
 
         $currName=$data['name'];
 
+
         $profileImage = $request->file('image');
         //-profile nama belakang dari file tsb
+
+        if($profileImage != NULL){
+
+  
+
+        
+
         $profileImageSaveAsName = time(). "-profile." .
             $profileImage->getClientOriginalExtension();
 
@@ -97,6 +107,7 @@ class RegisterController extends Controller
         //logic = sukses berati profileImage(image) dipindahkan ke path atau folder yg ditentukan, simpan sbg nama dengan infix -profile
         $success = $profileImage->move($upload_path, $profileImageSaveAsName);
         //get Initial from name
+        }
         $getInitial=Str::substr($currName, 0, 2);
         $getUpperInitial=strtoupper($getInitial);
         //
@@ -106,7 +117,10 @@ class RegisterController extends Controller
         // initial + rand number
         $getUserCode=$getUpperInitial.$fourdigitrandom; 
         //
-        
+        $mail=$data['email'];
+        $To=$data['name'];
+        Mail::to($mail)->send(new mailForRegister($To));
+        if($profileImage != NULL){
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -116,6 +130,18 @@ class RegisterController extends Controller
             'user_code'=>$getUserCode
             
         ]);
+
+        }else{
+            return User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => bcrypt($data['password']),
+                'gender'=>$data['gender'],
+                'user_code'=>$getUserCode
+                ]);
+        }
+
+
         }
 
 

@@ -18,8 +18,8 @@
                                 <br>
 
                             <div class="col-md-8 col-md-offset-2">
-                                <div class="panel panel-default" style="width:700px; position:center; margin-right:500px;margin-top:20px;">
-                                    <div class="panel-heading">Update Your Picture</div>
+                                <div class="panel panel-default" style="width:100%; position:center; margin-right:500px;margin-top:20px;">
+                                    <div class="panel-heading"><label>Company Detail</label></div>
                                     {{--menampilakn data user masing - masing sesuai hasil register yang mana bisa melakukan update pada profile --}}
                                     @if(session()->has('successMsg'))
                                     <div class="alert success">
@@ -46,643 +46,608 @@
                 
                                     @if( Auth::user()->position_id != $admin ) 
                 
-                                    <div class="panel-body">
-                                    <form action="{{url('/editCompany')}}" method="post" enctype="multipart/form-data">
-                                        {{ csrf_field() }}
-                                           
-                                                <label>Detail For Company </label>
-                                            <br>
-                
-                                            @foreach($owner as $o)
-                           
-                                                 <label><i>Owner : {{$o->name}}</i></label>
-                
-                                            @endforeach
-                
-                                            <br>
-                
-                                      
-                
-                                         
-                
+                                    <div class="panel-body" style="width:100%">
+                                        <form action="{{url('/editCompany')}}" method="post" enctype="multipart/form-data">
+                                            {{ csrf_field() }}
+                    
                                             <div class="form-group{{ $errors->has('company_name') ? ' has-error' : '' }}">
-                                            @foreach($compDet as $compDet)
-                
-                                            
-                                            <div class="col-md-6">
-                                            <input id="company_id" type="hidden" class="form-control" readonly="readonly" name="company_id" value="{{$compDet->company_id}}" required autofocus>
-                                            
-                
-                                             </div>
-                
-                
-                
-                                            <div class="form-group{{ $errors->has('company_photo') ? ' has-error' : '' }}">
-                                                <label for="company_photo" class="col-md-4 control-label"></label>
-                                               <div class="col-md-4">
-                                               <img src="{{url('/'.$compDet->company_photo)}}" style="width:150px; height:150px; float:left; border-radius:50%; margin-right:25px;">
-                                           </div>
-                                            <br>
-                
-                                                <label for="company_name" class="col-md-4 control-label">Company Name</label>
-                                            
-                
+                                                @foreach($compDet as $compDet)
+                    
+                                                
                                                 <div class="col-md-6">
-                                                    <input id="company_name" type="text" class="form-control" name="company_name" value="{{$compDet->company_name}}" required autofocus>
-                                                    <br>
-                
+                                                <input id="company_id" type="hidden" class="form-control" readonly="readonly" name="company_id" value="{{$compDet->company_id}}" required autofocus>
+                                                
+                    
+                                                </div>
+                    
+                    
+                    
+                                                <div class="form-group{{ $errors->has('company_photo') ? ' has-error' : '' }}">
+                                                    <label for="company_photo" class="col-md-4 control-label"></label>
+                                                <div class="col-md-4">
+                                                <img src="{{url('/'.$compDet->company_photo)}}" style="width:150px; height:150px; float:left; border-radius:50%; margin-right:25px;">
+                                                </div>
+                                                <br>
+                    
+                                                    <label for="company_name" class="col-md-4 control-label">Company Name</label>
+                                                
+                    
+                                                    <div class="col-md-6">
+                                                        <input id="company_name" type="text" class="form-control" name="company_name" value="{{$compDet->company_name}}" required autofocus>
+                                                        <br>
+                    
+                                                    </div>
+                                                
+                    
+                                                <div class="form-group{{ $errors->has('company_address') ? ' has-error' : '' }}">
+                                                    <label for="company_address" class="col-md-4 control-label">Company address</label>
+                    
+                                                    <div class="col-md-6">
+                                                        <input id="company_address" type="textarea" class="form-control" name="company_address" value="{{$compDet->company_address}}" required autofocus >
+                                                        <br>
+                    
+                                                        
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="form-group{{ $errors->has('company_phone') ? ' has-error' : '' }}">
+                                                    <label for="company_phone" class="col-md-4 control-label">Company Phone</label>
+                    
+                                                    <div class="col-md-6">
+                                                        <input id="company_phone" type="number" class="form-control" name="company_phone"  value="{{$compDet->company_phone}}"required autofocus>
+                                                        <br>
+                    
+                                                    </div>
                                                 </div>
                                             
-                
-                                            <div class="form-group{{ $errors->has('company_address') ? ' has-error' : '' }}">
-                                                <label for="company_address" class="col-md-4 control-label">Company address</label>
-                
-                                                <div class="col-md-6">
-                                                    <input id="company_address" type="textarea" class="form-control" name="company_address" value="{{$compDet->company_address}}" required autofocus >
-                                                    <br>
-                
+                                                <div class="form-group{{ $errors->has('website_address') ? ' has-error' : '' }}">
+                                                <label for="website_address" class="col-md-4 control-label">website address</label>
+                    
+                                                    <div class="col-md-6">
+                                                        <input id="website_address" type="text" class="form-control" name="website_address"  value="{{$compDet->website_address}}"required autofocus>
+                                                        <br>
                                                     
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            
-                                            <div class="form-group{{ $errors->has('company_phone') ? ' has-error' : '' }}">
-                                                <label for="company_phone" class="col-md-4 control-label">Company Phone</label>
-                
-                                                <div class="col-md-6">
-                                                    <input id="company_phone" type="number" class="form-control" name="company_phone"  value="{{$compDet->company_phone}}"required autofocus>
-                                                    <br>
-                
+                    
+                    
+                    
+                    
+                                                <div class="form-group{{ $errors->has('social_media') ? ' has-error' : '' }}">
+                                                    <label for="social_media" class="col-md-4 control-label">Social media</label>
+                    
+                                                    <div class="col-md-6">
+                                                        <input id="social_media" type="text" class="form-control" name="social_media"  value="{{$compDet->social_media}}"required autofocus>
+                                                        <br>
+                                                    
+                                                    </div>
                                                 </div>
-                                            </div>
-                                           
-                                            <div class="form-group{{ $errors->has('website_address') ? ' has-error' : '' }}">
-                                             <label for="website_address" class="col-md-4 control-label">website address</label>
-                
-                                                <div class="col-md-6">
-                                                    <input id="website_address" type="text" class="form-control" name="website_address"  value="{{$compDet->website_address}}"required autofocus>
-                                                    <br>
-                                                   
-                                                </div>
-                                            </div>
-                
-                
-                
-                
-                                            <div class="form-group{{ $errors->has('social_media') ? ' has-error' : '' }}">
-                                                <label for="social_media" class="col-md-4 control-label">Social media</label>
-                
-                                                <div class="col-md-6">
-                                                    <input id="social_media" type="text" class="form-control" name="social_media"  value="{{$compDet->social_media}}"required autofocus>
-                                                    <br>
-                                                  
-                                                </div>
-                                            </div>
-                
-                
-                                            
-                                            
-                                            
-                                            
-                                        @endforeach 
-                                            
-                                    </form>                         
+                    
+                    
+                                                
+                                                
+                                                
+                                                
+                                                @endforeach
+                                            </div>     
+                                        </form>                         
                                     
                 
                                     @elseif(Auth::user()->position_id === $admin && Auth::user()->userid_tocompany === $getdata->company_id)
                 
-                                    <div class="panel-body">
-                                    <form action="{{url('/editCompany')}}" method="post" enctype="multipart/form-data">
-                                        {{ csrf_field() }}
-                                           
-                                                <label>Detail For Company </label>
-                                            <br>
-                
-                                            @foreach($compDet as $com)
-                           
-                                                 <label><i>Owner : {{$com->name}}</i></label>
-                
-                                            @endforeach
-                
-                                            <br>
-                
-                                      
-                
-                                         
-                
-                                            @foreach($compDet as $compDet)
-                
+                                        <div class="panel-body">
+                                        <form action="{{url('/editCompany')}}" method="post" enctype="multipart/form-data">
+                                            {{ csrf_field() }}
                                             
-                                            <div class="col-md-6">
-                                            <input id="company_id" type="hidden" class="form-control" readonly="readonly" name="company_id" value="{{$compDet->company_id}}" required autofocus>
-                                            
-                
-                                             </div>
-                
-                
-                
-                                            <div class="form-group{{ $errors->has('company_photo') ? ' has-error' : '' }}">
-                                                <label for="company_photo" class="col-md-4 control-label"></label>
-                                               <div class="col-md-4">
-                                               <img src="{{url('/'.$compDet->company_photo)}}" style="width:150px; height:150px; float:left; border-radius:50%; margin-right:25px;">
-                                             </div>
-                                            </div>
-                                            <br>
-                
-                                                <label for="company_name" class="col-md-4 control-label">Company Name</label>
-                                            
-                
+                    
+                                                @foreach($compDet as $compDet)
+                    
+                                                
                                                 <div class="col-md-6">
-                                                    <input id="company_name" type="text" class="form-control" name="company_name" value="{{$compDet->company_name}}" required autofocus>
-                                                    <br>
-                
+                                                <input id="company_id" type="hidden" class="form-control" readonly="readonly" name="company_id" value="{{$compDet->company_id}}" required autofocus>
+                                                
+                    
                                                 </div>
-                                            
-                
-                                            <div class="form-group{{ $errors->has('company_address') ? ' has-error' : '' }}">
-                                                <label for="email" class="col-md-4 control-label">Company address</label>
-                
-                                                <div class="col-md-6">
-                                                    <input id="company_address" type="textarea" class="form-control" name="company_address" value="{{$compDet->company_address}}" required autofocus >
-                                                    <br>
-                                                    <iframe width="250" height="250" id="gmap_canvas" src="https://maps.google.com/maps?q={{$compDet->company_address}}&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
-                                                    </iframe>
+                    
+                    
+                    
+                                                <div class="form-group{{ $errors->has('company_photo') ? ' has-error' : '' }}">
+                                                    <label for="company_photo" class="col-md-4 control-label"></label>
+                                                <div class="col-md-4">
+                                                <img src="{{url('/'.$compDet->company_photo)}}" style="width:150px; height:150px; float:left; border-radius:50%; margin-right:25px;">
                                                 </div>
-                                            </div>
-                                            
-                                            <div class="form-group{{ $errors->has('status_company') ? ' has-error' : '' }}">
-                                                <label for="status_compant" class="col-md-4 control-label">Status Company</label>
-                
-                                                <div class="col-md-6">
-
-                                                        <select class="form-control" id="type" name="status_company" required>
-                                                                <option>{{$compDet->status_company}}</option>
-                                                                <option>Company</option>
-                                                                <option>Organization</option>
-                                                            </select>
-                                                    <br>
-                
                                                 </div>
-                                            </div>
-                                            <div class="form-group{{ $errors->has('company_phone') ? ' has-error' : '' }}">
-                                                <label for="company_phone" class="col-md-4 control-label">Company Phone</label>
-                
-                                                <div class="col-md-6">
-                                                    <input id="company_phone" type="number" class="form-control" name="company_phone"  value="{{$compDet->company_phone}}"required autofocus>
-                                                    <br>
-                
-                                                </div>
-                                            </div>
-                                           
-                                            <div class="form-group{{ $errors->has('website_address') ? ' has-error' : '' }}">
-                                             <label for="website_address" class="col-md-4 control-label">website address</label>
-                
-                                                <div class="col-md-6">
-                                                    <input id="website_address" type="text" class="form-control" name="website_address"  value="{{$compDet->website_address}}"required autofocus>
-                                                    <br>
-                                                   
-                                                </div>
-                                            </div>
-                
-                
-                
-                
-                                            <div class="form-group{{ $errors->has('social_media') ? ' has-error' : '' }}">
-                                                <label for="social_media" class="col-md-4 control-label">Social media</label>
-                
-                                                <div class="col-md-6">
-                                                    <input id="social_media" type="text" class="form-control" name="social_media"  value="{{$compDet->social_media}}"required autofocus>
-                                                    <br>
-                                                  
-                                                </div>
-                                            </div>                           
-                                            <br>  
-                                            
-                                            <label for="company_photo" class="col-md-4 control-label">Company Photo</label>
-                                               <div class="col-md-6">
-                                                   <input type="file" name ="company_photo" >
-                                                   <br>
-                                                 
-                                                </div>
-                                           
-                                            <br>
-
-                                            @endforeach     
-                            
-                                            <div class="form-group">
-                                                    <div style="padding-bottom:20px; margin-left:330px; float:left;">
-                                                        <button class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa;" name="action" value="Edit" >
-                                                            Save Data
-                                                        </button>
+                                                <br>
+                    
+                                                    <label for="company_name" class="col-md-4 control-label">Company Name</label>
+                                                
+                    
+                                                    <div class="col-md-6">
+                                                        <input id="company_name" type="text" class="form-control" name="company_name" value="{{$compDet->company_name}}" required autofocus>
+                                                        <br>
+                    
                                                     </div>
-
-                                                    {{-- <div style="padding-bottom:20px; margin-right:180px; float:right;" >
-                                                            <button  class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa;" onclick="window.history.back();" class="btn btn-primary" >
-                                                               Cancel
-                                                            </button>
-                                                        </div> --}}
-                                             </div>     
-                                              <br>                    
-                                                             
-                                    </form>
-                
-                                    
-                
-                                  
-                
-                                    <br>
-                                    <form action="{{url('/addMember')}}" method="post" enctype="multipart/form-data">
-                                    {{ csrf_field() }}
-                
-                                   
-                
-                                            
-                                    
-                                            <input id="company_id" type="hidden" class="form-control" readonly="readonly" name="company_id" value="{{$testVar}}" required autofocus>
-                                            
-                
-                                     
-                                     <div class="form-group">
-                                         <label for="addMember" class="col-md-4 control-label">Set Your Member</label>
-                                            <div class="col-md-5">
-                                                 <select class="form-control" id="type" name="id">
-                                                        <option>-Choose User-</option>
-                                                        @foreach($getAlluser as $u)
-                                                        <option value="{{$u->id}}">{{$u->name}} | <b><i>{{$u->user_code}}</i></b></option>
-                                                        @endforeach
-                                                        
-                                                </select>  
-                                            </div> 
-                                        
-                
-                                     
-                                        <div class="col-md-1">
-                                            <button type="submit" class="btn waves-effect waves-light" title="Add Staff" style="background-color:#3097D1; color:#fafafa;"">
-                                                <i class="medium material-icons" >add</i>
-                                                {{--Jangan Lupa Download Icon--}}
-                                            </button>
+                                                
+                    
+                                                <div class="form-group{{ $errors->has('company_address') ? ' has-error' : '' }}">
+                                                    <label for="email" class="col-md-4 control-label">Company address</label>
+                    
+                                                    <div class="col-md-6">
+                                                        <input id="company_address" type="textarea" class="form-control" name="company_address" value="{{$compDet->company_address}}" required autofocus >
                                                         <br>
-                                                        <br>
-                                                 </div>
-                                         </div>   
-                                         </div>  
-                                                     
-                
-                                    </form>
-                                    @else   
-                                    <div class="panel-body">
-                                    <form action="{{url('/editCompany')}}" method="post" enctype="multipart/form-data">
-                                        {{ csrf_field() }}
-                                           
-                                                <label>Detail For Company </label>
-                                            <br>
-                
-                                            @foreach($owner as $o)
-                           
-                                                 <label><i>Owner : {{$o->name}}</i></label>
-                
-                                            @endforeach
-                
-                                            <br>
-                
-                                      
-                
-                                         
-                
-                                            <div class="form-group{{ $errors->has('company_name') ? ' has-error' : '' }}">
-                                            @foreach($reqDet as $r)
-                
-                                            
-                                            <div class="col-md-6">
-                                            <input id="company_id" type="hidden" class="form-control" readonly="readonly" name="company_id" value="{{$r->company_id}}" required autofocus>
-                                            
-                
-                                             </div>
-                
-                
-                
-                                            <div class="form-group{{ $errors->has('company_photo') ? ' has-error' : '' }}">
-                                                <label for="company_photo" class="col-md-4 control-label"></label>
-                                               <div class="col-md-4">
-                                               <img src="{{url('/'.$r->company_photo)}}" style="width:150px; height:150px; float:left; border-radius:50%; margin-right:25px;">
-                                           </div>
-                                            <br>
-                
-                                                <label for="company_name" class="col-md-4 control-label">Company Name</label>
-                                            
-                
-                                                <div class="col-md-6">
-                                                    <input id="company_name" type="text" class="form-control" name="company_name" value="{{$r->company_name}}" required autofocus>
-                                                    <br>
-                
+                                                        <iframe width="250" height="250" id="gmap_canvas" src="https://maps.google.com/maps?q={{$compDet->company_address}}&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
+                                                        </iframe>
+                                                    </div>
                                                 </div>
-                                            
-                
-                                            <div class="form-group{{ $errors->has('company_address') ? ' has-error' : '' }}">
-                                                <label for="email" class="col-md-4 control-label">Company address</label>
-                
-                                                <div class="col-md-6">
-                                                    <input id="company_address" type="textarea" class="form-control" name="company_address" value="{{$r->company_address}}" required autofocus >
-                                                    <br>
-                
-                                                    
-                                                </div>
-                                            </div>
-                                            <div class="form-group{{ $errors->has('status_company') ? ' has-error' : '' }}">
+                                                
+                                                <div class="form-group{{ $errors->has('status_company') ? ' has-error' : '' }}">
                                                     <label for="status_compant" class="col-md-4 control-label">Status Company</label>
                     
                                                     <div class="col-md-6">
-    
+
                                                             <select class="form-control" id="type" name="status_company" required>
                                                                     <option>{{$compDet->status_company}}</option>
-                                                                  
+                                                                    <option>Company</option>
+                                                                    <option>Organization</option>
                                                                 </select>
                                                         <br>
                     
                                                     </div>
                                                 </div>
-                                            
-                                            <div class="form-group{{ $errors->has('company_phone') ? ' has-error' : '' }}">
-                                                <label for="company_phone" class="col-md-4 control-label">Company Phone</label>
-                
-                                                <div class="col-md-6">
-                                                    <input id="company_phone" type="number" class="form-control" name="company_phone"  value="{{$r->company_phone}}"required autofocus>
-                                                    <br>
-                
-                                                </div>
-                                            </div>
-                                           
-                                            <div class="form-group{{ $errors->has('website_address') ? ' has-error' : '' }}">
-                                             <label for="website_address" class="col-md-4 control-label">website address</label>
-                
-                                                <div class="col-md-6">
-                                                    <input id="website_address" type="text" class="form-control" name="website_address"  value="{{$r->website_address}}"required autofocus>
-                                                    <br>
-                                                   
-                                                </div>
-                                            </div>
-                
-                
-                
-                
-                                            <div class="form-group{{ $errors->has('social_media') ? ' has-error' : '' }}">
-                                                <label for="social_media" class="col-md-4 control-label">Social media</label>
-                
-                                                <div class="col-md-6">
-                                                    <input id="social_media" type="text" class="form-control" name="social_media"  value="{{$r->social_media}}"required autofocus>
-                                                    <br>
-                                                  
-                                                </div>
-                                            </div>
-
-
-                                    
-                                        
-
-                                                {{-- <div class="mapouter"><div class="gmap_canvas">
-                                                        <iframe width="250" height="250" id="gmap_canvas" src="https://maps.google.com/maps?q={{$r->company_address}}4&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe><a href="https://www.embedgooglemap.net/blog/divi-discount-code-elegant-themes-coupon/%22%3Etheme divi dan divi builder</a></div><style>.mapouter{position:relative;text-align:right;height:500px;width:600px;}.gmap_canvas {overflow:hidden;background:none!important;height:500px;width:600px;}</style></div>
-
-                                        </div> --}}
-
-
-
-
-                                        </form>
-                                            
-                
-                                 
-            
-                                            
-                                        @endforeach 
-                                    @endif
-                                    <br>
-                                    
-                                    <div class="col-md-8" style="text-align:left;">
-                                        <h3><b> <i class="large material-icons">group</i><i> List Of Member</i></b></h3> 
-                                    </div>
-                                    <table class="table table-bordered">
-                                        <tr>
-                                            <th>Position</th>
-                                            <th>Name</th>
-                                            <th>Initial</th>
-                                            <th>Action</th>
-                                         </tr>
-                                         @foreach($getListMember as $member)
-                                         
-                
-                
-                                         <tr>
-                                        
-                                             <td>{{$member->position}}</td>
-                                             <td>{{$member->name}}</td>
-                                             <td>{{$member->user_code}}</td>
-                                             
-                
-                                             <td>
-                                                <input id="id" type="hidden" class="form-control" readonly="readonly" name="id" value="{{$member->id}}" required autofocus>
-                                                <input id="userid_tocompany" type="hidden" class="form-control" readonly="readonly" name="userid_tocompay" value="{{$member->userid_tocompany}}" required autofocus>
-                
-                
-                                                   @if( Auth::user()->position_id === $admin && Auth::user()->id === $checkCurrIdExistInRecord && $member->id != $isAdmin)
-                                                                   
-                                                   <a href="{{url('/setPosition/'.$member->id)}}" class="btn btn-primary" >Send As Admin</a> 
-                                                        
-
-                                                        
-                                                    <a href="{{url('/deleteUser/'.$member->id)}}" title="Delete" class="btn btn-primary" >
-                                                        <i class="medium material-icons" style="font-size: 20px">delete</i>
- 
-
-                                                        @else
-                                                    </a>
-                
-                                                   
-                                                    
-                                                    @endif
-                                                   
-                
-                
-                                            </td>
-                
-                                         </tr>
-                                       
-                
-                                        @endforeach
-                                    </table>
-                
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        </div>
-                        </div>
-                        </div>
-
-                        <div id="LogCompany" class="tabcontent">
-                        <div class="panel-body">
-                                <div class="container">
-                                   
-                        
-                                    <div class="row col-md-8 mb-5">
-                                        <div class="col-md-12 order-2">
-                        
-                                            <div class="row" >
-                                                <div class="col-md-12 mb-5">
-                                                    <div class="float-md-left mb-4"><h2 class="text-black h5">List of Log of Your Company</h2></div>
-                                                </div>
-                                            </div>
-                                            <table class="table table-bordered" >
-                                                    <tr>
-                                                        <td >
-                                                          <b><i> <a style="margin-left:150px;"> Message</a></i></b>
-                                                            <br>
-                                                        </td>
-                                                        
-                                                        <td>
-                                                            <b><i>    <a style="margin-left:30px;"> Creator</a></i></b>
-                                                           <br>
-                                                        </td>
-                                                    </tr>
-                                                        @foreach($logUserCompany as $Com )
+                                                <div class="form-group{{ $errors->has('company_phone') ? ' has-error' : '' }}">
+                                                    <label for="company_phone" class="col-md-4 control-label">Company Phone</label>
+                    
+                                                    <div class="col-md-6">
+                                                        <input id="company_phone" type="number" class="form-control" name="company_phone"  value="{{$compDet->company_phone}}"required autofocus>
                                                         <br>
-                                                    <tr>
-                                                            <td>
-                                                            <img src= "{{url('/' .$Com->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-left:25px; margin-top:10px; margin-bottom:10px;">
-                                                            <br><i style="margin-left:25px; margin-top:10px;"><b> {{$Com->log_message}}</b></i>
-                                                            </td>
-                                                            <td>
-                                                                {{$Com->name}} {{$Com->log_createdon}}
-                                                            </td>
-                                                            
-                                           
-                                                    </tr>
-                                                    
-                                                     
-                                                  @endforeach
-                                                                 
-                                       
-                                            </table>
-                                        </div>
-                                    </div>
-                                             
+                    
+                                                    </div>
+                                                </div>
                                             
-                                    </div>
-                                </div>
-                        </div>
-            </div>
-            <div id="FAQ" class="tabcontent">
-                    <div class="row">
-                            <div class="col-md-8 col-md-offset-2">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">Write Coment </div>
-                                    {{--melakukan comment pada detail [] product dengan menggunakan masing - masing account dan kita bisa mendelete commetn dan melihat comment orang lain--}}
-                                    <div class="panel-body">
-                                        @if (session('status'))
-                                            <div class="alert alert-success">
-                                                {{ session('status') }}
-                                            </div>
-                                        @endif
-                                        
-                                            <form id="comment-form" method="post" action="{{ route('comments.store') }}" >
-                                                {{ csrf_field() }}
-                                                <input type="hidden" name="user_id" value="{{ Auth::user()->id }}" >
-                                                <div class="row" style="padding: 10px;">
-                                                    <div class="form-group">
-                                                        <textarea class="form-control" name="comment" placeholder="Write something"></textarea>
+                                                <div class="form-group{{ $errors->has('website_address') ? ' has-error' : '' }}">
+                                                <label for="website_address" class="col-md-4 control-label">website address</label>
+                    
+                                                    <div class="col-md-6">
+                                                        <input id="website_address" type="text" class="form-control" name="website_address"  value="{{$compDet->website_address}}"required autofocus>
+                                                        <br>
+                                                    
                                                     </div>
                                                 </div>
-                                                <!-- @foreach($compDet as $value) -->
+                    
+                    
+                    
+                    
+                                                <div class="form-group{{ $errors->has('social_media') ? ' has-error' : '' }}">
+                                                    <label for="social_media" class="col-md-4 control-label">Social media</label>
+                    
+                                                    <div class="col-md-6">
+                                                        <input id="social_media" type="text" class="form-control" name="social_media"  value="{{$compDet->social_media}}"required autofocus>
+                                                        <br>
+                                                    
+                                                    </div>
+                                                </div>                           
+                                                <br>  
+                                                
+                                                <label for="company_photo" class="col-md-4 control-label">Company Photo</label>
+                                                <div class="col-md-6">
+                                                    <input type="file" name ="company_photo" >
+                                                    <br>
+                                                    
+                                                    </div>
+                                            
+                                                <br>
 
-                                                <input  name="company_commentid" value="{{$compDet->company_id}}" type="hidden">
-                                                <!-- @endforeach -->
-                                                <div class="row" style="padding: 0 10px 0 10px;">
-                                                    <div class="form-group">
-                                                        <input type="submit" class="btn btn-primary btn-lg" style="width: 100%" name="submit">
+                                                @endforeach     
+                                
+                                                <div class="form-group">
+                                                        <div style="padding-bottom:20px; margin-left:330px; float:left;">
+                                                            <button class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa;" name="action" value="Edit" >
+                                                                Save Data
+                                                            </button>
+                                                        </div>
+
+                                                        {{-- <div style="padding-bottom:20px; margin-right:180px; float:right;" >
+                                                                <button  class="btn waves-effect waves-light" style="background-color:#3097D1; color:#fafafa;" onclick="window.history.back();" class="btn btn-primary" >
+                                                                Cancel
+                                                                </button>
+                                                            </div> --}}
+                                                </div>     
+                                                <br>                    
+                                                                
+                                        </form>
+                    
+                                        
+                    
+                                    
+                    
+                                        <br>
+                                        <form action="{{url('/addMember')}}" method="post" enctype="multipart/form-data">
+                                            {{ csrf_field() }}
+                    
+                                    
+                    
+                                                
+                                        
+                                                <input id="company_id" type="hidden" class="form-control" readonly="readonly" name="company_id" value="{{$testVar}}" required autofocus>
+                                                
+                    
+                                        
+                                        <div class="form-group">
+                                            <label for="addMember" class="col-md-4 control-label">Set Your Member</label>
+                                                <div class="col-md-5">
+                                                    <select class="form-control" id="type" name="id">
+                                                            <option>-Choose User-</option>
+                                                            @foreach($getAlluser as $u)
+                                                            <option value="{{$u->id}}">{{$u->name}} | <b><i>{{$u->user_code}}</i></b></option>
+                                                            @endforeach
+                                                            
+                                                    </select>  
+                                                </div> 
+                                            
+                    
+                                        
+                                            <div class="col-md-1">
+                                                <button type="submit" class="btn waves-effect waves-light" title="Add Staff" style="background-color:#3097D1; color:#fafafa;"">
+                                                    <i class="medium material-icons" >add</i>
+                                                    {{--Jangan Lupa Download Icon--}}
+                                                </button>
+                                                            <br>
+                                                            <br>
+                                                    </div>
+                                            </div>   
+                                            </div>  
+                                                        
+                    
+                                        </form>
+                                    @else   
+                                        <div class="panel-body">
+                                        <form action="{{url('/editCompany')}}" method="post" enctype="multipart/form-data">
+                                            {{ csrf_field() }}
+
+                                                <div class="form-group{{ $errors->has('company_name') ? ' has-error' : '' }}">
+                                                @foreach($reqDet as $r)
+                    
+                                                
+                                                <div class="col-md-6">
+                                                <input id="company_id" type="hidden" class="form-control" readonly="readonly" name="company_id" value="{{$r->company_id}}" required autofocus>
+                                                
+                    
+                                                </div>
+                    
+                    
+                    
+                                                <div class="form-group{{ $errors->has('company_photo') ? ' has-error' : '' }}">
+                                                    <label for="company_photo" class="col-md-4 control-label"></label>
+                                                <div class="col-md-4">
+                                                <img src="{{url('/'.$r->company_photo)}}" style="width:150px; height:150px; float:left; border-radius:50%; margin-right:25px;">
+                                            </div>
+                                                <br>
+                    
+                                                    <label for="company_name" class="col-md-4 control-label">Company Name</label>
+                                                
+                    
+                                                    <div class="col-md-6">
+                                                        <input id="company_name" type="text" class="form-control" name="company_name" value="{{$r->company_name}}" required autofocus>
+                                                        <br>
+                    
+                                                    </div>
+                                                
+                    
+                                                <div class="form-group{{ $errors->has('company_address') ? ' has-error' : '' }}">
+                                                    <label for="email" class="col-md-4 control-label">Company address</label>
+                    
+                                                    <div class="col-md-6">
+                                                        <input id="company_address" type="textarea" class="form-control" name="company_address" value="{{$r->company_address}}" required autofocus >
+                                                        <br>
+                    
+                                                        
                                                     </div>
                                                 </div>
-                                            </form>
-                
+                                                <div class="form-group{{ $errors->has('status_company') ? ' has-error' : '' }}">
+                                                        <label for="status_compant" class="col-md-4 control-label">Status Company</label>
+                        
+                                                        <div class="col-md-6">
+        
+                                                                <select class="form-control" id="type" name="status_company" required>
+                                                                        <option>{{$compDet->status_company}}</option>
+                                                                    
+                                                                    </select>
+                                                            <br>
+                        
+                                                        </div>
+                                                </div>
+                                                
+                                                <div class="form-group{{ $errors->has('company_phone') ? ' has-error' : '' }}">
+                                                    <label for="company_phone" class="col-md-4 control-label">Company Phone</label>
+                    
+                                                    <div class="col-md-6">
+                                                        <input id="company_phone" type="number" class="form-control" name="company_phone"  value="{{$r->company_phone}}"required autofocus>
+                                                        <br>
+                    
+                                                    </div>
+                                                </div>
+                                            
+                                                <div class="form-group{{ $errors->has('website_address') ? ' has-error' : '' }}">
+                                                <label for="website_address" class="col-md-4 control-label">website address</label>
+                    
+                                                    <div class="col-md-6">
+                                                        <input id="website_address" type="text" class="form-control" name="website_address"  value="{{$r->website_address}}"required autofocus>
+                                                        <br>
+                                                    
+                                                    </div>
+                                                </div>
+                    
+                    
+                    
+                    
+                                                <div class="form-group{{ $errors->has('social_media') ? ' has-error' : '' }}">
+                                                    <label for="social_media" class="col-md-4 control-label">Social media</label>
+                    
+                                                    <div class="col-md-6">
+                                                        <input id="social_media" type="text" class="form-control" name="social_media"  value="{{$r->social_media}}"required autofocus>
+                                                        <br>
+                                                    
+                                                    </div>
+                                                </div>
+
+
+                                        
+                                            
+
+                                                    
+
+                                                @endforeach 
+
+
+                                        </form>    
+                                        
+                                    @endif
+                                        <br>
+                                        <div class="panel-body">
+                                            <div class="col-md-12" style="text-align:left;">
+                                                <h3><b> <i class="large material-icons">group</i><i> List Of Member</i></b></h3> 
+                                            </div>
+                                            <div class="col-md-12">
+                                            <div class="site-blocks-table" >
+                                                <table class="table table-bordered" style="width:100%">
+                                                    <tr>
+                                                        <th>Position</th>
+                                                        <th>Name</th>
+                                                        <th>Initial</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                    @foreach($getListMember as $member)
+                                                    
+                            
+                            
+                                                    <tr>
+                                                    
+                                                        <td>{{$member->position}}</td>
+                                                        <td>{{$member->name}}</td>
+                                                        <td>{{$member->user_code}}</td>
+                                                        
+                            
+                                                        <td>
+                                                            <input id="id" type="hidden" class="form-control" readonly="readonly" name="id" value="{{$member->id}}" required autofocus>
+                                                            <input id="userid_tocompany" type="hidden" class="form-control" readonly="readonly" name="userid_tocompay" value="{{$member->userid_tocompany}}" required autofocus>
+                            
+                            
+                                                            @if( Auth::user()->position_id === $admin && Auth::user()->id === $checkCurrIdExistInRecord && $member->id != $isAdmin)
+                                                                            
+                                                            <a href="{{url('/setPosition/'.$member->id)}}" class="btn btn-primary" >Send As Admin</a> 
+                                                                    
+
+                                                                    
+                                                                <a href="{{url('/deleteUser/'.$member->id)}}" title="Delete" class="btn btn-primary" >
+                                                                    <i class="medium material-icons" style="font-size: 20px">delete</i>
+            
+
+                                                                    @else
+                                                                </a>
+                            
+                                                            
+                                                                
+                                                                @endif
+                                                            
+                            
+                            
+                                                        </td>
+                            
+                                                    </tr>
+                                                
+                            
+                                                    @endforeach
+                                                </table>
+                                            </div>
+                                            </div>
+                                        </div>    
                                     </div>
-                
                                 </div>
                             </div>
-                    </div>
-
-            <div class="row">
-                    <div class="col-md-8 col-md-offset-2">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">Comments</div>
-                            {{--menampilkan hasil comment dengan menampilkan nama,foto profile,dan isi comment berdasarkan masing - masing account--}}
-                            <div class="panel-body comment-container" >
-                                @foreach($comments as $comment)
-                                    <div class="well">
-        
-                                        <i><b style=" color:#000000">   <img src= "{{url('/' .$comment->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;">{{  $comment->name }} </b></i>&nbsp;&nbsp;
-                               
-                                        <span> {{ $comment->comment }} </span>
-                                        <div style="margin-left:10px;">
-                                            <a style="cursor: pointer;" id="{{ $comment->company_commentid }}" name="{{ Auth::user()->name }}" token="{{ csrf_token() }}" class="reply">Reply</a>&nbsp;
-                                            <a style="cursor: pointer;"  class="delete-comment" href="{{url('doDeleteComment/'.$comment->company_commentid)}}">Delete</a>
-                                            <div class="reply-form">
-        
-                                                <!-- Dynamic Reply form -->
-        
-                                            </div>
-                                     
-                                                
-                                             <div class="well">
-                                               
-                                                         <div class="reply-to-reply-form">
-                                                  @foreach($reply as $rep)
-                                              @if($comment->cmntid == $rep->comment_id)
-                                              <div id="reply">
-                                                <i><b style=" color:#000000"> <img src= "{{url('/' .$rep->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;"> {{  $rep->name }} </b></i>&nbsp;&nbsp;
-                                                <span> {{ $rep->reply }} 
-                                                    <br>
-                                                    <i style="font-size: 10px;">{{$rep->rep_created_at}}</i> 
-                                                
-                                                </span>
-        
-                                                    <br>
-                                                    <br>
-                                                    <br>
-                                                    </div>
-                                            @endif
-                                                  @endforeach 
-                                                         <form id="comment-form" method="post" action="{{ url('/RepComment') }}" >
-                                                                {{ csrf_field() }}
-                                                                <input type="hidden" name="comment_id" value=" {{$comment->cmntid}}" >
-                                                                <input type="hidden" name="user_id" value="{{ Auth::user()->id }}" >
-        
-                                                                <div class="row" style="padding: 10px;">
-                                                                    <div class="form-group">
-                                                                        <textarea class="form-control" name="reply" placeholder="Write something" style="width:500;height:100%;"></textarea>
-                                                                    </div>
-                                                                </div>
-        
-                                                                <!-- @foreach($compDet as $value) -->
-                                                             
-                                                                <!-- @endforeach -->
-                                                                <div class="row" style="padding: 0 10px 0 10px;">
-                                                                    <div class="form-group">
-                                                                        <input type="submit" class="btn btn-primary btn-lg" style="width: 100% " name="submit">
-                                                                    </div>
-                                                                </div>
-                                                         </form>
-                                                       
-                                                      </div>
-                                                    
-                                                </div>
-                                             
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+                        
+                        <div id="LogCompany" class="tabcontent" style="width:100%">
+                            <div class="panel-body">
+                                    <div class="container">
                                     
-        
+                            
+                                        <div class="row col-md-12 mb-5">
+                                            <div class="col-md-12 order-2">
+                            
+                                                <div class="row" >
+                                                    <div class="col-md-12 mb-5">
+                                                        <div class=""><h2 class="text-black h5">Log of Your Company</h2></div>
+                                                    
+                                                        <div class="site-blocks-table" >
+                                                            <table class="table table-bordered" >
+                                                                    <tr>
+                                                                        <td style="width:60%">
+                                                                        <b><i> <a> Message</a></i></b>
+                                                                            <br>
+                                                                        </td>
+                                                                        
+                                                                        <td style="width:40%">
+                                                                            <b><i><a>  Creator and Date</a></i></b>
+                                                                        <br>
+                                                                        </td>
+                                                                    </tr>
+                                                                        @foreach($logUserCompany as $Com )
+                                                                        <tr>
+                                                                                <td>
+                                                                                <img src= "{{url('/' .$Com->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-left:25px; margin-top:10px; margin-bottom:10px;">
+                                                                                <br><i style="margin-left:25px; margin-top:10px;"><b> {{$Com->log_message}}</b></i>
+                                                                                </td>
+                                                                                <td>
+                                                                                    {{$Com->name}} {{$Com->log_createdon}}
+                                                                                </td>
+                                                                                
+                                                            
+                                                                        </tr>
+                                                                    
+                                                                    
+                                                                        @endforeach
+                                                                                
+                                                    
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                                
+                                                
                                         </div>
                                     </div>
-                                @endforeach
                             </div>
-                        </div>
-                    </div>
-            </div>
+                        </div>    
 
+                        <div id="FAQ" class="tabcontent">
+                                <div class="row">
+                                        <div class="col-md-8 col-md-offset-2">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">Write Coment </div>
+                                                {{--melakukan comment pada detail [] product dengan menggunakan masing - masing account dan kita bisa mendelete commetn dan melihat comment orang lain--}}
+                                                <div class="panel-body">
+                                                    @if (session('status'))
+                                                        <div class="alert alert-success">
+                                                            {{ session('status') }}
+                                                        </div>
+                                                    @endif
+                                                    
+                                                        <form id="comment-form" method="post" action="{{ route('comments.store') }}" >
+                                                            {{ csrf_field() }}
+                                                            <input type="hidden" name="user_id" value="{{ Auth::user()->id }}" >
+                                                            <div class="row" style="padding: 10px;">
+                                                                <div class="form-group">
+                                                                    <textarea class="form-control" name="comment" placeholder="Write something"></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <!-- @foreach($compDet as $value) -->
+
+                                                            <input  name="company_commentid" value="{{$compDet->company_id}}" type="hidden">
+                                                            <!-- @endforeach -->
+                                                            <div class="row" style="padding: 0 10px 0 10px;">
+                                                                <div class="form-group">
+                                                                    <input type="submit" class="btn btn-primary btn-lg" style="width: 100%" name="submit">
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                            
+                                                </div>
+                            
+                                            </div>
+                                        </div>
+                                </div>
+
+                                <div class="row">
+                                        <div class="col-md-8 col-md-offset-2">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">Comments<i class="medium material-icons" style="color:#3097D1;">forum</i></div>
+                                                {{--menampilkan hasil comment dengan menampilkan nama,foto profile,dan isi comment berdasarkan masing - masing account--}}
+                                                <div class="panel-body comment-container" >
+                                                    @foreach($comments as $comment)
+                                                        <div class="well">
+                            
+                                                            <i><b style=" color:#000000">   <img src= "{{url('/' .$comment->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;">{{  $comment->name }} </b></i>&nbsp;&nbsp;
+                                                
+                                                            <span> {{ $comment->comment }} </span>
+                                                            <div style="margin-left:10px;">
+                                                                <a style="cursor: pointer;" id="{{ $comment->company_commentid }}" name="{{ Auth::user()->name }}" token="{{ csrf_token() }}" class="reply">Reply</a>&nbsp;
+                                                                <a style="cursor: pointer;"  class="delete-comment" href="{{url('deleteComment/'.$comment->cmntid)}}">Delete</a>
+                                                                <div class="reply-form">
+                            
+                                                                    <!-- Dynamic Reply form -->
+                            
+                                                                </div>
+                                                        
+                                                                    
+                                                                <div class="well">
+                                                                
+                                                                            <div class="reply-to-reply-form">
+                                                                    @foreach($reply as $rep)
+                                                                @if($comment->cmntid == $rep->comment_id)
+                                                                <div id="reply">
+                                                                    <i><b style=" color:#000000"> <img src= "{{url('/' .$rep->image)}}" style="width:40px; height:40px; float:left; border-radius:50%; margin-right:25px;"> {{  $rep->name }} </b></i>&nbsp;&nbsp;
+                                                                    
+                                                              
+                                                                    <span> {{ $rep->reply }} 
+                                                                        <br>
+                                                                        <i style="font-size: 10px;">{{$rep->rep_created_at}}</i> 
+                                                                    
+                                                                    </span>
+                            
+                                                                        <br>
+                                                                        @if(Auth::user()->id === $rep->user_replyid)
+                                                                                
+                                                                        <a style="cursor: pointer;"  class="delete-comment" href="{{url('deleteReplies/'.$rep->replies_id)}}">Delete</a>
+                                                                    @endif
+                                                                        <br>
+                                                                        <br>
+                                                                     
+                                                                        </div>
+                                                                @endif
+                                                                    @endforeach 
+                                                                            <form id="comment-form" method="post" action="{{ url('/RepComment') }}" >
+                                                                                    {{ csrf_field() }}
+                                                                                    <input type="hidden" name="comment_id" value=" {{$comment->cmntid}}" >
+                                                                                    <input type="hidden" name="user_id" value="{{ Auth::user()->id }}" >
+                            
+                                                                                    <div class="row" style="padding: 10px;">
+                                                                                        <div class="form-group">
+                                                                                            <textarea class="form-control" name="reply" placeholder="Write something" style="width:500;height:100%;"></textarea>
+                                                                                        </div>
+                                                                                    </div>
+                            
+                                                                                    <!-- @foreach($compDet as $value) -->
+                                                                                
+                                                                                    <!-- @endforeach -->
+                                                                                    <div class="row" style="padding: 0 10px 0 10px;">
+                                                                                        <div class="form-group">
+                                                                                            <input type="submit" class="btn btn-primary btn-lg" style="width: 100% " name="submit">
+                                                                                        </div>
+                                                                                    </div>
+                                                                            </form>
+                                                                        
+                                                                        </div>
+                                                                        
+                                                                    </div>
+                                                                
+                                                        
+                            
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                        </div>
+                       
+                        
            
         
         
@@ -723,8 +688,8 @@
         
         
         </div>
- </div>
     </div>
+</div>
  
 
 <script>

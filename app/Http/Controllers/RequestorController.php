@@ -80,7 +80,7 @@ class RequestorController extends Controller
                                     ->join('masters','masters.master_id','=','proposals.statusproposal_id')
                                     ->where([['proposals.statusproposal_id','=',$id_submit],['proposals.assignid_proposal','=',Auth::user()->id]])
                                     ->get();
-                        // dd($getAlldata);
+                        
                         // masalahnya id mappingnya ke double
                                     //ini kurangnya check data di screen saat submit proposal
                         $getAlldataForUser=DB::table('proposals')
@@ -89,9 +89,9 @@ class RequestorController extends Controller
                                     ->join('masters','masters.master_id','=','proposals.statusproposal_id')
                                     ->where([['proposals.statusproposal_id','=',$id_submit2],['proposals.userid_proposal','=',Auth::user()->id],])
                                     ->get();
-                        
+                                   
+
                         $getAllInvite=DB::table('mapping_requests')
-                                    ->join('users','users.id','=','mapping_requests.req_userid')
                                     ->join('events','events.event_id','=','mapping_requests.req_fromevent')
             
                                     ->join('companies','companies.company_id','=','mapping_requests.req_sponsorid')
@@ -99,9 +99,14 @@ class RequestorController extends Controller
             
                                     ->where([['mapping_requests.req_fromcompany','=',Auth::user()->userid_tocompany],['mapping_requests.req_status','=',$invite],])
                                     ->get(); 
-                        
+                        $myMemberList= DB::table('users')
+                                    ->where([['users.userid_tocompany','=',Auth::user()->userid_tocompany]])
+                                    ->get();
+                     
 
-        return view('RequestList',['getAllRequest'=>$getAllRequest,'getAlldata'=>$getAlldata,'getAlldataForUser'=>$getAlldataForUser,'expiredDate'=>$expiredDate,'getAllInvite'=>$getAllInvite]);
+                            
+                            return view('RequestList',['getAllRequest'=>$getAllRequest,'getAlldata'=>$getAlldata,'getAlldataForUser'=>$getAlldataForUser,'expiredDate'=>$expiredDate,'getAllInvite'=>$getAllInvite,'myMemberList'=>$myMemberList]);
+                        
 
     }
 
@@ -155,91 +160,189 @@ class RequestorController extends Controller
     {
         date_default_timezone_set('Asia/Jakarta');
         $currtime=date('Y-m-d H:i');
-
-        $getStatus= DB::table('masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','Accept']])
-                    ->get();   
-                    
-        foreach($getStatus as $s)
-        {
-                $Acc = $s->Master_id;
-        }
-
-        $Approve = MappingRequest::find($request->Mapping_Req_Id);
-        
-        $Approve->req_status=$Acc;
-        $Approve->req_modified_at=$currtime;
-        $Approve->req_modified_by=Auth::user()->id;
-        $Approve->save();
+        switch ($request->input('action')){
 
 
 
-        
-        $getAcceptMailId=$request->Mapping_Req_Id;
-     
-        $AcceptTo = DB::table('mapping_requests')
-                        ->join('companies','companies.company_id','=','mapping_requests.req_fromcompany')
-                        ->join('masters','masters.Master_id','=','mapping_requests.req_status')
-                        ->where([['mapping_requests.Mapping_Req_Id','=',$getAcceptMailId],])
-                        ->get();
 
-        $AcceptFrom = DB::table('companies')
-                            ->where([['companies.company_id','=',Auth::user()->userid_tocompany],])
-                            ->get();
-
-        $getDefaultStatus= DB::table('masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','Submit']])
-                            ->get();     
-        
-        foreach($AcceptTo as $at){
+            case 'invite':   
             
-            $EmailAddress= $at->website_address;
-            
-             $To=$at->company_name;
-             $StatusRequest=$at->text1;
-             $CanRequestAt=$at->req_modified_at;
-        }
-    
+            $getStatus= DB::table('masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','Accept']])
+                           ->get();   
+                           
+               foreach($getStatus as $s)
+               {
+                       $Acc = $s->Master_id;
+               }
+               $Approve = MappingRequest::find($request->Mapping_Req_Id);
+               
+               $Approve->req_status=$Acc;
+               $Approve->req_userid=$request->req_userid;
 
-        foreach($AcceptFrom as $af){
+               $Approve->req_modified_at=$currtime;
+               $Approve->req_modified_by=Auth::user()->id;
+               $Approve->save();
+           
+           
+           
+               
+               $getAcceptMailId=$request->Mapping_Req_Id;
+           
+               $AcceptTo = DB::table('mapping_requests')
+                               ->join('companies','companies.company_id','=','mapping_requests.req_fromcompany')
+                               ->join('masters','masters.Master_id','=','mapping_requests.req_status')
+                               ->where([['mapping_requests.Mapping_Req_Id','=',$getAcceptMailId],])
+                               ->get();
+           
+               $AcceptFrom = DB::table('companies')
+                                   ->where([['companies.company_id','=',Auth::user()->userid_tocompany],])
+                                   ->get();
+           
+               $getDefaultStatus= DB::table('masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','Submit']])
+                                   ->get();     
+               
+               foreach($AcceptTo as $at){
+                   
+                   $EmailAddress= $at->website_address;
+                   
+                    $To=$at->company_name;
+                    $StatusRequest=$at->text1;
+                    $CanRequestAt=$at->req_modified_at;
+               }
+           
+           
+               foreach($AcceptFrom as $af){
+                
+                   $From=$af->company_name;
+               }
+               
+           
+           
+               foreach($getDefaultStatus as $d)
+                {
+                    $Def = $d->Master_id;
+               }
+           
+                   // Mail::to($EmailAddress)->send(new mailForAcceptRequest($To,$From,$StatusRequest,$CanRequestAt));
+                   // return back();
+           
+               // $MailToUser = DB::table('companies')
+               //             ->join('mapping_requests','mapping_requests.req_fromcompany','=','companies.company_id')
+               //             ->where([['companies.company_id','=',],])
+              //ini tgl 2 april di uncommaent
+           
+               try{
+                
+                   Mail::to($EmailAddress)->send(new mailForAcceptRequest($To,$From,$StatusRequest,$CanRequestAt));
+                   
+                   return back()->with('acceptReqFail','Email Accept .');
+               }
+               catch(\Exception $e)
+               
+               {
+                   // Get error here
+                   $notUpdate= MappingRequest::find($request->Mapping_Req_Id);
+                    $notUpdate->req_status=$Def;
+                    $notUpdate->req_modified_at=$currtime;
+                    $notUpdate->req_modified_by=Auth::user()->id;
+                    $notUpdate->save();
+                
+                    return back()->with('acceptReqFail','Email Accept .');
+                   
+                
+               }   
+break;
 
-            $From=$af->company_name;
-        }
         
+        case 'join':
+                               $getStatus= DB::table('masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','Accept']])
+                                           ->get();   
+
+                               foreach($getStatus as $s)
+                               {
+                                       $Acc = $s->Master_id;
+                               }
+                           
+                               $Approve = MappingRequest::find($request->Mapping_Req_Id);
+
+                               $Approve->req_status=$Acc;
+                               $Approve->req_modified_at=$currtime;
+                               $Approve->req_modified_by=Auth::user()->id;
+                               $Approve->save();
+                           
+                           
+                           
+
+                               $getAcceptMailId=$request->Mapping_Req_Id;
+                           
+                               $AcceptTo = DB::table('mapping_requests')
+                                               ->join('companies','companies.company_id','=','mapping_requests.req_fromcompany')
+                                               ->join('masters','masters.Master_id','=','mapping_requests.req_status')
+                                               ->where([['mapping_requests.Mapping_Req_Id','=',$getAcceptMailId],])
+                                               ->get();
+                           
+                               $AcceptFrom = DB::table('companies')
+                                                   ->where([['companies.company_id','=',Auth::user()->userid_tocompany],])
+                                                   ->get();
+                           
+                               $getDefaultStatus= DB::table('masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','Submit']])
+                                                   ->get();     
+
+                               foreach($AcceptTo as $at){
+
+                                   $EmailAddress= $at->website_address;
+
+                                    $To=$at->company_name;
+                                    $StatusRequest=$at->text1;
+                                    $CanRequestAt=$at->req_modified_at;
+                               }
+                           
+                           
+                               foreach($AcceptFrom as $af){
+
+                                   $From=$af->company_name;
+                               }
+
+                           
+                           
+                               foreach($getDefaultStatus as $d)
+                                {
+                                    $Def = $d->Master_id;
+                               }
+                           
+                                   // Mail::to($EmailAddress)->send(new mailForAcceptRequest($To,$From,$StatusRequest,$CanRequestAt));
+                                   // return back();
+                           
+                               // $MailToUser = DB::table('companies')
+                               //             ->join('mapping_requests','mapping_requests.req_fromcompany','=','companies.company_id')
+                               //             ->where([['companies.company_id','=',],])
+                              //ini tgl 2 april di uncommaent
+                           
+                               try{
+
+                                   Mail::to($EmailAddress)->send(new mailForAcceptRequest($To,$From,$StatusRequest,$CanRequestAt));
+
+                                   return back()->with('acceptReqFail','Email Accept .');
+                               }
+                               catch(\Exception $e)
+
+                               {
+                                   // Get error here
+                                   $notUpdate= MappingRequest::find($request->Mapping_Req_Id);
+                                    $notUpdate->req_status=$Def;
+                                    $notUpdate->req_modified_at=$currtime;
+                                    $notUpdate->req_modified_by=Auth::user()->id;
+                                    $notUpdate->save();
+
+                                    return back()->with('acceptReqFail','Email Accept .');
 
 
-        foreach($getDefaultStatus as $d)
-         {
-             $Def = $d->Master_id;
-        }
+                               }   
 
-            // Mail::to($EmailAddress)->send(new mailForAcceptRequest($To,$From,$StatusRequest,$CanRequestAt));
-            // return back();
-
-        // $MailToUser = DB::table('companies')
-        //             ->join('mapping_requests','mapping_requests.req_fromcompany','=','companies.company_id')
-        //             ->where([['companies.company_id','=',],])
-       //ini tgl 2 april di uncommaent
-       
-        try{
-        
-            Mail::to($EmailAddress)->send(new mailForAcceptRequest($To,$From,$StatusRequest,$CanRequestAt));
+                break;
             
-            return back()->with('acceptReqFail','Email Accept .');
-        }
-        catch(\Exception $e)
         
-        {
-            // Get error here
-            $notUpdate= MappingRequest::find($request->Mapping_Req_Id);
-             $notUpdate->req_status=$Def;
-             $notUpdate->req_modified_at=$currtime;
-             $notUpdate->req_modified_by=Auth::user()->id;
-             $notUpdate->save();
-
-             return back()->with('acceptReqFail','Email Accept .');
-            
-
-        }
-       
+                            }
 
     }
 
@@ -365,8 +468,10 @@ class RequestorController extends Controller
                         ->join('events','events.event_id','=','mapping_requests.req_fromevent')
                         ->join('users','users.userid_tocompany','=','mapping_requests.req_fromcompany')
                         ->join('masters','masters.Master_id','=','mapping_requests.req_status')
-                        ->where([['mapping_requests.req_status','=',$Acc],['events.event_end','>',$currtime]])
+                        ->where([['mapping_requests.req_status','=',$Acc],])
                         ->get();
+
+            // dd($allRequest);
         
         
 
@@ -374,10 +479,14 @@ class RequestorController extends Controller
         
 
         foreach($allRequest as $a)
-        {
-            $updateNew = MappingRequest::find($a->Mapping_Req_Id);
-            $updateNew->req_status=$done;
-            $updateNew->save(); 
+        {  
+            $end = $a->event_end;
+            
+             if($currtime > $end){
+                $updateNew = MappingRequest::find($a->Mapping_Req_Id);
+                $updateNew->req_status=$done;
+                $updateNew->save();
+             } 
         
         }
 
@@ -484,106 +593,122 @@ class RequestorController extends Controller
     }
 
 
-    public function RequestCompany(Request $request){
+    public function RequestCompany(Request $request)
+    {
 
+
+     switch($request->input('action'))
+     {
+         case 'invite' :
         
-        date_default_timezone_set('Asia/Jakarta');
-        $currtime=date('Y-m-d H:i');
-        $status=DB::table('masters')->where([['prefix','=','STATUSREQUEST'],['text1','=','INVITED'],])->get();
+                                 date_default_timezone_set('Asia/Jakarta');
+                                 $currtime=date('Y-m-d H:i');
+                                 $status=DB::table('masters')->where([['prefix','=','STATUSREQUEST'],['text1','=','INVITED'],])->get();
 
-        foreach($status as $st){
+                                 foreach($status as $st){
 
-            $invite=$st->Master_id;
-        }
-        $event= event::find($request->event_id);
+                                     $invite=$st->Master_id;
+                                 }
+                                 $event= event::find($request->event_id);
+                             
+                                 $company =company::find( $request->company_id);
+                             
+                             
+                             
+                                 $getCurrMail = DB::table('companies')
+                                             ->where([['companies.company_id','=',$request->company_id],])
+                                             ->get();
+                             
+                                 $status = DB::table('Masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','INVITED']])->get();
+                                 $status2 = DB::table('Masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','REJECT']])->get();
+                             
+                                 foreach($status as $st){
 
-        $company =company::find( $request->company_id);
 
-   
+                                                 $invite= $st->Master_id;
+                                             }
+                                         
+                                 foreach($status2 as $st2){
 
-        $getCurrMail = DB::table('companies')
-                    ->where([['companies.company_id','=',$company->company_id],])
-                    ->get();
-        $status = DB::table('Masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','INVITED']])->get();
-        $status2 = DB::table('Masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','REJECT']])->get();
 
-        foreach($status as $st){
+                                                 $reject= $st2->Master_id;
+                                             }
+                                         
+                                         
+                                         
+                                         
+                                 foreach($getCurrMail as $gcm){
+
+
+                                     $mailForCompany =$gcm->website_address;
+                                 }
+
+                             
+                                 $getCompanies = DB::table('mapping_requests')
+                                                 ->where([['mapping_requests.req_fromevent','=',$event->event_id],['mapping_requests.req_fromcompany','=',Auth::user()->userid_tocompany],['mapping_requests.req_status','=',$invite],['mapping_requests.req_sponsorid','=',$request->company_id]])
+                                                 ->get();
+                             
+                                 $getListMember= DB::table('mapping_requests')
+                                                 ->where([['mapping_requests.req_fromevent','=',$event->event_id],['mapping_requests.req_status','!=',$reject],['mapping_requests.req_fromcompany','=',$request->company_id]])
+                                                 ->get();
+                                     if(count($getCompanies)==NULL && count($getListMember)==NULL ){
+
+                                              $requestCo=new MappingRequest();
+                                              $requestCo->req_sponsorid=Auth::User()->userid_tocompany;
+                                              $requestCo->req_userid=0;
+                                              $requestCo->req_fromcompany=$request->company_id;//ini dituker karena kalau engg, outputny jadi beda
+                                              $requestCo->req_fromevent=$event->event_id;
+                                              $requestCo->req_status=$invite;
+                                              $requestCo->req_created_at=$currtime;
+                                              $requestCo->req_modified_by=Auth::user()->id;
+
+
+                                              $getMakeRequestFrom = DB::table('companies')
+
+                                              ->where([['companies.company_id','=',Auth::user()->userid_tocompany],])
+                                              ->get();
+
+
+                                              foreach ($getCurrMail as $Mr)    
+                                              {
+                                              $req=$Mr->company_name;
+
+                                              }
+                                          
+                                              foreach ($getMakeRequestFrom as $Fr)
+                                              {
+                                              $From=$Fr->company_name;
+
+                                              }
+                                          
+                                          
+                                              Mail::to($mailForCompany)->send(new mailForInvite($req,$From));
+                                              $requestCo->save();
+
+                                          
+                                              return back()->with('successAdd','Success edit company .');
+                                          
+                                     }
+                                     else{
+
+                                         return back()->with('failAdd','You Have Sent Request.');
+
+
+
+
+                                     }
+        break;
+
+
+        case 'cancel' :
+
+                         return redirect()->action(
+                             'EventController@detail',['event_id'=>$request->event_id]);
+
+
+        break;
         
-        
-                        $invite= $st->Master_id;
-                    }
-        
-        foreach($status2 as $st2){
-        
-        
-                        $reject= $st2->Master_id;
-                    }
-        
-        
-        
-
-        foreach($getCurrMail as $gcm){
-
-
-            $mailForCompany =$gcm->website_address;
-        }
-
-        
-
-        $getCompanies = DB::table('mapping_requests')
-                        ->where([['mapping_requests.req_fromevent','=',$event->event_id],['mapping_requests.req_fromcompany','=',Auth::user()->userid_tocompany],['mapping_requests.req_status','=',$invite],['mapping_requests.req_sponsorid','=',$request->company_id]])
-                        ->get();
-
-        $getListMember= DB::table('mapping_requests')
-                        ->where([['mapping_requests.req_fromevent','=',$event->event_id],['mapping_requests.req_status','!=',$reject],['mapping_requests.req_fromcompany','=',$request->company_id]])
-                        ->get();
-            if(count($getCompanies)==NULL && count($getListMember)==NULL ){
-        
-                     $requestCo=new MappingRequest();
-                     $requestCo->req_sponsorid=Auth::User()->userid_tocompany;
-                     $requestCo->req_userid=Auth::user()->id;
-                     $requestCo->req_fromcompany=$request->company_id;//ini dituker karena kalau engg, outputny jadi beda
-                     $requestCo->req_fromevent=$event->event_id;
-                     $requestCo->req_status=$invite;
-                     $requestCo->req_created_at=$currtime;
-                     $requestCo->req_modified_by=Auth::user()->id;
-                     $requestCo->save();
-
-
-                     $getMakeRequestFrom = DB::table('companies')
-         
-                     ->where([['companies.company_id','=',Auth::user()->userid_tocompany],])
-                     ->get();
- 
- 
-                     foreach ($getCurrMail as $Mr)    
-                     {
-                     $req=$Mr->company_name;
-                     
-                     }
- 
-                     foreach ($getMakeRequestFrom as $Fr)
-                     {
-                     $From=$Fr->company_name;
-                     
-                     }
- 
- 
-                     Mail::to($mailForCompany)->send(new mailForInvite($req,$From));
- 
- 
-                     return back()->with('successAdd','Success edit company .');
- 
-            }
-            else{
-
-                return back()->with('failAdd','You Have Sent Request.');
-
-
-              
-
-            }
-               
+      }
 
                   
             

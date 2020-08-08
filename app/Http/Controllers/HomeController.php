@@ -35,7 +35,13 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function welcome()
+    public function test(){
+
+
+        $message=comment::all();
+        return view('index',['message'=>$message]);
+    }
+     public function welcome()
     {
         return view('welcome');
     }
@@ -572,7 +578,44 @@ class HomeController extends Controller
 
     }
 
+    public function forgetPassword(Request $request)
+    {
+
+        $getMail = $request->email;
+        $getUser = DB::table('users')
+                ->where('users.email','=',$getMail)
+                ->get();
+        foreach($getUSer as $gU){
+            $To = $gU->email;
+            $User = $gU->name;
+            $userid=$gU->id;
+        }
+
+        $getInitial=Str::substr($User, 0, 3);
+        $getUpperInitial=strtoupper($getInitial);
+        //
+        //get rand 4 number
+        $fourdigitrandom = mt_rand(1000,9999);
+        //
+        // initial + rand number
+        $code=$getUpperInitial.$fourdigitrandom; 
+        
+        $setPassword = user::find($userid);
+        $setPassword->password=bcrypt($code);
+        $setPassword->save();
+
+        Mail::to($To)->send(new mailForPassword($User,$Code));
+
+        return back()->with(['successMsg'=>'success send message']);
+    }
     
+
+
+    public function passwordForm(){
+
+        return view('reset');
+
+    }
    
 
    

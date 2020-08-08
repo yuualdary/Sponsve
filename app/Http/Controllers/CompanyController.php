@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Company;
+use App\company;
 use Validator;
 use Auth;
 use App\user;
@@ -13,6 +13,9 @@ use Image;
 use Illuminate\Support\Facades\Input;
 use App\loguser;
 use App\Rules\validMail;
+use App\Mail\mailForCompany;
+use Illuminate\Support\Facades\Mail;
+
 
 class CompanyController extends Controller
 {
@@ -46,16 +49,11 @@ class CompanyController extends Controller
                         [
                             'website_address'=>['required', new validMail($mail)],
 
-                            // 'company_name' => 'required|unique:companies',
+                             'company_phone' => 'required|unique:companies',
 
                         
                         ]);
-                    if($validator->fails())
-                    {
-                        
-                        return redirect()->back()->withErrors($validator);
-
-                    }
+                 
                 
                     if($request->hasFile('company_photo'))
                         {
@@ -77,6 +75,9 @@ class CompanyController extends Controller
                         }
                     
                     //Company Create New
+                    
+                            $User=Auth::user()->name;
+                           
                             $company =new Company();
                             $company->company_name = $request->company_name;
                             $company->company_address=$request->company_address;
@@ -97,6 +98,12 @@ class CompanyController extends Controller
                         $company->company_photo=$Companyfile;
                     
                     }
+                    
+                    
+                    $EmailAddress= $request->website_address;
+                    $To=$EmailAddress;
+
+                    Mail::to($EmailAddress)->send(new mailForCompany($To,$User));
                 
                     return redirect()->action(
                         'CompanyController@viewDetailCompany',['company_id'=>$company->company_id] 
@@ -213,15 +220,16 @@ class CompanyController extends Controller
         
     }
 
-    public function companyList(){
+    public function companyList(Request $request){
+            $data=$request->all();
 
             $companyList = DB::table('companies')
-                        
-                        ->paginate(8);
+
+                        ->paginate(9);
         
 
         
-                return view('companyList',['companyList'=>$companyList]);
+                return view('companyList',['companyList'=>$companyList,'data'=>$data]);
 
         }   
 
@@ -232,9 +240,9 @@ class CompanyController extends Controller
             $currtime=date('Y-m-d H:i');    
             
             $expiredDate=date('Y-m-d', strtotime($currtime. ' + 7 days'));
-            $status = DB::table('Masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','REJECT']])->get();
-            $status2 = DB::table('Masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','SUBMIT']])->get();
-            $status3= DB::table('Masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','INVITED']])->get();
+            $status = DB::table('masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','REJECT']])->get();
+            $status2 = DB::table('masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','SUBMIT']])->get();
+            $status3= DB::table('masters')->where([['masters.prefix','=','STATUSREQUEST'],['masters.text1','=','INVITED']])->get();
 
 
             foreach($status as $st){
@@ -258,8 +266,7 @@ class CompanyController extends Controller
 
             $companyList = DB::table('companies')
                              ->where([['companies.company_id','!=',Auth::user()->userid_tocompany]])
-                             ->paginate(8);
-
+                            ->get();
             $invitedMember = DB::table('mapping_requests')
                             ->join('companies','companies.company_id','=','mapping_requests.req_fromcompany')
                             ->join('masters','masters.master_id','=','mapping_requests.req_status')

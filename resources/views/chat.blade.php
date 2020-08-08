@@ -10,7 +10,7 @@
     
                     <div class="panel-body-chat">
                         <chat-messages :messages="messages"></chat-messages>
-                           {{-- @foreach($chat as $c)
+                           @foreach($message as $c)
 
                                     <div class="header">
                                         <strong class="primary-font">
@@ -21,7 +21,7 @@
                                         {{ $c->message }}
                                     </p>
                                     @endforeach
-                                    --}}
+                                   
                     </div> 
                     <div class="panel-footer">
                         <chat-form

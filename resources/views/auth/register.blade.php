@@ -31,6 +31,7 @@
 
                             <div class="col-md-6">
                                 <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
+                                <i style="font-size: 11px;font-style:italic;">The email must be your active email</i>
 
                                 @if ($errors->has('email'))
                                     <span class="help-block">
