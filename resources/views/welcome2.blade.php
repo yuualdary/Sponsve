@@ -4,7 +4,7 @@
     {{--bagian kerangka dari website meliputi header,contetnt,footer ,css,js link--}}
    
     <title>SponsVe</title>
-    
+   
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -36,7 +36,7 @@
     <link rel="stylesheet" href="css/Style.css">
 
     <style>
-           .page h1.format-icon:before {
+       .page h1.format-icon:before {
 content: none;
 }
         #app-navbar-collapse ul li{
@@ -611,7 +611,7 @@ content: none;
     </footer>
     </div>
 
-    <script type="text/javascript" src="{{ asset('/js/app.js') }}"></script>
+
     <script>
         window.Laravel = {!! json_encode([
             'csrfToken' => csrf_token(),
@@ -619,19 +619,14 @@ content: none;
             'pusherCluster' => config('broadcasting.connections.pusher.options.cluster')
         ]) !!};
     </script>
-    {{-- <script src="/js/app.js"></script> --}}
     <script src="/js/bootstrap.js"></script>
     
-    {{-- <script src="js/jquery-3.3.1.min.js"></script> --}}
     <script src="js/jquery-ui.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/jquery.magnific-popup.min.js"></script>
     <script src="js/aos.js"></script>
-    <script>
-            
-    </script>
 
     <script src="js/swiper.js"></script>
     <script src="js/swiper.min.js"></script>
